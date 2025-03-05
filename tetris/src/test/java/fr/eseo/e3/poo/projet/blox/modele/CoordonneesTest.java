@@ -40,7 +40,7 @@ class CoordonneesTest {
     void testToString() {
         coord.setAbscisse(80);
         coord.setOrdonnee(1000);
-        assertEquals("(80, 1000)", coord.toString(), "Erreur dans le test toString pour les coordonnées !");
+        assertEquals("Coordonnees(80, 1000)", coord.toString(), "Erreur dans le test toString pour les coordonnées !");
     }
 
     @Test
