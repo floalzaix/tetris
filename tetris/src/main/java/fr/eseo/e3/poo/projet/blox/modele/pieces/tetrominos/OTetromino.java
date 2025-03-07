@@ -4,22 +4,14 @@ import fr.eseo.e3.poo.projet.blox.modele.Coordonnees;
 import fr.eseo.e3.poo.projet.blox.modele.Couleur;
 import fr.eseo.e3.poo.projet.blox.modele.Element;
 
-public class OTetromino {
-    // Attributs
-    private Coordonnees coord;
-    private Couleur couleur;
-    private Element[] elements;
-
+public class OTetromino extends Tetromino {
     // Constructeurs
     public OTetromino(Coordonnees coord, Couleur couleur) {
-        this.coord = coord;
-        this.couleur = couleur;
-
-        this.setElements(coord, couleur);
+        super(coord, couleur);
     }
 
     /**
-     * Cette fonction a pour but d'initialiser les elements du OTetromino donc la
+     * Cette méthode a pour but d'initialiser les elements du OTetromino donc la
      * variable this.elements
      * 
      * L'origine du OTetromino est considérée dans le coin inférieur gauche.
@@ -34,6 +26,7 @@ public class OTetromino {
      * @param coord   Les coordonées du OTetromino
      * @param couleur La couleur du OTetromino
      */
+    @Override
     protected void setElements(Coordonnees coord, Couleur couleur) {
         int x = coord.getAbscisse();
         int y = coord.getOrdonnee();
@@ -46,20 +39,27 @@ public class OTetromino {
         };
     }
 
-    // Overrides
+    /**
+     * Cette méthode a pour but de placer les elements du OTetromino donc la
+     * variable this.elements
+     * 
+     * L'origine du OTetromino est considérée dans le coin inférieur gauche.
+     * 
+     * Exemple : IN => (1, 2) bleu
+     *           POST => elements tels que :
+     *                  {Element(1, 2) - bleu,
+     *                   Element(2, 2) - bleu,
+     *                   Element(2, 1) - bleu,
+     *                   Element(1, 1) - bleu}
+     * 
+     * @param abscisse Abscisse du bloc de ref du OTetromino
+     * @param ordonnee Ordonnee du bloc de ref du OTetromino
+     */
     @Override
-    public String toString() {
-        String res = "OTetromino :\n";
-        for (int i  = 0; i < 4; i++) {
-            int x = this.elements[i].getCoord().getAbscisse();
-            int y = this.elements[i].getCoord().getOrdonnee();
-            res+= "\t(" + x + ", " + y +") - " + this.couleur + "\n";
-        }
-        return res;
-    }
-
-    // Getters
-    public Element[] getElements() {
-        return this.elements;
+    public void setPosition(int abscisse, int ordonnee) {
+        this.elements[0].setCoord(new Coordonnees(abscisse, ordonnee));
+        this.elements[1].setCoord(new Coordonnees(abscisse+1, ordonnee));
+        this.elements[2].setCoord(new Coordonnees(abscisse+1, ordonnee-1));
+        this.elements[3].setCoord(new Coordonnees(abscisse, ordonnee-1));
     }
 }
