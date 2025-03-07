@@ -30,6 +30,11 @@ public abstract class Tetromino implements Piece {
         return List.of(this.elements);
     }
 
+    @Override
+    public void setPosition(int abscisse, int ordonnee) {
+        this.setElements(new Coordonnees(abscisse, ordonnee), this.couleur);
+    }
+
     // Overrides
     @Override
     public String toString() {
@@ -37,7 +42,7 @@ public abstract class Tetromino implements Piece {
         for (Element element : elements) {
             int x = element.getCoord().getAbscisse();
             int y = element.getCoord().getOrdonnee();
-            res+= "\t(" + x + ", " + y +") - " + this.couleur + "\n";
+            res += "\t(" + x + ", " + y + ") - " + this.couleur + "\n";
         }
         return res;
     }

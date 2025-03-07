@@ -38,28 +38,4 @@ public class OTetromino extends Tetromino {
                 new Element(x, y - 1, couleur)
         };
     }
-
-    /**
-     * Cette méthode a pour but de placer les elements du OTetromino donc la
-     * variable this.elements
-     * 
-     * L'origine du OTetromino est considérée dans le coin inférieur gauche.
-     * 
-     * Exemple : IN => 1, 2 et couleur : bleu
-     *           POST => elements tels que :
-     *                  {Element(1, 2) - bleu,
-     *                   Element(2, 2) - bleu,
-     *                   Element(2, 1) - bleu,
-     *                   Element(1, 1) - bleu}
-     * 
-     * @param abscisse Abscisse du bloc de ref du OTetromino
-     * @param ordonnee Ordonnee du bloc de ref du OTetromino
-     */
-    @Override
-    public void setPosition(int abscisse, int ordonnee) {
-        this.elements[0].setCoord(new Coordonnees(abscisse, ordonnee));
-        this.elements[1].setCoord(new Coordonnees(abscisse+1, ordonnee));
-        this.elements[2].setCoord(new Coordonnees(abscisse+1, ordonnee-1));
-        this.elements[3].setCoord(new Coordonnees(abscisse, ordonnee-1));
-    }
 }

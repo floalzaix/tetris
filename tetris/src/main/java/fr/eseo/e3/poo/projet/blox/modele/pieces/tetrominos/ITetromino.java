@@ -38,28 +38,4 @@ public class ITetromino extends Tetromino {
             new Element(x, y-2, couleur)
         };
     }
-
-    /**
-     * Le but de cette méthode est de changer la position du ITetromino
-     * 
-     * L'origine du ITetromino est le 3 élement en partant du haut
-     * 
-     * Eexemple :   IN => 1, 2 et la couleur est : BLEU
-     *              OUT => elements tels que
-     *                     {Element(1, 2) - Bleu,
-     *                      Element(1, 3) - Bleu,
-     *                      Element(1, 1) - Bleu,
-     *                      Element(1, 0) - Bleu}
-     * 
-     * @param abscisse Abscisse de l'élements de ref du ITetromino
-     * @param ordonnee Ordonnee de l'élements de ref du ITetromino
-     */
-    @Override
-    public void setPosition(int abscisse, int ordonnee) {
-        this.elements[0].setCoord(new Coordonnees(abscisse, ordonnee));
-        this.elements[1].setCoord(new Coordonnees(abscisse, ordonnee+1));
-        this.elements[2].setCoord(new Coordonnees(abscisse, ordonnee-1));
-        this.elements[3].setCoord(new Coordonnees(abscisse, ordonnee-2));
-    }
-
 }
