@@ -45,7 +45,7 @@ public class OTetromino extends Tetromino {
      * 
      * L'origine du OTetromino est considérée dans le coin inférieur gauche.
      * 
-     * Exemple : IN => (1, 2) bleu
+     * Exemple : IN => 1, 2 et couleur : bleu
      *           POST => elements tels que :
      *                  {Element(1, 2) - bleu,
      *                   Element(2, 2) - bleu,
