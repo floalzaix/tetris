@@ -5,6 +5,7 @@ import java.util.List;
 import fr.eseo.e3.poo.projet.blox.modele.Coordonnees;
 import fr.eseo.e3.poo.projet.blox.modele.Couleur;
 import fr.eseo.e3.poo.projet.blox.modele.Element;
+import fr.eseo.e3.poo.projet.blox.modele.Puits;
 import fr.eseo.e3.poo.projet.blox.modele.pieces.Piece;
 
 public abstract class Tetromino implements Piece {
@@ -12,6 +13,8 @@ public abstract class Tetromino implements Piece {
     protected Element[] elements;
     protected Coordonnees coord;
     protected Couleur couleur;
+
+    private Puits puits;
 
     // Constructeurs
     protected Tetromino(Coordonnees coord, Couleur couleur) {
@@ -38,12 +41,22 @@ public abstract class Tetromino implements Piece {
     // Overrides
     @Override
     public String toString() {
-        String res = this.getClass().getCanonicalName() + " :\n";
+        String res = this.getClass().getSimpleName() + " :\n";
         for (Element element : elements) {
             int x = element.getCoord().getAbscisse();
             int y = element.getCoord().getOrdonnee();
             res += "\t(" + x + ", " + y + ") - " + this.couleur + "\n";
         }
         return res;
+    }
+
+    @Override
+    public Puits getPuits() {
+        return puits;
+    }
+
+    @Override
+    public void setPuits(Puits puits) {
+        this.puits = puits;
     }
 }

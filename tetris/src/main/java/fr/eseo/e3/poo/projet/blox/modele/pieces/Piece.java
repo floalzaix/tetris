@@ -3,6 +3,7 @@ package fr.eseo.e3.poo.projet.blox.modele.pieces;
 import java.util.List;
 
 import fr.eseo.e3.poo.projet.blox.modele.Element;
+import fr.eseo.e3.poo.projet.blox.modele.Puits;
 
 public interface Piece {
     /**
@@ -17,4 +18,9 @@ public interface Piece {
      * en s'aasurant que l'élement de ref est au coordonnées passées
      */
     public void setPosition(int abscisse, int ordonnee);
+
+    // Getters setters
+    public Puits getPuits();
+    
+    public void setPuits(Puits puits);
 }
