@@ -38,4 +38,9 @@ public class OTetromino extends Tetromino {
                 new Element(x, y - 1, couleur)
         };
     }
+    
+    @Override
+    public void tourner(boolean sensHoraire) {
+        // Un OTetromino ne peut pas tourner
+    }
 }

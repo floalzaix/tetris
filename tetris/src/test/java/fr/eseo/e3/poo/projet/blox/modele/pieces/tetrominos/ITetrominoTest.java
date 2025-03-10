@@ -46,9 +46,9 @@ class ITetrominoTest {
         ITetromino o = new ITetromino(new Coordonnees(0, 0), Couleur.ORANGE);
         o.deplacerDe(1, 1);
         List<Element> elts = o.getElements();
-        assertEquals(new Element(1, 1, Couleur.ORANGE), elts.get(0), "Erreur das deplcerDe !");
-        assertEquals(new Element(1, 2, Couleur.ORANGE), elts.get(1), "Erreur das deplcerDe !");
-        assertEquals(new Element(1, 0, Couleur.ORANGE), elts.get(2), "Erreur das deplcerDe !");
+        assertEquals(new Element(1, 1, Couleur.ORANGE), elts.get(0), "Erreur dans deplacerDe !");
+        assertEquals(new Element(1, 2, Couleur.ORANGE), elts.get(1), "Erreur dans deplacerDe !");
+        assertEquals(new Element(1, 0, Couleur.ORANGE), elts.get(2), "Erreur dans deplacerDe !");
         assertEquals(new Element(1, -1, Couleur.ORANGE), elts.get(3), "Erreur das deplcerDe !");
         IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> o.deplacerDe(0, -1));
         assertEquals("Erreur le déplacement d'un pièce ne peut pas être supérieur à 1 ou ne peut pas aller vers le haut !", e.getMessage());
@@ -58,6 +58,27 @@ class ITetrominoTest {
         assertEquals("Erreur le déplacement d'un pièce ne peut pas être supérieur à 1 ou ne peut pas aller vers le haut !", e.getMessage());
         e = assertThrows(IllegalArgumentException.class, () -> o.deplacerDe(-2, 0));
         assertEquals("Erreur le déplacement d'un pièce ne peut pas être supérieur à 1 ou ne peut pas aller vers le haut !", e.getMessage());
+    }
+
+    @Test
+    void testTourner() {
+        ITetromino o = new ITetromino(new Coordonnees(6, 5), Couleur.JAUNE);
+        // Sens anti-horaire
+        o.tourner(false);
+        List<Element> elts = o.getElements();
+        assertEquals(new Element(6, 5, Couleur.JAUNE), elts.get(0), "Erreur dans tourner !");
+        assertEquals(new Element(7, 5, Couleur.JAUNE), elts.get(1), "Erreur dans tourner !");
+        assertEquals(new Element(5, 5, Couleur.JAUNE), elts.get(2), "Erreur dans tourner !");
+        assertEquals(new Element(4, 5, Couleur.JAUNE), elts.get(3), "Erreur dans tourner !");
+
+        // Sens horaire
+        o = new ITetromino(new Coordonnees(6, 5), Couleur.JAUNE);
+        o.tourner(true);
+        elts = o.getElements();
+        assertEquals(new Element(6, 5, Couleur.JAUNE), elts.get(0), "Erreur dans tourner !");
+        assertEquals(new Element(5, 5, Couleur.JAUNE), elts.get(1), "Erreur dans tourner !");
+        assertEquals(new Element(7, 5, Couleur.JAUNE), elts.get(2), "Erreur dans tourner !");
+        assertEquals(new Element(8, 5, Couleur.JAUNE), elts.get(3), "Erreur dans tourner !");
     }
 
     @Test

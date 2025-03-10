@@ -15,7 +15,7 @@ public interface Piece {
 
     /**
      * Méthode qui définit la position de la pièce en métant à jour ses coordonnées
-     * en s'aasurant que l'élement de ref est au coordonnées passées
+     * en s'aasurant que l'élement de ref est au coordonnées passées en argument
      */
     public void setPosition(int abscisse, int ordonnee);
 
@@ -28,6 +28,13 @@ public interface Piece {
      *                                  vers le haut
      */
     public void deplacerDe(int deltaX, int deltaY) throws IllegalArgumentException;
+
+    /**
+     * Permet de faire tourner la pièce autour de son élement de ref
+     * 
+     * @param sensHoraire Sens de la rotation
+     */
+    public void tourner(boolean sensHoraire);
 
     // Getters setters
     public Puits getPuits();

@@ -11,14 +11,12 @@ import fr.eseo.e3.poo.projet.blox.modele.pieces.Piece;
 public abstract class Tetromino implements Piece {
     // Attributs
     protected Element[] elements;
-    protected Coordonnees coord;
     protected Couleur couleur;
 
     private Puits puits;
 
     // Constructeurs
     protected Tetromino(Coordonnees coord, Couleur couleur) {
-        this.coord = coord;
         this.couleur = couleur;
 
         this.setElements(coord, couleur);
@@ -35,7 +33,15 @@ public abstract class Tetromino implements Piece {
 
     @Override
     public void setPosition(int abscisse, int ordonnee) {
-        this.setElements(new Coordonnees(abscisse, ordonnee), this.couleur);
+        // Calcul le delta de position pour l'appliquer à chaque élements
+        Coordonnees coord = this.elements[0].getCoord();
+        Coordonnees delta = new Coordonnees(coord.getAbscisse() - abscisse, coord.getOrdonnee() - ordonnee);
+
+        // Application du delta de position à chaque élement
+        for (Element elt : this.elements) {
+            Coordonnees eltCoord = elt.getCoord();
+            elt.setCoord(new Coordonnees(eltCoord.getAbscisse() - delta.getAbscisse(), eltCoord.getOrdonnee() - delta.getOrdonnee()));
+        }
     }
 
     @Override
@@ -43,6 +49,23 @@ public abstract class Tetromino implements Piece {
         for (Element element : this.elements) {
             element.deplacerDe(deltaX, deltaY);
         }
+    }
+
+    @Override
+    public void tourner(boolean sensHoraire) {
+        // Translater vers l'origine en conservant les coordonnée
+        Coordonnees coord = this.elements[0].getCoord();
+        this.setPosition(0, 0);
+
+        /// Rotation en tenant compte des coordonnée
+        /// informatique avec multiplication par une matrice de rotation
+        for (Element elt : this.elements) {
+            Coordonnees eltCoord = elt.getCoord();
+            elt.setCoord(new Coordonnees((sensHoraire ? -1 : 1) * eltCoord.getOrdonnee(), eltCoord.getAbscisse()));
+        }
+
+        // Translation inverse
+        this.setPosition(coord.getAbscisse(), coord.getOrdonnee());
     }
 
     // Overrides
