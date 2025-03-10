@@ -9,6 +9,7 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.JPanel;
 
+import fr.eseo.e3.poo.projet.blox.controleur.PieceDeplacement;
 import fr.eseo.e3.poo.projet.blox.modele.Puits;
 import fr.eseo.e3.poo.projet.blox.modele.pieces.Piece;
 
@@ -23,6 +24,8 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
     private Puits puits;
     private int taille;
     private VuePiece vuePiece;
+
+    private PieceDeplacement deplacement;
 
     // Constructeurs
     public VuePuits(Puits puits, int taille) {
@@ -90,10 +93,18 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
     public final void setPuits(Puits puits) {
         if (this.puits != null) {
             puits.removePropertyChangeListener(this);
+
+            this.removeMouseMotionListener(deplacement);
         }
-        puits.addPropertyChangeListener(this);
+
         this.puits = puits;
+
+        puits.addPropertyChangeListener(this);
+
         this.setPreferredSize(new Dimension(this.taille * puits.getLargueur(), this.taille * puits.getProfondeur()));
+
+        this.deplacement = new PieceDeplacement(this);
+        this.addMouseMotionListener(deplacement);
     }
 
     public final void setTaille(int taille) {
