@@ -1,11 +1,17 @@
 package fr.eseo.e3.poo.projet.blox.modele;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+
 import fr.eseo.e3.poo.projet.blox.modele.pieces.Piece;
 
 public class Puits {
     // Constantes de classes
     public static final int LARGUEUR_PAR_DEFAUT = 10;
     public static final int PROFONDEUR_PAR_DEFAUT = 20;
+
+    public static final String MODIFICATION_PIECE_ACTUELLE = "actuelle";
+    public static final String MODIFICATION_PIECE_SUIVANTE = "suivante";
 
     // Attributs (variables d'instance)
     private int largueur;
@@ -14,15 +20,18 @@ public class Puits {
     private Piece pieceActuelle;
     private Piece pieceSuivante;
 
-    // Constructeurs
-    public Puits() {
-        this.largueur = LARGUEUR_PAR_DEFAUT;
-        this.profondeur = PROFONDEUR_PAR_DEFAUT;
-    }
+    private PropertyChangeSupport pcs;
 
+    // Constructeurs
     public Puits(int largueur, int profondeur) {
         this.largueur = largueur;
         this.profondeur = profondeur;
+
+        this.pcs = new PropertyChangeSupport(this);
+    }
+
+    public Puits() {
+        this(LARGUEUR_PAR_DEFAUT, PROFONDEUR_PAR_DEFAUT);
     }
 
     // Overrides
@@ -32,6 +41,28 @@ public class Puits {
         res += "Piece Actuelle : " + ((this.pieceActuelle == null) ? "<aucune>\n" : this.pieceActuelle);
         res += "Piece Suivante : " + ((this.pieceSuivante == null) ? "<aucune>\n" : this.pieceSuivante);
         return res;
+    }
+
+    // Listeners
+    /**
+     * Ajoute un property change listener qui se déclenchera quans setPieceSuivante
+     * est appellé et qui déclenchera deux types d'évenements :
+     * MODIFICATION_PIECE_ACTUELLE et MODIFICATION_PIECE_SUIVANTE
+     * 
+     * @param listener Le listener à ajouterau puits qui écoute quand
+     *                 setPieceSuivante exécutée
+     */
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        this.pcs.addPropertyChangeListener(listener);
+    }
+
+    /**
+     * Enlève le listener déjà mit.
+     * 
+     * @param listener Le listener
+     */
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        this.pcs.removePropertyChangeListener(listener);
     }
 
     // Getters et setters
@@ -53,15 +84,18 @@ public class Puits {
 
     /**
      * Cette fonction définie la pièce suivante du puits. Si une pièce suivante est
-     * déjà définie alors celle çi devient la pièce actuelle
+     * déjà définie alors celle çi devient la pièce actuelle avec les coordonnées
+     * (largueurPuits/2, -4)
      * 
      * @param pieceSuivante La pièce suivante du puits
      */
     public void setPieceSuivante(Piece pieceSuivante) {
         if (this.pieceSuivante != null) {
+            this.pieceSuivante.setPosition(this.largueur / 2, -4);
+            this.pcs.firePropertyChange(MODIFICATION_PIECE_ACTUELLE, this.pieceActuelle, this.pieceSuivante);
             this.pieceActuelle = this.pieceSuivante;
-            this.pieceActuelle.setPosition(this.largueur / 2, -4);
         }
+        this.pcs.firePropertyChange(MODIFICATION_PIECE_SUIVANTE, this.pieceSuivante, pieceSuivante);
         this.pieceSuivante = pieceSuivante;
     }
 
@@ -69,7 +103,8 @@ public class Puits {
      * Ce setter vérifie que la profondeur est comprise entre 15 et 25 inclus
      * 
      * @param profondeur La profondeur du puits
-     * @throws IllegalArgumentException La profondeur doit être incluse entre 15 et 25
+     * @throws IllegalArgumentException La profondeur doit être incluse entre 15 et
+     *                                  25
      */
     public void setProfondeur(int profondeur) throws IllegalArgumentException {
         if (profondeur < 15 || profondeur > 25) {
