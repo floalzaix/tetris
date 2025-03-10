@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
 import fr.eseo.e3.poo.projet.blox.modele.pieces.Piece;
+import fr.eseo.e3.poo.projet.blox.modele.pieces.Tas;
 import fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.ITetromino;
 import fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.OTetromino;
 
@@ -48,10 +49,18 @@ class PuitsTest {
         Puits puits = new Puits(10, 20);
         puits.setLargueur(9);
         assertEquals(9, puits.getLargueur(), "Erreur dans setLargueur !");
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> puits.setLargueur(16));
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> puits.setLargueur(16), "Erreur dans setLargueur !");
         assertEquals("Erreur un puits doit avoir une largueur entre 5 et 15 unités !", e.getMessage());
-        e = assertThrows(IllegalArgumentException.class, () -> puits.setLargueur(4));
+        e = assertThrows(IllegalArgumentException.class, () -> puits.setLargueur(4), "Erreur dans setLargueur !");
         assertEquals("Erreur un puits doit avoir une largueur entre 5 et 15 unités !", e.getMessage());
+    }
+
+    @Test
+    void testGetSetTas() {
+        Puits puits = new Puits(10, 20);
+        Tas tas = new Tas(puits, 20);
+        puits.setTas(tas);
+        assertEquals(tas, puits.getTas());
     }
 
     @Test

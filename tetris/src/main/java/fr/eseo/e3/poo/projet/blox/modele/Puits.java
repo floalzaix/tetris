@@ -4,6 +4,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 import fr.eseo.e3.poo.projet.blox.modele.pieces.Piece;
+import fr.eseo.e3.poo.projet.blox.modele.pieces.Tas;
 
 public class Puits {
     // Constantes de classes
@@ -20,14 +21,22 @@ public class Puits {
     private Piece pieceActuelle;
     private Piece pieceSuivante;
 
+    private Tas tas;
+
     private PropertyChangeSupport pcs;
 
     // Constructeurs
-    public Puits(int largueur, int profondeur) {
+    public Puits(int largueur, int profondeur, int nbElements, int nbLignes) {
         this.largueur = largueur;
         this.profondeur = profondeur;
 
+        this.tas = new Tas(this, nbElements, nbLignes);
+
         this.pcs = new PropertyChangeSupport(this);
+    }
+
+    public Puits(int largueur, int profondeur) {
+        this(largueur, profondeur, 0, 0);
     }
 
     public Puits() {
@@ -124,5 +133,13 @@ public class Puits {
             throw new IllegalArgumentException("Erreur un puits doit avoir une largueur entre 5 et 15 unités !");
         }
         this.largueur = largueur;
+    }
+
+    public Tas getTas() {
+        return tas;
+    }
+
+    public void setTas(Tas tas) {
+        this.tas = tas;
     }
 }

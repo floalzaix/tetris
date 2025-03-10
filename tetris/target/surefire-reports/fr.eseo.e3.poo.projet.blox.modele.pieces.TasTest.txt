@@ -1,0 +1,16 @@
+-------------------------------------------------------------------------------
+Test set: fr.eseo.e3.poo.projet.blox.modele.pieces.TasTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.073 s <<< FAILURE! -- in fr.eseo.e3.poo.projet.blox.modele.pieces.TasTest
+fr.eseo.e3.poo.projet.blox.modele.pieces.TasTest.testConstructeurs -- Time elapsed: 0.041 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Erreur dans les constructeurs ! ==> expected: <10> but was: <20>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:150)
+	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:563)
+	at fr.eseo.e3.poo.projet.blox.modele.pieces.TasTest.testConstructeurs(TasTest.java:24)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
