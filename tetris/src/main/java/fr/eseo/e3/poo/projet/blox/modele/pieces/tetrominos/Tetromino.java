@@ -40,7 +40,8 @@ public abstract class Tetromino implements Piece {
         // Application du delta de position à chaque élement
         for (Element elt : this.elements) {
             Coordonnees eltCoord = elt.getCoord();
-            elt.setCoord(new Coordonnees(eltCoord.getAbscisse() - delta.getAbscisse(), eltCoord.getOrdonnee() - delta.getOrdonnee()));
+            elt.setCoord(new Coordonnees(eltCoord.getAbscisse() - delta.getAbscisse(),
+                    eltCoord.getOrdonnee() - delta.getOrdonnee()));
         }
     }
 
@@ -61,7 +62,9 @@ public abstract class Tetromino implements Piece {
         /// informatique avec multiplication par une matrice de rotation
         for (Element elt : this.elements) {
             Coordonnees eltCoord = elt.getCoord();
-            elt.setCoord(new Coordonnees((sensHoraire ? -1 : 1) * eltCoord.getOrdonnee(), eltCoord.getAbscisse()));
+            elt.setCoord(new Coordonnees((sensHoraire ? -1 : 1) * eltCoord.getOrdonnee(),
+                    (sensHoraire ? 1 : -1) * eltCoord.getAbscisse()));
+            
         }
 
         // Translation inverse
