@@ -24,6 +24,23 @@ public class Element {
         this(new Coordonnees(abscisse, ordonnee), couleur);
     }
 
+    /**
+     * Cette fonction permet de déplacer un élement d'un vecteur delta
+     * 
+     * @param deltaX Coordonnée X du vecteur delta
+     * @param deltaY Coordonnée Y du vecteur delta
+     * @throws IllegalArgumentException Si le déplacement est > 1 ou si déplacement
+     *                                  vers le haut
+     */
+    public void deplacerDe(int deltaX, int deltaY) throws IllegalArgumentException {
+        if (deltaX > 1 || deltaY > 1 || deltaX < -1 || deltaY < 0) {
+            throw new IllegalArgumentException(
+                    "Erreur le déplacement d'un pièce ne peut pas être supérieur à 1 ou ne peut pas aller vers le haut !");
+        }
+        this.coord.setAbscisse(this.coord.getAbscisse() + deltaX);
+        this.coord.setOrdonnee(this.coord.getOrdonnee() + deltaY);
+    }
+
     // Overrides
     @Override
     public int hashCode() {

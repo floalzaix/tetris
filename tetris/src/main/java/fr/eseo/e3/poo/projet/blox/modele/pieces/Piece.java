@@ -19,8 +19,18 @@ public interface Piece {
      */
     public void setPosition(int abscisse, int ordonnee);
 
+    /**
+     * Cette fonction permet de déplacer une piéce d'un vecteur delta
+     * 
+     * @param deltaX Coordonnée X du vecteur delta
+     * @param deltaY Coordonnée Y du vecteur delta
+     * @throws IllegalArgumentException Si le déplacement est > 1 ou si déplacement
+     *                                  vers le haut
+     */
+    public void deplacerDe(int deltaX, int deltaY) throws IllegalArgumentException;
+
     // Getters setters
     public Puits getPuits();
-    
+
     public void setPuits(Puits puits);
 }

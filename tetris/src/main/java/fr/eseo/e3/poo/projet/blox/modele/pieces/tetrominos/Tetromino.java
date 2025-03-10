@@ -38,6 +38,13 @@ public abstract class Tetromino implements Piece {
         this.setElements(new Coordonnees(abscisse, ordonnee), this.couleur);
     }
 
+    @Override
+    public void deplacerDe(int deltaX, int deltaY) throws IllegalArgumentException {
+        for (Element element : this.elements) {
+            element.deplacerDe(deltaX, deltaY);
+        }
+    }
+
     // Overrides
     @Override
     public String toString() {

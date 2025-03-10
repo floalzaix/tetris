@@ -3,6 +3,7 @@ package fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
 import fr.eseo.e3.poo.projet.blox.modele.Coordonnees;
@@ -38,6 +39,25 @@ class ITetrominoTest {
         assertEquals(new Element(20, 30, Couleur.ORANGE), elts.get(1), "Erreur das setPosition !");
         assertEquals(new Element(20, 28, Couleur.ORANGE), elts.get(2), "Erreur das setPosition !");
         assertEquals(new Element(20, 27, Couleur.ORANGE), elts.get(3), "Erreur das setPosition !");
+    }
+
+    @Test
+    void testDeplacerDe() {
+        ITetromino o = new ITetromino(new Coordonnees(0, 0), Couleur.ORANGE);
+        o.deplacerDe(1, 1);
+        List<Element> elts = o.getElements();
+        assertEquals(new Element(1, 1, Couleur.ORANGE), elts.get(0), "Erreur das deplcerDe !");
+        assertEquals(new Element(1, 2, Couleur.ORANGE), elts.get(1), "Erreur das deplcerDe !");
+        assertEquals(new Element(1, 0, Couleur.ORANGE), elts.get(2), "Erreur das deplcerDe !");
+        assertEquals(new Element(1, -1, Couleur.ORANGE), elts.get(3), "Erreur das deplcerDe !");
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> o.deplacerDe(0, -1));
+        assertEquals("Erreur le déplacement d'un pièce ne peut pas être supérieur à 1 ou ne peut pas aller vers le haut !", e.getMessage());
+        e = assertThrows(IllegalArgumentException.class, () -> o.deplacerDe(0, 2));
+        assertEquals("Erreur le déplacement d'un pièce ne peut pas être supérieur à 1 ou ne peut pas aller vers le haut !", e.getMessage());
+        e = assertThrows(IllegalArgumentException.class, () -> o.deplacerDe(2, 0));
+        assertEquals("Erreur le déplacement d'un pièce ne peut pas être supérieur à 1 ou ne peut pas aller vers le haut !", e.getMessage());
+        e = assertThrows(IllegalArgumentException.class, () -> o.deplacerDe(-2, 0));
+        assertEquals("Erreur le déplacement d'un pièce ne peut pas être supérieur à 1 ou ne peut pas aller vers le haut !", e.getMessage());
     }
 
     @Test

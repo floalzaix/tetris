@@ -3,6 +3,7 @@ package fr.eseo.e3.poo.projet.blox.modele.pieces;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,6 +26,21 @@ class ElementTest {
         assertEquals(new Element(coord, Couleur.values()[0]), new Element(coord), "Erreur dans les constructeurs !");
         assertEquals(new Element(coord, Couleur.values()[0]), new Element(coord.getAbscisse(), coord.getOrdonnee()),
                 "Erreur dans les constructeurs !");
+    }
+
+    @Test
+    void testDeplacerDe() {
+        elt.setCoord(new Coordonnees(5, -6));
+        elt.deplacerDe(1, 1);
+        assertEquals(new Coordonnees(6, -5), elt.getCoord());
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> elt.deplacerDe(1, 2));
+        assertEquals("Erreur le déplacement d'un pièce ne peut pas être supérieur à 1 ou ne peut pas aller vers le haut !", e.getMessage());
+        e = assertThrows(IllegalArgumentException.class, () -> elt.deplacerDe(2, 0));
+        assertEquals("Erreur le déplacement d'un pièce ne peut pas être supérieur à 1 ou ne peut pas aller vers le haut !", e.getMessage());
+        e = assertThrows(IllegalArgumentException.class, () -> elt.deplacerDe(0, -1));
+        assertEquals("Erreur le déplacement d'un pièce ne peut pas être supérieur à 1 ou ne peut pas aller vers le haut !", e.getMessage());
+        e = assertThrows(IllegalArgumentException.class, () -> elt.deplacerDe(-2, 0));
+        assertEquals("Erreur le déplacement d'un pièce ne peut pas être supérieur à 1 ou ne peut pas aller vers le haut !", e.getMessage());
     }
 
     @Test
