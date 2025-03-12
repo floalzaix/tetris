@@ -49,7 +49,7 @@ public abstract class Tetromino implements Piece {
     @Override
     public void deplacerDe(int deltaX, int deltaY) throws IllegalArgumentException, BloxException {
         // Sauvegarde de la position avant le deplacement
-        Coordonnees coord = this.getElements().get(0).getCoord();
+        Coordonnees coord = this.elements[0].getCoord();
         int oldX = coord.getAbscisse();
         int oldY = coord.getOrdonnee();
 
@@ -69,16 +69,9 @@ public abstract class Tetromino implements Piece {
 
     @Override
     public void tourner(boolean sensHoraire) throws BloxException {
-        // Translater vers l'origine en conservant les coordonnée
-        Coordonnees coord = this.elements[0].getCoord();
-        this.setPosition(0, 0);
-
         /// Rotation en tenant compte des coordonnée
         /// informatique avec multiplication par une matrice de rotation
         this.rotation(sensHoraire);
-
-        // Translation inverse
-        this.setPosition(coord.getAbscisse(), coord.getOrdonnee());
 
         /// Si après rotation, pièce non valide alors on la retourne dans l'autre sens
         try {
@@ -97,11 +90,20 @@ public abstract class Tetromino implements Piece {
      * @param sensHoraire Le sens de la rotation pareil que tourner
      */
     private void rotation(boolean sensHoraire) {
+        // Translater vers l'origine en conservant les coordonnée
+        Coordonnees coord = this.elements[0].getCoord();
+        this.setPosition(0, 0);
+
+        /// Rotation en tenant compte des coordonnée
+        /// informatique avec multiplication par une matrice de rotation
         for (Element elt : this.elements) {
             Coordonnees eltCoord = elt.getCoord();
             elt.setCoord(new Coordonnees((sensHoraire ? -1 : 1) * eltCoord.getOrdonnee(),
                     (sensHoraire ? 1 : -1) * eltCoord.getAbscisse()));
         }
+
+        // Translation inverse
+        this.setPosition(coord.getAbscisse(), coord.getOrdonnee());
     }
 
     // Overrides

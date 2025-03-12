@@ -11,6 +11,7 @@ class PieceRotationTest {
         JFrame frame = new JFrame("Puits");
         Puits puits = new Puits();
         VuePuits vue = new VuePuits(puits, 40);
+        UsineDePiece.setMode(1);
         puits.setPieceSuivante(UsineDePiece.genererTetromino());
         puits.setPieceSuivante(UsineDePiece.genererTetromino());
 

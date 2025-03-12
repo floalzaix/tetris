@@ -32,7 +32,7 @@ public class PieceRotation extends MouseAdapter {
                 try {
                     piece.tourner(right);
                 } catch (BloxException be) {
-                    
+                    System.out.println(be.getMessage());
                 }
                 this.vuePuits.repaint();
             }
