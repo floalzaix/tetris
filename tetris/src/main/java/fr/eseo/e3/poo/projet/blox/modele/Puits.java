@@ -104,6 +104,7 @@ public class Puits {
             this.pcs.firePropertyChange(MODIFICATION_PIECE_ACTUELLE, this.pieceActuelle, this.pieceSuivante);
             this.pieceActuelle = this.pieceSuivante;
         }
+        pieceSuivante.setPuits(this);
         this.pcs.firePropertyChange(MODIFICATION_PIECE_SUIVANTE, this.pieceSuivante, pieceSuivante);
         this.pieceSuivante = pieceSuivante;
     }

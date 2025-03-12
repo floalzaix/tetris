@@ -4,8 +4,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 
-import fr.eseo.e3.poo.projet.blox.modele.Coordonnees;
-import fr.eseo.e3.poo.projet.blox.modele.Element;
+import fr.eseo.e3.poo.projet.blox.modele.BloxException;
 import fr.eseo.e3.poo.projet.blox.modele.Puits;
 import fr.eseo.e3.poo.projet.blox.modele.pieces.Piece;
 import fr.eseo.e3.poo.projet.blox.vue.VuePuits;
@@ -33,9 +32,10 @@ public class PieceDeplacement extends MouseAdapter {
             if (nouvelleColonne != this.colonne && nouvelleColonne != -1) {
                 int delta = nouvelleColonne - this.colonne;
                 int mouvement = delta / Math.abs(delta);
-                piece.deplacerDe(mouvement, 0);
-                if (estDehors(piece, this.puits)) {
-                    piece.deplacerDe(-mouvement, 0);
+                try {
+                    piece.deplacerDe(mouvement, 0);
+                } catch (BloxException be) {
+                    
                 }
                 this.vuePuits.repaint();
             }
@@ -48,7 +48,11 @@ public class PieceDeplacement extends MouseAdapter {
         Piece piece = this.puits.getPieceActuelle();
         if (piece != null) {
             if (e.getWheelRotation() < 0) {
-                piece.deplacerDe(0, 1);
+                try {
+                    piece.deplacerDe(0, 1);
+                } catch (BloxException be) {
+                    
+                }
                 this.vuePuits.repaint();
             }
         }
@@ -74,24 +78,5 @@ public class PieceDeplacement extends MouseAdapter {
             }
         }
         return -1;
-    }
-
-    /**
-     * Test si une pièce est en dehors du puits. Cette fonction est faite pour être
-     * utiliser aprés le mouvement pour vérifier sa validité
-     * 
-     * @param piece La pièce que l'on veut vérifié 
-     * @param puits Le puits de la pièce
-     * @return  Vrai si la pièce dépasse du puits (Donc si un (ou plus) élement(s) est(sont) dehors)
-     */
-    public static boolean estDehors(Piece piece, Puits puits) {
-        for (Element elt : piece.getElements()) {
-            Coordonnees coord = elt.getCoord();
-            if (coord.getAbscisse() < 0 || coord.getAbscisse() > puits.getLargueur() - 1 || coord.getOrdonnee() < 0
-                    || coord.getOrdonnee() > puits.getProfondeur() - 1) {
-                return true;
-            }
-        }
-        return false;
     }
 }

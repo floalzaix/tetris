@@ -5,6 +5,7 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.SwingUtilities;
 
+import fr.eseo.e3.poo.projet.blox.modele.BloxException;
 import fr.eseo.e3.poo.projet.blox.modele.Puits;
 import fr.eseo.e3.poo.projet.blox.modele.pieces.Piece;
 import fr.eseo.e3.poo.projet.blox.vue.VuePuits;
@@ -28,9 +29,10 @@ public class PieceRotation extends MouseAdapter {
             boolean left = SwingUtilities.isLeftMouseButton(e);
             boolean right = SwingUtilities.isRightMouseButton(e);
             if (left || right) {
-                piece.tourner(right);
-                if (PieceDeplacement.estDehors(piece, this.puits)) {
-                    piece.tourner(!right);
+                try {
+                    piece.tourner(right);
+                } catch (BloxException be) {
+                    
                 }
                 this.vuePuits.repaint();
             }

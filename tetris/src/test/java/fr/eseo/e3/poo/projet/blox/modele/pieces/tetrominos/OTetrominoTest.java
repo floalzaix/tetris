@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
+import fr.eseo.e3.poo.projet.blox.modele.BloxException;
 import fr.eseo.e3.poo.projet.blox.modele.Coordonnees;
 import fr.eseo.e3.poo.projet.blox.modele.Couleur;
 import fr.eseo.e3.poo.projet.blox.modele.Element;
@@ -43,13 +44,28 @@ class OTetrominoTest {
     
     @Test
     void testDeplacerDe() {
-        OTetromino o = new OTetromino(new Coordonnees(0, 0), Couleur.ORANGE);
-        o.deplacerDe(1, 1);
+        OTetromino o = new OTetromino(new Coordonnees(5, 5), Couleur.ORANGE);
+        o.setPuits(new Puits(10, 20));
+        try {
+            o.deplacerDe(1, 1);
+        } catch (BloxException e) {
+            throw new AssertionError("Erreur il ne peut y avoir de collision ou de sortie dans ce test !");
+        }
         List<Element> elts = o.getElements();
-        assertEquals(new Element(1, 1, Couleur.ORANGE), elts.get(0), "Erreur dans deplacerDe !");
-        assertEquals(new Element(2, 1, Couleur.ORANGE), elts.get(1), "Erreur dans deplacerDe !");
-        assertEquals(new Element(2, 0, Couleur.ORANGE), elts.get(2), "Erreur dans deplacerDe !");
-        assertEquals(new Element(1, 0, Couleur.ORANGE), elts.get(3), "Erreur dans deplacerDe !");
+        assertEquals(new Element(6, 6, Couleur.ORANGE), elts.get(0), "Erreur dans deplacerDe !");
+        assertEquals(new Element(7, 6, Couleur.ORANGE), elts.get(1), "Erreur dans deplacerDe !");
+        assertEquals(new Element(7, 5, Couleur.ORANGE), elts.get(2), "Erreur dans deplacerDe !");
+        assertEquals(new Element(6, 5, Couleur.ORANGE), elts.get(3), "Erreur dans deplacerDe !");
+        try {
+            o.deplacerDe(-1, 0);
+        } catch (BloxException e) {
+            throw new AssertionError("Erreur il ne peut y avoir de collision ou de sortie dans ce test !");
+        }
+        elts = o.getElements();
+        assertEquals(new Element(5, 6, Couleur.ORANGE), elts.get(0), "Erreur dans deplacerDe !");
+        assertEquals(new Element(6, 6, Couleur.ORANGE), elts.get(1), "Erreur dans deplacerDe !");
+        assertEquals(new Element(6, 5, Couleur.ORANGE), elts.get(2), "Erreur dans deplacerDe !");
+        assertEquals(new Element(5, 5, Couleur.ORANGE), elts.get(3), "Erreur dans deplacerDe !");
         IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> o.deplacerDe(0, -1));
         assertEquals("Erreur le déplacement d'un pièce ne peut pas être supérieur à 1 ou ne peut pas aller vers le haut !", e.getMessage());
         e = assertThrows(IllegalArgumentException.class, () -> o.deplacerDe(0, 2));

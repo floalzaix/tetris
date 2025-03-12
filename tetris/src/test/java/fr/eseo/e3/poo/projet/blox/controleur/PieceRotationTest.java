@@ -7,7 +7,7 @@ import fr.eseo.e3.poo.projet.blox.modele.UsineDePiece;
 import fr.eseo.e3.poo.projet.blox.vue.VuePuits;
 
 class PieceRotationTest {
-    private static void testRotationColonne() {
+    private static void testRotation() {
         JFrame frame = new JFrame("Puits");
         Puits puits = new Puits();
         VuePuits vue = new VuePuits(puits, 40);
@@ -24,6 +24,6 @@ class PieceRotationTest {
     }
 
     public static void main(String[] args) {
-        testRotationColonne();
+        testRotation();
     }
 }
