@@ -75,8 +75,15 @@ class ITetrominoTest {
         e = assertThrows(IllegalArgumentException.class, () -> o.deplacerDe(-2, 0));
         assertEquals("Erreur le déplacement d'un pièce ne peut pas être supérieur à 1 ou ne peut pas aller vers le haut !", e.getMessage());
         o.setPosition(9, 5);
-        BloxException be = assertThrows(BloxException.class, () -> o.deplacerDe(1, 0));
-        assertEquals(be.getType(), BloxException.BLOX_SORTIE_PUITS);
+        BloxException be = assertThrows(BloxException.class, () -> o.deplacerDe(1, 0), "Erreur dans le test de deplcer !");
+        assertEquals(BloxException.BLOX_SORTIE_PUITS, be.getType(), "Erreur dans le test de deplcer !");
+        o.setPosition(5, 20);
+        be = assertThrows(BloxException.class, () -> o.deplacerDe(0, 1), "Erreur dans le test de deplacer !");
+        assertEquals(BloxException.BLOX_COLLISION_OU_BAS_PUITS, be.getType(), "Erreur dans le test de deplacer !");
+        o.setPosition(5, 19);
+        o.setPuits(new Puits(10, 20, 10, 1));
+        be = assertThrows(BloxException.class, () -> o.deplacerDe(0, 1), "Erreur dans le test de deplacer !");
+        assertEquals(BloxException.BLOX_COLLISION_OU_BAS_PUITS, be.getType(), "Erreur dans le test de deplacer !");
     }
 
     @Test
@@ -112,7 +119,7 @@ class ITetrominoTest {
         ITetromino i = new ITetromino(new Coordonnees(10, 5), Couleur.JAUNE);
         i.setPuits(new Puits(10, 20));
         BloxException be = assertThrows(BloxException.class, () -> i.tourner(true));
-        assertEquals(be.getType(), BloxException.BLOX_SORTIE_PUITS);
+        assertEquals(BloxException.BLOX_SORTIE_PUITS, be.getType());
     }
 
     @Test

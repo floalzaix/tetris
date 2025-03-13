@@ -79,6 +79,16 @@ public class Tas {
         }
     }
 
+    /**
+     * Ajoute les élements d'une pièce dans le tas. Crée dans le but qu'une pièce
+     * touche le fond du puits et puis se disloque sur le tas
+     * 
+     * @param piece La pièce dont on va ajouter les éléments dans le tas 
+     */
+    public void ajouterElements(Piece piece) {
+        this.elements.addAll(piece.getElements());
+    }
+
     // Getters setters
     public List<Element> getElements() {
         return elements;

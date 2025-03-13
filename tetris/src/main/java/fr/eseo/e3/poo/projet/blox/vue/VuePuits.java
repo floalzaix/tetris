@@ -24,16 +24,20 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
     // Attributs
     private Puits puits;
     private int taille;
+
     private VuePiece vuePiece;
+    private VueTas vueTas;
 
     private PieceDeplacement deplacement;
     private PieceRotation rotation;
 
     // Constructeurs
     public VuePuits(Puits puits, int taille) {
-        this.vuePiece = null;
         this.setPuits(puits);
         this.setTaille(taille);
+
+        this.vuePiece = null;
+        this.vueTas = new VueTas(this, this.taille);
 
         this.setBackground(Color.WHITE);
     }
@@ -63,10 +67,13 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
             g2d.drawLine(i * this.taille, 0, i * this.taille, this.getHeight());
         }
 
-        // Piece
+        // Piece actuelle
         if (this.vuePiece != null) {
             this.vuePiece.afficherPiece(g2d);
         }
+
+        // Tas
+        this.vueTas.afficher(g2d);
 
         // Libère la mémoire
         g2d.dispose();
@@ -81,15 +88,19 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
 
     // Getters setter
     public Puits getPuits() {
-        return puits;
+        return this.puits;
     }
 
     public int getTaille() {
-        return taille;
+        return this.taille;
     }
 
     public VuePiece getVuePiece() {
-        return vuePiece;
+        return this.vuePiece;
+    }
+
+    public VueTas getVueTas() {
+        return this.vueTas;
     }
 
     public final void setPuits(Puits puits) {

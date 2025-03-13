@@ -77,4 +77,15 @@ class PuitsTest {
                 "Piece Suivante : " + i.toString();
         assertEquals(res, puits.toString());
     }
+
+    @Test
+    void testGravite() {
+        Puits puits = new Puits(10, 20);
+        OTetromino o = new OTetromino(new Coordonnees(5, 20), Couleur.ORANGE);
+        OTetromino o2 = new OTetromino(new Coordonnees(3, 18), Couleur.BLEU);
+        puits.setPieceSuivante(o);
+        puits.setPieceSuivante(o2);
+        puits.gravite();
+        assertEquals(o.getElements(), puits.getTas().getElements(), "Erreur dans la gravité !");
+    }
 }

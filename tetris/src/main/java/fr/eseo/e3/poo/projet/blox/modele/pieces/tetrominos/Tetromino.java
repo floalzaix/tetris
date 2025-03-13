@@ -63,6 +63,10 @@ public abstract class Tetromino implements Piece {
             Piece.estDehorsOuCollision(this, this.puits);
         } catch (BloxException be) {
             this.setPosition(oldX, oldY);
+            if (deltaX == 0 && deltaY == 1) {
+                throw new BloxException("La pièce touche le fond ou un élément du tas dû certainement à la gravité !",
+                        BloxException.BLOX_COLLISION_OU_BAS_PUITS);
+            }
             throw be;
         }
     }
@@ -84,8 +88,10 @@ public abstract class Tetromino implements Piece {
 
     // Fonctions perso
     /**
-     * Réalise de manière brut la rotation sans test. Son but de permettre de contourner la récursivité
-     * dans la fonction tourner et ainsi éviter que la méthode s'appelle de manière infinie
+     * Réalise de manière brut la rotation sans test. Son but de permettre de
+     * contourner la récursivité
+     * dans la fonction tourner et ainsi éviter que la méthode s'appelle de manière
+     * infinie
      * 
      * @param sensHoraire Le sens de la rotation pareil que tourner
      */

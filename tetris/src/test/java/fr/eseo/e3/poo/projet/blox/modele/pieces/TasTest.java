@@ -7,8 +7,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
+import fr.eseo.e3.poo.projet.blox.modele.Coordonnees;
+import fr.eseo.e3.poo.projet.blox.modele.Couleur;
 import fr.eseo.e3.poo.projet.blox.modele.Element;
 import fr.eseo.e3.poo.projet.blox.modele.Puits;
+import fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.OTetromino;
 
 class TasTest {
     @Test
@@ -52,5 +55,13 @@ class TasTest {
                 "Erreur dans les constructeur !");
         assertEquals("Erreur lors de la création du tas : trop d'éléments !", e.getMessage(),
                 "Erreur dans setLargueur !");
+    }
+
+    @Test
+    void testAjouterElements() {
+        Tas tas = new Tas(new Puits());
+        OTetromino o = new OTetromino(new Coordonnees(5, 5), Couleur.JAUNE);
+        tas.ajouterElements(o);
+        assertEquals(o.getElements(), tas.getElements(), "Erreur dans l'ajout d'éléments au tas !");
     }
 }

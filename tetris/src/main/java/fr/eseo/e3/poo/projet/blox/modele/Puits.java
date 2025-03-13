@@ -52,6 +52,31 @@ public class Puits {
         return res;
     }
 
+    /**
+     * Gère la collision en disloquant la pièce actuelle sur le tas et en ajoutant
+     * une pièce suivante au puits ce qui va donc pousser l'ancienne pièce suivante
+     * à devenir la pièce actuelle.
+     */
+    private void gererCollision() {
+        this.tas.ajouterElements(this.pieceActuelle);
+        this.setPieceSuivante(UsineDePiece.genererTetromino());
+    }
+
+    /**
+     * Simule la gravité. De plus la méthode propose de tester si la pièce à atteint
+     * le fond du puits ou est entrée verticalement en collision avec d'autres
+     * éléments du tas
+     */
+    public void gravite() {
+        try {
+            this.pieceActuelle.deplacerDe(0, 1);
+        } catch (BloxException be) {
+            if (be.getType() == BloxException.BLOX_COLLISION_OU_BAS_PUITS) {
+                this.gererCollision();
+            }
+        }
+    }
+
     // Listeners
     /**
      * Ajoute un property change listener qui se déclenchera quans setPieceSuivante
@@ -100,7 +125,7 @@ public class Puits {
      */
     public void setPieceSuivante(Piece pieceSuivante) {
         if (this.pieceSuivante != null) {
-            this.pieceSuivante.setPosition(this.largueur / 2, -4);
+            this.pieceSuivante.setPosition(this.largueur / 2, 5);
             this.pcs.firePropertyChange(MODIFICATION_PIECE_ACTUELLE, this.pieceActuelle, this.pieceSuivante);
             this.pieceActuelle = this.pieceSuivante;
         }
