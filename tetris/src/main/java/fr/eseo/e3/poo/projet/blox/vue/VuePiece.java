@@ -13,8 +13,8 @@ public class VuePiece {
     public static final double MULTPLIER_TEINTE = 0.3;
 
     // Attributs
-    private int taille;
-    private Piece piece;
+    private final int taille;
+    private final Piece piece;
 
     // Constructeur
     public VuePiece(Piece piece, int taille) {

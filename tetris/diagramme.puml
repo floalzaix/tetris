@@ -1,0 +1,322 @@
+@startuml V1
+    enum Couleur {
+        ROUGE
+        ORANGE
+        BLEU
+        VERT
+        JAUNE
+        CYAN
+        VIOLET
+
+        -couleurPourAffichage : Color
+
+        -Couleur(Color couleurPourAffichage)
+
+        -getCouleurPourAffichage() : Color
+    }
+
+    Couleur "1..1" --* Element : est de cette 
+    Couleur "1..1" --* Tetromino : est de cette 
+    Couleur <.. VuePiece : recupère 
+    Couleur <.. VueTas : recupère
+
+    class Coordonnee {
+        -abscisse : int
+        -ordonnee : int
+
+        +Coordonnee(int abscisse, int ordonnee)
+
+        +getAbscisse() : int
+        +getOrdonnee() : int
+        +setAbscisse(int abscisse) : void
+        +setOrdonnee(int ordonnee) : void
+        +toString() : String
+        +equals() : boolean
+        +hashCode() : int
+    }
+
+    Coordonnee "1..1" --* Element : est a telle 
+
+    class Element {
+        -coord : Coordonnee
+        -couleur : Couleur
+        
+        +Element(Coordonnee coord)
+        +Element(int abscisse, int ordonnee)
+        +Element(Coordonnee coord, Couleur couleur)
+        +Element(int abscisse, int ordonnee, Couleur couleur)
+
+        +getCoordonnee() : Coordonnee
+        +getCouleur() : Couleur
+        +setCoordonnee(Coordonnee coord) : void
+        +setCouleur(Couleur couleur) : void
+        +toString() : String
+        +equals() : boolean
+        +hashCode() : int
+    }
+
+    Element "4" --* Tetromino : contient des
+    Element "*" --o Tas : contient des
+ 
+    interface Piece {
+        +getElements() : List<Element>
+        +setPosition(Coordonnee coord) : void
+        +deplacerDe(int deltaX, int deltaY) : void
+        +tourner(boolean sensHoraire) : void
+        +__estDehorsOuCollision__(Piece piece, Puits puits) : boolean
+        +getPuits() : Puits
+        +setPuits(Puits puits) : void
+    }
+
+    Piece <|.. Tetromino
+
+    class Puits {
+        +__LARGUEUR_PAR_DEFAUT__ : int
+        +__PROFONDEUR_PAR_DEFAUT__ : int
+        +__MODIFICATION_PIECE_ACTUELLE__ : String
+        +__MODIFICATION_PIECE_SUIVANTE__ : String
+
+        -largueur : int
+        -profondeur : int
+        -pieceActuelle : Piece
+        -pieceSuivante : Piece
+        -tas : Tas
+        -pcs : PropertyChangeSupport
+
+        +Puits()
+        +Puits(int largueur, int profondeur)
+        +Puits(int largueur, int profondeur, int nbPieces, int nbLignes)
+
+        +toString() : String
+        -gererCollision() : void
+        +gravite() : void
+        +addPropertyChangeListener(PropertyChangeListener pcs) : void
+        +removePropertyChangeListener(PropertyChangeListener pcs) : void
+
+        +getPieceActuelle() : Piece
+        +getPieceSuivante() : Piece
+        +getLargueur() : int
+        +getProfondeur() : int
+        +setPieceSuivante(Piece piece) : void
+        +setLargueur(int largueur) : void
+        +setProfondeur(int profondeur) : void
+        
+        +getTas() : Tas
+        +setTas(Tas tas) : void
+    }
+
+    Puits "1..1" *--* "1..1" Tas : contient un
+    Puits "1..1" --* Tetromino : contient un
+    Puits "1..1" --* VuePuits : affiche le
+    Puits "1..1" --* VueTas : affiche le tas du 
+    Puits "1..1" --* PanneauInformation : affiche piece suivante du
+    Puits "1..1" --* PieceDeplacement : gere le deplacement de la piece actuelle du 
+    Puits "1..1" --* PieceRotation : gere la rotation de la piece actuelle du
+    Puits "1..1" --* Gravite : gere la gravite de la piece actuelle du
+ 
+    class Tas {
+        -elements: List<Element>
+        -puits : Puits
+
+        +Tas(Puits puits)
+        +Tas(Puits puits, int nbElements)
+        +Tas(Puits puits, int nbElements, int nbLignes)
+        +Tas(Puits puits, int nbElements, int nbLignes, Random rand)
+
+        -construireTas(int nbElements, int nbLignes, int Random random)
+        +ajouterElements(Piece piece) : void
+        +getElements() : List<Element>
+    }
+
+    Tas "1..1" --* VueTas : affiche le
+
+    abstract class Tetromino {
+        #elements : List<Element>
+        #couleur : Couleur
+        -puits : Puits
+
+        +Tetromino(Coordonnee coord, Couleur couleur)
+
+        {abstract} # setElements(Coordonnee coord, Couleur couleur) : void
+        +getElements() : List<Element>
+        +setPosition(Coordonnee coord) : void
+        +deplacerDe(int deltaX, int deltaY) : void
+        +tourner(boolean sensHoraire) : void
+        +rotation(boolean sensHoraire) : void
+        +getPuits() : Puits
+        +setPuits(Puits puits) : void
+    }
+
+    Tetromino <|-- OTetromino
+    Tetromino <|-- ITetromino
+    Tetromino <.. UsineDePiece
+
+    class OTetromino {
+        +OTetromino(Coordonnee coord, Couleur couleur)
+
+        #setElements(Coordonnee coord, Couleur couleur) : void
+        +tourner(boolean sensHoraire) : void
+    }
+
+    class ITetromino {
+        +OTetromino(Coordonnee coord, Couleur couleur)
+
+        #setElements(Coordonnee coord, Couleur couleur) : void
+    }
+
+    class UsineDePiece {
+        +__ALEATOIRE_COMPLET__ : int
+        +__ALEATOIRE_PIECE__ : int
+        +__CYCLIC__ : int
+
+        -__mode__ : int
+        -__selected__ : int
+        -__rand__ : Random
+
+        -UsineDePiece()
+        
+        +__setMode(int mode)__ : void
+        +__genererTetromino()__ : Tetromino
+    }
+
+    UsineDePiece <.. Puits
+    UsineDePiece ..> OTetromino
+    UsineDePiece ..> ITetromino
+
+    class BloxException extends Exception {
+        +__BLOX_COLLISION__ : int
+        +__BLOX_SORTIE_PUITS__ : int
+        +__BLOX_COLLISION_OU_BAS_PUITS__ : int
+
+        -type : int
+
+        +BloxException(String message, Type type)
+        
+        +getType() : int
+    }
+
+    BloxException <.. Piece
+    BloxException <.. Tetromino
+    BloxException <.. PieceDeplacement
+    BloxException <.. PieceRotation
+
+    class VuePuits extends JPanel implements PropertyChangeListener {
+        +__TAILLE_PAR_DEFAUT__ : int
+
+        -puits : Puits
+        -taille : int
+        -vuePiece : VuePiece
+        -vueTas : VueTas
+        -deplacement : Deplacement
+        -rotation : Rotation
+
+        +VuePuits(Puits puits)
+        +VuePuits(Puits puits, int taille)
+
+        #paintComponent(Graphics g) : void
+        +propertyChange(PropertyChangeEvent evt) : void
+        +getPuits() : Puits
+        +getTaille() : int
+        +getVuePiece() : VuePiece
+        +getVueTas() : VueTas
+
+        +setPuits(Puits puits) : void
+        +setTaille(int taille) : void
+        +setVuePiece(VuePiece vuePiece) : void
+    }
+
+    VuePuits "1..1" *--* "1..1" VueTas : s'affiche dans
+    VuePuits "1..1" *--* "1..1" PieceDeplacement : gere le peripherique de deplacement du
+    VuePuits "1..1" *--* "1..1" PieceRotation : gere le peripherique de rotation du
+    VuePuits "1..1" --* Gravite : gere le timer de gravite du
+
+    class VueTas extends JPanel {
+        +__MULTIPLIER_NUANCE__ : double
+
+        -vuePuits : VuePuits
+        -puits : Puits
+        -tas : Tas
+
+        +VueTas(VuePuits vuePuits, int Taille)
+
+        +__nuance__(Color color) : Color
+        +afficher(Graphics2D g2d) : void
+
+        +getVuePuits() : VuePuits
+    }
+
+    class VuePiece extends JPanel {
+        +__MULTIPLIER_TEINTE__ : double
+
+        -piece : Piece
+        -taille : int
+
+        +VuePiece(Piece piece, int taille)
+
+        +__teinte__(Color color) : Color
+        +afficherPiece(Graphics2D g2d) : void
+    }
+
+    VuePiece "1..1" --* VuePuits : affiche la piece actuelle grace à
+    VuePiece "1..1" --* PanneauInformation : affiche la piece suivante grace à 
+    VuePiece <.. VuePuits : genère des 
+
+    class PanneauInformation extends JPanel implements PropertyChangeListener {
+        -puits : Puits
+        -vuePiece : Piece
+
+        +PanneauInformation(Puits puits)
+
+        +propertyChange(propertyChangeEvent evt) : void
+        #paintComponent(Graphics g) : void
+    }
+
+    class PieceDeplacement extends MouseAdapter {
+        -vuePuits : VuePuits
+        -puits : Puits
+        -colonne : int
+
+        +PieceDeplacement(VuePuits vuePuits) 
+
+        +mouseMoved(MouseEvent e) : void
+        +mouseWheelMoved(MouseEvent e) : void
+        +mouseEntered(MouseEvent e) : void
+
+        -getColonneDuPointeur(int x) : int
+    }
+
+    class PieceRotation extends MouseAdapter {
+        -vuePuits : VuePuits
+        -puits : Puits
+
+        +PieceRotation(VuePuits vuePuits)
+        
+        +mouseCLicked(MouseEvent e) : void
+    }
+
+    class Gravite implements ActionListener {
+        -vuepuits : VuePuits
+        -puits : Puits
+        -timer : Timer
+
+        +Gravite(VuePuits vuePuits)
+
+        +actionPerformed(ActionEvent e) : void
+
+        +getPeriodicite() : int
+        +setPeriodicite(int periodicite) : void
+    }
+
+    Gravite ..> Timer
+
+    class FallingBlox {
+        +main(args) : void
+    }
+
+    FallingBlox ..> JFrame
+    FallingBlox ..> Puits
+    FallingBlox ..> VuePuits
+    FallingBlox ..> PanneauInformation
+    FallingBlox ..> UsineDePiece
+    FallingBlox ..> Gravite
+@enduml

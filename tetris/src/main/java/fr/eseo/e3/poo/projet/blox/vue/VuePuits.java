@@ -26,7 +26,7 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
     private int taille;
 
     private VuePiece vuePiece;
-    private VueTas vueTas;
+    private final VueTas vueTas;
 
     private PieceDeplacement deplacement;
     private PieceRotation rotation;

@@ -36,7 +36,7 @@ public class PanneauInformation extends JPanel implements PropertyChangeListener
 
     // Overrides
     @Override
-    public void paintComponent(Graphics g) {
+    protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         // Outils graphique

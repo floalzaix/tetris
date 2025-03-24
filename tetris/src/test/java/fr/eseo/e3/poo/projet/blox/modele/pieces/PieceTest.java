@@ -23,20 +23,6 @@ class PieceTest {
     }    
 
     // Tests pour la fonction estDehorsOuCollision
-    /// Haut
-    @Test
-    void testEstDehorsEnHaut() {
-        i.setPosition(5, 2);
-        try {
-            Piece.estDehorsOuCollision(i, puits);
-        } catch (BloxException be) {
-            throw new AssertionError("Pas de encore dehors normalement dans les test dehors !");
-        }
-        i.setPosition(5, 1);
-        BloxException be = assertThrows(BloxException.class, () -> Piece.estDehorsOuCollision(i, puits), "Erreur dans le test dehors en haut !");
-        assertEquals(be.getType(), BloxException.BLOX_COLLISION, "Erreur dans le test dehors en haut !");
-    }
-
     /// Bas
     @Test
     void testEstDehorsEnBas() {

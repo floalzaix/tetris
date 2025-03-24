@@ -16,10 +16,6 @@ public class FallingBloxVersion1 {
     public static void main(String[] args) {
         JFrame frame = new JFrame("Falling Blox");
 
-        // TODO 
-        /// Resoudre usinedepiece aleatoire
-        /// Resoudre aparition de piece à -4 du puits donc detection de bordures
-
         // Création du puits
         Puits puits;
         switch (args.length) {

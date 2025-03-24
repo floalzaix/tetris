@@ -6,7 +6,7 @@ import fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.ITetromino;
 import fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.OTetromino;
 import fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.Tetromino;
 
-public final class UsineDePiece {
+public class UsineDePiece {
     // Constantes
     public static final int ALEATOIRE_COMPLET = 1;
     public static final int ALEATOIRE_PIECE = 2;
@@ -15,6 +15,7 @@ public final class UsineDePiece {
     // Attributs
     private static int mode = 2;
     private static int selected = 0; // Pour générer de manière cyclique les pièces
+    private static final Random rand = new Random();
 
     // Constructeur privé
     @SuppressWarnings("unused")
@@ -39,8 +40,7 @@ public final class UsineDePiece {
      * @throws AssertionError Si le mode n'est pas valide
      */
     public static Tetromino genererTetromino() throws AssertionError {
-        Tetromino tetromino = new OTetromino(new Coordonnees(0, 0), Couleur.CYAN);
-        Random rand = new Random();
+        Tetromino tetromino;
         switch (UsineDePiece.mode) {
             case ALEATOIRE_COMPLET:
                 int r1 = rand.nextInt();

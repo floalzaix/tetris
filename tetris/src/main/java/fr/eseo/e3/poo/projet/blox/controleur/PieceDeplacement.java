@@ -11,8 +11,8 @@ import fr.eseo.e3.poo.projet.blox.vue.VuePuits;
 
 public class PieceDeplacement extends MouseAdapter {
     // Attributs
-    private Puits puits;
     private VuePuits vuePuits;
+    private Puits puits;
     private int colonne; // Variable qui stocke la colonne du curseur quand la méthode mouMoved à fini le
                          // traitement
 
@@ -47,7 +47,7 @@ public class PieceDeplacement extends MouseAdapter {
     public void mouseWheelMoved(MouseWheelEvent e) {
         Piece piece = this.puits.getPieceActuelle();
         if (piece != null) {
-            if (e.getWheelRotation() < 0) {
+            if (e.getWheelRotation() > 0) {
                 try {
                     piece.deplacerDe(0, 1);
                 } catch (BloxException be) {

@@ -125,7 +125,7 @@ public class Puits {
      */
     public void setPieceSuivante(Piece pieceSuivante) {
         if (this.pieceSuivante != null) {
-            this.pieceSuivante.setPosition(this.largueur / 2, 5);
+            this.pieceSuivante.setPosition(this.largueur / 2, -2);
             this.pcs.firePropertyChange(MODIFICATION_PIECE_ACTUELLE, this.pieceActuelle, this.pieceSuivante);
             this.pieceActuelle = this.pieceSuivante;
         }

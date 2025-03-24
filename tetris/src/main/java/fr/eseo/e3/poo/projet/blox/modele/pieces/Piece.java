@@ -77,7 +77,7 @@ public interface Piece {
 
             // Tests collisions
             /// Avec le fond
-            if (y < 0 || y > puits.getProfondeur() - 1) {
+            if (y > puits.getProfondeur() - 1) {
                 throw new BloxException("Une partie de la pièce est en dehors du fond du puits donc collision !",
                         BloxException.BLOX_COLLISION);
             }
@@ -87,6 +87,7 @@ public interface Piece {
                     throw new BloxException("Collision avec au moins un éléments !", BloxException.BLOX_COLLISION);
                 }
             }
+            
         }
         return false;
     }

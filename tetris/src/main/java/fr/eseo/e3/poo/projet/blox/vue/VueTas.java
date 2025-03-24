@@ -13,9 +13,9 @@ public class VueTas {
     public static final double MULTIPLIER_NUANCE = 0.3;
 
     // Attributs
-    private VuePuits vuePuits;
-    private int taille;
-    private Tas tas;
+    private final VuePuits vuePuits;
+    private final int taille;
+    private final Tas tas;
 
     // Constructeurs
     public VueTas(VuePuits vuePuits, int taille) {

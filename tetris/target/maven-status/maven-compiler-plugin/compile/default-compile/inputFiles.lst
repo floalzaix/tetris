@@ -1,5 +1,7 @@
+C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\controleur\Gravite.java
 C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\controleur\PieceDeplacement.java
 C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\controleur\PieceRotation.java
+C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\FallingBloxVersion1.java
 C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\modele\BloxException.java
 C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\modele\Coordonnees.java
 C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\modele\Couleur.java
@@ -11,7 +13,7 @@ C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris
 C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\modele\pieces\tetrominos\Tetromino.java
 C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\modele\Puits.java
 C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\modele\UsineDePiece.java
-C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\Tetris.java
+C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\vue\PanneauInformation.java
 C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\vue\VuePiece.java
 C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\vue\VuePuits.java
 C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\vue\VueTas.java
