@@ -1,20 +1,13 @@
 package fr.eseo.e3.poo.projet.blox.modele;
 
+import java.util.Objects;
+
 public class Element {
     // Attributs
     private Coordonnees coord;
     private Couleur couleur;
 
-    // Constructeurs
-    public Element(Coordonnees coord) {
-        this.coord = coord;
-        this.couleur = Couleur.values()[0];
-    }
-
-    public Element(int abscisse, int ordonnee) {
-        this(new Coordonnees(abscisse, ordonnee));
-    }
-
+    // Constructeurs : dépendent tous du premier
     public Element(Coordonnees coord, Couleur couleur) {
         this.coord = coord;
         this.couleur = couleur;
@@ -22,6 +15,14 @@ public class Element {
 
     public Element(int abscisse, int ordonnee, Couleur couleur) {
         this(new Coordonnees(abscisse, ordonnee), couleur);
+    }
+
+    public Element(int abscisse, int ordonnee) {
+        this(new Coordonnees(abscisse, ordonnee), Couleur.values()[0]);
+    }
+
+    public Element(Coordonnees coord) {
+        this(coord, Couleur.values()[0]);
     }
 
     /**
@@ -44,11 +45,7 @@ public class Element {
     // Overrides
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((coord == null) ? 0 : coord.hashCode());
-        result = prime * result + ((couleur == null) ? 0 : couleur.hashCode());
-        return result;
+        return Objects.hash(this.coord, this.couleur);
     }
 
     @Override
