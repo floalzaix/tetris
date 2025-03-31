@@ -29,17 +29,25 @@ class ElementTest {
 
     @Test
     void testConstructeurIntIntCouleur() {
-        assertEquals(new Coordonnees(1, -1), (new Element(1, -1, Couleur.BLEU).getCoord()), this.errorConstructors + "le constructeur int int couleur définit mal les coordonnées" + this.endOfMessage);
+        Element e = new Element(1, -1, Couleur.BLEU);
+        Coordonnees coord = new Coordonnees(1, -1);
+        assertEquals(coord, e.getCoord(), this.errorConstructors
+                + "le constructeur int int couleur définit mal les coordonnées" + this.endOfMessage);
     }
 
-    @Test 
-    void testConstructeurIntInt_DefCoord() {
-        assertEquals(new Coordonnees(10, -20), (new Element(10, -20)).getCoord(), this.errorConstructors + "le constructeur int int définit mal les coordonnées" + this.endOfMessage);
+    @Test
+    void testConstructeurIntIntDefCoord() {
+        Element e = new Element(10, -20);
+        Coordonnees coord = new Coordonnees(10, -20);
+        assertEquals(coord, e.getCoord(),
+                this.errorConstructors + "le constructeur int int définit mal les coordonnées" + this.endOfMessage);
     }
 
-    @Test 
-    void testConstructeurIntInt_DefCouleur() {
-        assertEquals(Couleur.values()[0], (new Element(3, -1)).getCouleur(), this.errorConstructors + "le constructeur int int définit mal la couleur par défaut" + this.endOfMessage);
+    @Test
+    void testConstructeurIntIntDefCouleur() {
+        Element e = new Element(3, -1);
+        assertEquals(Couleur.values()[0], e.getCouleur(), this.errorConstructors
+                + "le constructeur int int définit mal la couleur par défaut" + this.endOfMessage);
     }
 
     /**
@@ -48,11 +56,10 @@ class ElementTest {
 
     private static Stream<Arguments> provideValidesDXDYCoords() {
         return IntStream.rangeClosed(-1, 1)
-            .boxed()
-            .flatMap(dx -> IntStream.rangeClosed(0, 1)
                 .boxed()
-                .map(dy -> Arguments.of(dx, dy))
-            );
+                .flatMap(dx -> IntStream.rangeClosed(0, 1)
+                        .boxed()
+                        .map(dy -> Arguments.of(dx, dy)));
     }
 
     @ParameterizedTest(name = "testDeplacerDe {index} dx {0} dy {1}")
@@ -61,33 +68,41 @@ class ElementTest {
         Element e = new Element(2, -3);
         Coordonnees c = new Coordonnees(2 + dx, -3 + dy);
         e.deplacerDe(dx, dy);
-        assertEquals(c, e.getCoord(), this.errorDeplacerDe + "le déplacement est set mal les abscisse ou/et ordonnee" + this.endOfMessage);
+        assertEquals(c, e.getCoord(),
+                this.errorDeplacerDe + "le déplacement est set mal les abscisse ou/et ordonnee" + this.endOfMessage);
     }
+
     private static Stream<Arguments> provideNonValidesDXDYCoords() {
         return IntStream.of(-2, 2)
-            .boxed()
-            .flatMap(dx -> IntStream.of(-1, 2)
                 .boxed()
-                .map(dy -> Arguments.of(dx, dy))
-            );
+                .flatMap(dx -> IntStream.of(-1, 2)
+                        .boxed()
+                        .map(dy -> Arguments.of(dx, dy)));
     }
+
     @ParameterizedTest(name = "testDeplacerDeExceptions {index} dx {0} dy {1}")
     @MethodSource("provideNonValidesDXDYCoords")
     void testDeplacerDeExceptions(int dx, int dy) {
-        String message = this.errorDeplacerDe + "un deplacement invalide n'est pas détecté ou mauvais message d'erreur" + this.endOfMessage;
+        String message = this.errorDeplacerDe + "un deplacement invalide n'est pas détecté ou mauvais message d'erreur"
+                + this.endOfMessage;
         Element e = new Element(new Coordonnees(5, -4));
-        IllegalArgumentException error = assertThrows(IllegalArgumentException.class, () -> e.deplacerDe(dx, dy), message);
-        assertEquals("Erreur le déplacement d'un pièce ne peut pas être supérieur à 1 ou ne peut pas aller vers le haut !", error.getMessage(), message);
+        IllegalArgumentException error = assertThrows(IllegalArgumentException.class, () -> e.deplacerDe(dx, dy),
+                message);
+        assertEquals(
+                "Erreur le déplacement d'un pièce ne peut pas être supérieur à 1 ou ne peut pas aller vers le haut !",
+                error.getMessage(), message);
     }
 
     @Test
     void testToString() {
         Element e = new Element(0, 0, Couleur.ROUGE);
-        assertEquals("Element(0, 0) - ROUGE", e.toString(), "Erreur dans toString() : la fonction ne renvoie pas la bonne chaine de caractères" + this.endOfMessage);
+        assertEquals("Element(0, 0) - ROUGE", e.toString(),
+                "Erreur dans toString() : la fonction ne renvoie pas la bonne chaine de caractères"
+                        + this.endOfMessage);
     }
 
     /**
-     * Tests equals() 
+     * Tests equals()
      */
 
     @Test
@@ -116,7 +131,7 @@ class ElementTest {
         assertEquals(e3, e1, message);
     }
 
-    @Test 
+    @Test
     void testEqualNullite() {
         Element e = new Element(-6, 10);
         assertNotEquals(e, null, this.equalsError + "nullité non vérifié" + this.endOfMessage);
@@ -130,21 +145,17 @@ class ElementTest {
 
     private static Stream<Arguments> provideElements() {
         return IntStream.rangeClosed(-2, 2)
-            .boxed()
-            .flatMap(x1 -> IntStream.rangeClosed(-2, 2)
                 .boxed()
-                .flatMap(y1 -> IntStream.rangeClosed(-2, 2)
-                    .boxed()
-                    .flatMap(x2 -> IntStream.rangeClosed(-2, 3)
+                .flatMap(x1 -> IntStream.rangeClosed(-2, 2)
                         .boxed()
-                        .flatMap(y2 -> Stream.of(Couleur.BLEU, Couleur.ROUGE)
-                            .flatMap(c1 -> Stream.of(Couleur.BLEU, Couleur.ROUGE)
-                                .map(c2 -> Arguments.of(new Element(x1, y1, c1), new Element(x2, y2, c2)))
-                            )
-                        )
-                    )
-                )
-            );
+                        .flatMap(y1 -> IntStream.rangeClosed(-2, 2)
+                                .boxed()
+                                .flatMap(x2 -> IntStream.rangeClosed(-2, 3)
+                                        .boxed()
+                                        .flatMap(y2 -> Stream.of(Couleur.BLEU, Couleur.ROUGE)
+                                                .flatMap(c1 -> Stream.of(Couleur.BLEU, Couleur.ROUGE)
+                                                        .map(c2 -> Arguments.of(new Element(x1, y1, c1),
+                                                                new Element(x2, y2, c2))))))));
     }
 
     private static Stream<Arguments> provideNonEgalsElements() {
@@ -173,12 +184,14 @@ class ElementTest {
     @ParameterizedTest(name = "testHashCodeEgalite {index} e1 {0} e2 {1}")
     @MethodSource("provideEgalsElements")
     void testHashCodeEgalite(Element e1, Element e2) {
-        assertEquals(e1.hashCode(), e2.hashCode(), this.hashCodeError + "égalité non vérifiée pour deux même Objets" + this.endOfMessage);
+        assertEquals(e1.hashCode(), e2.hashCode(),
+                this.hashCodeError + "égalité non vérifiée pour deux même Objets" + this.endOfMessage);
     }
 
     @ParameterizedTest(name = "testHashCodeInegalite {index} x1 {0} y1 {1} x2 {2} y2 {3}")
     @MethodSource("provideNonEgalsElements")
     void testHashCodeInegalite(Element e1, Element e2) {
-        assertNotEquals(e1.hashCode(), e2.hashCode(), this.hashCodeError + "inégalité non vérifiée pour deux objets différents" + this.endOfMessage);
+        assertNotEquals(e1.hashCode(), e2.hashCode(),
+                this.hashCodeError + "inégalité non vérifiée pour deux objets différents" + this.endOfMessage);
     }
 }

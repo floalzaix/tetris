@@ -29,6 +29,8 @@ public class Puits {
     public Puits(int largueur, int profondeur, int nbElements, int nbLignes) {
         this.largueur = largueur;
         this.profondeur = profondeur;
+        this.pieceActuelle = null;
+        this.pieceSuivante = null;
 
         this.tas = new Tas(this, nbElements, nbLignes);
 
@@ -125,7 +127,7 @@ public class Puits {
      */
     public void setPieceSuivante(Piece pieceSuivante) {
         if (this.pieceSuivante != null) {
-            this.pieceSuivante.setPosition(this.largueur / 2, -2);
+            this.pieceSuivante.setPosition(this.largueur / 2, -4);
             this.pcs.firePropertyChange(MODIFICATION_PIECE_ACTUELLE, this.pieceActuelle, this.pieceSuivante);
             this.pieceActuelle = this.pieceSuivante;
         }
