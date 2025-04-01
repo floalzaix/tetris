@@ -9,8 +9,8 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.JPanel;
 
-import fr.eseo.e3.poo.projet.blox.controleur.PieceDeplacement;
-import fr.eseo.e3.poo.projet.blox.controleur.PieceRotation;
+import fr.eseo.e3.poo.projet.blox.controleur.Clavier;
+import fr.eseo.e3.poo.projet.blox.controleur.Souris;
 import fr.eseo.e3.poo.projet.blox.modele.Puits;
 import fr.eseo.e3.poo.projet.blox.modele.pieces.Piece;
 
@@ -28,8 +28,8 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
     private VuePiece vuePiece;
     private final VueTas vueTas;
 
-    private PieceDeplacement deplacement;
-    private PieceRotation rotation;
+    private Souris souris;
+    private Clavier clavier;
 
     // Constructeurs
     public VuePuits(Puits puits, int taille) {
@@ -40,6 +40,9 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
         this.vueTas = new VueTas(this, this.taille);
 
         this.setBackground(Color.WHITE);
+
+        // Set du focus pour le clavier
+        this.setFocusable(true);
     }
 
     public VuePuits(Puits puits) {
@@ -105,28 +108,41 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
 
     public final void setPuits(Puits puits) {
         if (this.puits != null) {
+            // On retire le listener de pièce suivante et actuelle
             puits.removePropertyChangeListener(this);
 
-            this.removeMouseMotionListener(this.deplacement);
-            this.removeMouseListener(this.deplacement);
-            this.removeMouseWheelListener(this.deplacement);
+            // On retire la souris du puits
+            if (this.souris != null) {
+                this.removeMouseMotionListener(this.souris);
+                this.removeMouseListener(this.souris);
+                this.removeMouseWheelListener(this.souris);
+                this.souris = null;
+            }
 
-            this.removeMouseListener(this.rotation);
+            // On retire le clavier
+            if (this.clavier != null) {
+                this.removeKeyListener(clavier);
+                this.clavier = null;
+            }
         }
 
         this.puits = puits;
 
+        // Ajout du listener pour quand les pièces suivante et actuelle du puits sont changées
         puits.addPropertyChangeListener(this);
 
+        // Réglage de la taille
         this.setPreferredSize(new Dimension(this.taille * puits.getLargueur(), this.taille * puits.getProfondeur()));
 
-        this.deplacement = new PieceDeplacement(this);
-        this.addMouseMotionListener(this.deplacement);
-        this.addMouseListener(this.deplacement);
-        this.addMouseWheelListener(this.deplacement);
+        // Ajout de la souris
+        this.souris = new Souris(this);
+        this.addMouseMotionListener(this.souris);
+        this.addMouseListener(this.souris);
+        this.addMouseWheelListener(this.souris);
 
-        this.rotation = new PieceRotation(this);
-        this.addMouseListener(this.rotation);
+        // Ajout du clavier
+        this.clavier = new Clavier(this);
+        this.addKeyListener(this.clavier);
     }
 
     public final void setTaille(int taille) {

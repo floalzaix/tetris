@@ -4,20 +4,22 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 
+import javax.swing.SwingUtilities;
+
 import fr.eseo.e3.poo.projet.blox.modele.BloxException;
 import fr.eseo.e3.poo.projet.blox.modele.Puits;
 import fr.eseo.e3.poo.projet.blox.modele.pieces.Piece;
 import fr.eseo.e3.poo.projet.blox.vue.VuePuits;
 
-public class PieceDeplacement extends MouseAdapter {
+public class Souris extends MouseAdapter {
     // Attributs
-    private VuePuits vuePuits;
-    private Puits puits;
+    private final VuePuits vuePuits;
+    private final Puits puits;
     private int colonne; // Variable qui stocke la colonne du curseur quand la méthode mouMoved à fini le
                          // traitement
 
     // Constructeurs
-    public PieceDeplacement(VuePuits vuePuits) {
+    public Souris(VuePuits vuePuits) {
         this.vuePuits = vuePuits;
         this.puits = vuePuits.getPuits();
         this.colonne = -1;
@@ -35,7 +37,7 @@ public class PieceDeplacement extends MouseAdapter {
                 try {
                     piece.deplacerDe(mouvement, 0);
                 } catch (BloxException be) {
-                    
+                    // Exception ignorée car la collision est géré par la gravité du puits
                 }
                 this.vuePuits.repaint();
             }
@@ -46,21 +48,38 @@ public class PieceDeplacement extends MouseAdapter {
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
         Piece piece = this.puits.getPieceActuelle();
-        if (piece != null) {
-            if (e.getWheelRotation() > 0) {
+        if (piece != null && e.getWheelRotation() > 0) {
                 try {
                     piece.deplacerDe(0, 1);
                 } catch (BloxException be) {
-                    
+                    // Exception ignorée car la collision est géré par la gravité du puits
                 }
                 this.vuePuits.repaint();
             }
-        }
+        
     }
 
     @Override
     public void mouseEntered(MouseEvent e) {
         this.colonne = this.getColonneDuPointeur(e.getX());
+    }
+
+    // Gestion de la rotation
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        Piece piece = this.puits.getPieceActuelle();
+        if (piece != null) {
+            boolean left = SwingUtilities.isLeftMouseButton(e);
+            boolean right = SwingUtilities.isRightMouseButton(e);
+            if (left || right) {
+                try {
+                    piece.tourner(right);
+                } catch (BloxException be) {
+                    // Exception ignorée car la collision est géré par la gravité du puits
+                }
+                this.vuePuits.repaint();
+            }
+        }
     }
 
     // Fonctions perso
