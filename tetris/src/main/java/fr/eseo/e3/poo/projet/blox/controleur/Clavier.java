@@ -24,7 +24,6 @@ public class Clavier extends KeyAdapter {
     public void keyPressed(KeyEvent e) {
         Piece piece = this.puits.getPieceActuelle();
         if (piece != null) {
-            System.out.println("test");
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_UP -> {
                     try {
@@ -52,6 +51,15 @@ public class Clavier extends KeyAdapter {
                         piece.deplacerDe(1, 0);
                     } catch (BloxException e1) {
                         // Gestion des collision dans la gravité exception non nécessairement gérer ici
+                    }
+                }
+                case KeyEvent.VK_SPACE -> {
+                    try {
+                        for (int i = 0; i < 24; i++) {
+                            piece.deplacerDe(0, 1);
+                        }
+                    } catch (BloxException e1) {
+                        break;
                     }
                 }
                 default -> {/* Rien ne se passe si une autre touche est pressée */}
