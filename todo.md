@@ -7,3 +7,8 @@
 * [ ] Implémenter des vs 
 * [ ] Entrainer une ia
 * [ ] Jeu en ligne
+
+
+# Now
+* [ ] Tests pour le clavier et souris et VuePuits
+* [ ] Lombok pour çà
