@@ -19,7 +19,7 @@ public class Gravite implements ActionListener {
         this.vuePuits = vuePuits;
         this.puits = vuePuits.getPuits();
 
-        this.timer = new Timer(1000, this);
+        this.timer = new Timer(200, this);
         this.timer.start();
     }
 

@@ -25,6 +25,8 @@ public class Puits {
 
     private PropertyChangeSupport pcs;
 
+    public int score;
+
     // Constructeurs
     public Puits(int largueur, int profondeur, int nbElements, int nbLignes) {
         this.largueur = largueur;
@@ -35,6 +37,8 @@ public class Puits {
         this.tas = new Tas(this, nbElements, nbLignes);
 
         this.pcs = new PropertyChangeSupport(this);
+
+        this.score = 0;
     }
 
     public Puits(int largueur, int profondeur) {
@@ -151,6 +155,15 @@ public class Puits {
     }
 
     /**
+     * Augmente le score du joueur de ce puits
+     * 
+     * @param score La valeur duquel augmenter le score
+     */
+    public void addScore(int score) {
+        this.score += score;
+    }
+
+    /**
      * Ce setter vérifie que la largueur est comprise entre 5 et 15 inclus
      * 
      * @param largueur La largueur du puits
@@ -169,5 +182,13 @@ public class Puits {
 
     public void setTas(Tas tas) {
         this.tas = tas;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 }

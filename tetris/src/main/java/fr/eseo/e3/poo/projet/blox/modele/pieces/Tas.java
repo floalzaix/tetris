@@ -1,8 +1,12 @@
 package fr.eseo.e3.poo.projet.blox.modele.pieces;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import fr.eseo.e3.poo.projet.blox.modele.Coordonnees;
 import fr.eseo.e3.poo.projet.blox.modele.Couleur;
@@ -87,6 +91,45 @@ public class Tas {
      */
     public void ajouterElements(Piece piece) {
         this.elements.addAll(piece.getElements());
+        puits.addScore(ligneComplete());
+    }
+    
+    public int ligneComplete() {
+        Map<Integer, List<Element>> lines = elements.stream()
+            .collect(Collectors.groupingBy(e -> e.getCoord().getOrdonnee()));
+
+        TreeMap<Integer, List<Element>> sortedLines = new TreeMap<>(Comparator.reverseOrder());
+        sortedLines.putAll(lines);
+
+        int s = 0;
+        for (Map.Entry<Integer, List<Element>> e : sortedLines.entrySet()) {
+            int size = e.getValue().size();
+
+            // Faire descendre les element si des couches inférieurs ont étés retiré
+            for (int i = 0; i < s; i++) {
+                e.getValue().stream().forEach(elt -> 
+                    elt.deplacerDe(0, 1)
+                );
+            }
+
+            // Tester s'il faut retirer la couche et incrémenté le nombre de couche retirées
+            if (size == this.puits.getLargueur()) {
+                s += 1;
+                elements.removeAll(e.getValue());
+            } else if (size > this.puits.getLargueur()) {
+                throw new IllegalArgumentException("Le nombre d'élements ne peut pas être plus grand que le nombre de colonnes !");
+            }
+        }
+
+        // Attributing score to the lines
+        return switch (s) {
+            case 0 -> 0;
+            case 1 -> 40;
+            case 2 -> 100;
+            case 3 -> 300;
+            case 4 -> 1200;
+            default -> 1200;
+        };
     }
 
     // Getters setters
