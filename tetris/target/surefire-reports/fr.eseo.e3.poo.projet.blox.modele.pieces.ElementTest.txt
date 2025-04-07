@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: fr.eseo.e3.poo.projet.blox.modele.pieces.ElementTest
+-------------------------------------------------------------------------------
+Tests run: 5970, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.736 s - in fr.eseo.e3.poo.projet.blox.modele.pieces.ElementTest

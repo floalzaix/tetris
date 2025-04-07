@@ -19,16 +19,16 @@ public class FallingBloxVersion1 {
         // Création du puits
         Puits puits;
         switch (args.length) {
-            case 2:
+            case 2 -> {
                 puits = new Puits(10, 20, Integer.parseInt(args[0]), Integer.parseInt(args[1]));
-                break;
-            case 1:
+            }
+            case 1 -> {
                 puits = new Puits(10, 20);
                 puits.setTas(new Tas(puits, Integer.parseInt(args[0])));
-                break;
-            default:
+            }
+            default -> {
                 puits = new Puits();
-                break;
+            }
         }
 
         // Création panneau du puits
@@ -54,6 +54,6 @@ public class FallingBloxVersion1 {
         frame.setLocationRelativeTo(null); 
 
         // Activation de la gravité
-        new Gravite(vuePuits);
+        Gravite _ = new Gravite(vuePuits);
     }
 }

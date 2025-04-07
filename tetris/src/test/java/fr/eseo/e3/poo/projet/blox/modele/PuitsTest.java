@@ -38,7 +38,7 @@ class PuitsTest {
         assertNull(puits.getPieceSuivante(),
                 this.errorConstructors + "piece suivante non initialisé à null" + this.endOfMessage);
         assertNotNull(puits.getTas(), this.errorConstructors + "le tas n'est pas initialisé" + this.endOfMessage);
-        assertDoesNotThrow(() -> puits.addPropertyChangeListener(evt -> {
+        assertDoesNotThrow(() -> puits.addPropertyChangeListener(_ -> {
         }), this.errorConstructors + "PropertyChangeListener mal initialisé" + this.endOfMessage);
     }
 
