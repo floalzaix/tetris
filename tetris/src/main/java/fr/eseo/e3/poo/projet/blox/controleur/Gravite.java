@@ -2,13 +2,15 @@ package fr.eseo.e3.poo.projet.blox.controleur;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.Timer;
 
 import fr.eseo.e3.poo.projet.blox.modele.Puits;
 import fr.eseo.e3.poo.projet.blox.vue.VuePuits;
 
-public class Gravite implements ActionListener {
+public class Gravite implements ActionListener, PropertyChangeListener {
     // Atttributs
     private final Timer timer;
 
@@ -21,6 +23,9 @@ public class Gravite implements ActionListener {
 
         this.timer = new Timer(200, this);
         this.timer.start();
+
+        // S'enregistre au listeners de puits
+        this.puits.addPropertyChangeListener(this);
     }
 
     // Overrides
@@ -38,5 +43,12 @@ public class Gravite implements ActionListener {
 
     public void setPeriodicite(int periodicite) {
         this.timer.setDelay(periodicite);
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (Puits.LIMITE_HAUTEUR_ATTEINTE.equals(evt.getPropertyName())) {
+            this.timer.stop();
+        }
     }
 }

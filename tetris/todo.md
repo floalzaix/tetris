@@ -1,14 +1,10 @@
 * [ ] Refactoriser les tests au fur et à mesure
 * [x] Implementer les mécaniques clavier
-* [ ] Finir la logique du jeu
+* [x] Finir la logique du jeu
 * [ ] Déplacements fantômes
-* [ ] Tomber instant
+* [x] Tomber instant
 * [ ] Implémenter un menu
+* [ ] Gérer le config avec le fichier config
 * [ ] Implémenter des vs 
 * [ ] Entrainer une ia
 * [ ] Jeu en ligne
-
-
-# Now
-* [ ] Tests pour le clavier et souris et VuePuits
-* [ ] Lombok pour çà

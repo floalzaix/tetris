@@ -2,6 +2,7 @@ package fr.eseo.e3.poo.projet.blox.modele;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.List;
 
 import fr.eseo.e3.poo.projet.blox.modele.pieces.Piece;
 import fr.eseo.e3.poo.projet.blox.modele.pieces.Tas;
@@ -13,6 +14,7 @@ public class Puits {
 
     public static final String MODIFICATION_PIECE_ACTUELLE = "actuelle";
     public static final String MODIFICATION_PIECE_SUIVANTE = "suivante";
+    public static final String LIMITE_HAUTEUR_ATTEINTE = "limite";
 
     // Attributs (variables d'instance)
     private int largueur;
@@ -25,7 +27,7 @@ public class Puits {
 
     private PropertyChangeSupport pcs;
 
-    public int score;
+    private int score;
 
     // Constructeurs
     public Puits(int largueur, int profondeur, int nbElements, int nbLignes) {
@@ -62,10 +64,38 @@ public class Puits {
      * Gère la collision en disloquant la pièce actuelle sur le tas et en ajoutant
      * une pièce suivante au puits ce qui va donc pousser l'ancienne pièce suivante
      * à devenir la pièce actuelle.
+     * Si la pièce est à la limite de hauteur alors déclenche un listener pour annoncer 
+     * la défaite.
      */
     private void gererCollision() {
         this.tas.ajouterElements(this.pieceActuelle);
-        this.setPieceSuivante(UsineDePiece.genererTetromino());
+        
+        // Gestion hauteur
+        if (!limiteHauteurAtteinte()) {
+            this.setPieceSuivante(UsineDePiece.genererTetromino());
+        } else {
+            this.pcs.firePropertyChange(LIMITE_HAUTEUR_ATTEINTE, 0, 1);
+        }
+    }
+
+
+    /**
+     * Tests si les éléments de la pièce actuelle est à la limite de hauteur. Dans le but de 
+     * bloquer la génération de pièce si c'est le cas. Puis de fire un PropertyChangeListener
+     * pour notifier de la défaite si collision à se niveau là donc par la fonction qui appelle
+     * celle-ci.
+     * @return True si le bloque contient des élements à la limite de hauteur false sinon.
+     */
+    private boolean limiteHauteurAtteinte() {
+        List<Element> elements = this.pieceActuelle.getElements();
+
+        for (Element e : elements) {
+            if (e.getCoord().getOrdonnee() < 0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -81,6 +111,15 @@ public class Puits {
                 this.gererCollision();
             }
         }
+    }
+
+    /**
+     * Augmente le score du joueur de ce puits
+     * 
+     * @param score La valeur duquel augmenter le score
+     */
+    public void addScore(int score) {
+        this.score += score;
     }
 
     // Listeners
@@ -152,15 +191,6 @@ public class Puits {
             throw new IllegalArgumentException("Erreur un puits doit avoir une profondeur entre 15 et 25 unités !");
         }
         this.profondeur = profondeur;
-    }
-
-    /**
-     * Augmente le score du joueur de ce puits
-     * 
-     * @param score La valeur duquel augmenter le score
-     */
-    public void addScore(int score) {
-        this.score += score;
     }
 
     /**
