@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import fr.eseo.e3.poo.projet.blox.modele.pieces.Piece;
@@ -18,13 +19,13 @@ import fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.ITetromino;
 import fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.OTetromino;
 
 class PuitsTest {
-    private final String endOfMessage = "de la classe Puits !";
+    public static final String END_OF_MESSAGE = "de la classe Puits !";
     private final String errorConstructors = "Erreur dans les constructeurs : ";
     private final String errorSetPieceSuivante = "Erreur dans setPieceSuivante";
     private final String errorSetProfondeur = "Erreur dans setPosition : ";
     private final String errorSetLargueur = "Erreur dans setLargueur : ";
     private final String errorToString = "Erreur toString : ";
-    private final String errorGravite = "Erreur dans gravite : ";
+    public static final String ERROR_GRAVITE = "Erreur dans gravite : ";
 
     /**
      * Tests constructeurs
@@ -34,25 +35,25 @@ class PuitsTest {
     void testConstructeurIntIntIntInt() {
         Puits puits = new Puits(10, 20, 15, 3);
         assertNull(puits.getPieceActuelle(),
-                this.errorConstructors + "piece actuelle non initialisé à null" + this.endOfMessage);
+                this.errorConstructors + "piece actuelle non initialisé à null" + END_OF_MESSAGE);
         assertNull(puits.getPieceSuivante(),
-                this.errorConstructors + "piece suivante non initialisé à null" + this.endOfMessage);
-        assertNotNull(puits.getTas(), this.errorConstructors + "le tas n'est pas initialisé" + this.endOfMessage);
+                this.errorConstructors + "piece suivante non initialisé à null" + END_OF_MESSAGE);
+        assertNotNull(puits.getTas(), this.errorConstructors + "le tas n'est pas initialisé" + END_OF_MESSAGE);
         assertDoesNotThrow(() -> puits.addPropertyChangeListener(_ -> {
-        }), this.errorConstructors + "PropertyChangeListener mal initialisé" + this.endOfMessage);
+        }), this.errorConstructors + "PropertyChangeListener mal initialisé" + END_OF_MESSAGE);
     }
 
     @Test
     void testConstructeurIntInt() {
         Puits puits = new Puits(10, 20);
-        assertEquals(0, puits.getTas().getElements().size(), this.errorConstructors + "tas mal initialisé" + this.endOfMessage);
+        assertEquals(0, puits.getTas().getElements().size(), this.errorConstructors + "tas mal initialisé" + END_OF_MESSAGE);
     }
 
     @Test
     void testConstructeurVide() {
         Puits puits = new Puits();
         assertEquals(Puits.LARGUEUR_PAR_DEFAUT, puits.getLargueur(),
-                this.errorConstructors + "mauvaise initialisation des tailles par défaut" + this.endOfMessage);
+                this.errorConstructors + "mauvaise initialisation des tailles par défaut" + END_OF_MESSAGE);
     }
 
     /**
@@ -79,15 +80,17 @@ class PuitsTest {
         puits.setPieceSuivante(o);
 
         assertEquals(puits, o.getPuits(),
-                this.errorSetPieceSuivante + "le puits de la pièce n'est pas set" + this.endOfMessage);
+                this.errorSetPieceSuivante + "le puits de la pièce n'est pas set" + END_OF_MESSAGE);
         assertTrue(suivanteChanged.get(), this.errorSetPieceSuivante
-                + "listener non triggered lorsque la piece suivante a changé" + this.endOfMessage);
+                + "listener non triggered lorsque la piece suivante a changé" + END_OF_MESSAGE);
         assertFalse(actuelleChanged.get(), this.errorSetPieceSuivante
                 + "listener triggered lorsque la piece suivante a changé pour la piece actuelle alors que devrait pas"
-                + this.endOfMessage);
+                + END_OF_MESSAGE);
 
         assertEquals(o, puits.getPieceSuivante(),
-                this.errorSetPieceSuivante + "pièce suivante pas set" + this.endOfMessage);
+                this.errorSetPieceSuivante + "pièce suivante pas set" + END_OF_MESSAGE);
+
+        puits.removePropertyChangeListener(listener);
     }
 
     @Test
@@ -116,69 +119,69 @@ class PuitsTest {
         Coordonnees coord = o.getElements().get(0).getCoord();
         Coordonnees ref = new Coordonnees(puits.getLargueur() / 2, -4);
         assertEquals(ref, coord, this.errorSetPieceSuivante + "position mal/pas ajusté de la nouvelle pièce actuelle"
-                + this.endOfMessage);
+                + END_OF_MESSAGE);
 
         assertEquals(puits, o.getPuits(),
-                this.errorSetPieceSuivante + "le puits de la pièce n'est pas set" + this.endOfMessage);
+                this.errorSetPieceSuivante + "le puits de la pièce n'est pas set" + END_OF_MESSAGE);
         assertTrue(suivanteChanged.get(), this.errorSetPieceSuivante
-                + "listener non triggered lorsque la piece suivante a changé" + this.endOfMessage);
+                + "listener non triggered lorsque la piece suivante a changé" + END_OF_MESSAGE);
         assertTrue(actuelleChanged.get(), this.errorSetPieceSuivante
-                + "listener non triggered lorsque la piece actuelle a changé" + this.endOfMessage);
+                + "listener non triggered lorsque la piece actuelle a changé" + END_OF_MESSAGE);
 
         assertEquals(i, puits.getPieceSuivante(),
-                this.errorSetPieceSuivante + "pièce suivante pas set" + this.endOfMessage);
+                this.errorSetPieceSuivante + "pièce suivante pas set" + END_OF_MESSAGE);
         assertEquals(o, puits.getPieceActuelle(),
-                this.errorSetPieceSuivante + "pièce actuelle non set" + this.endOfMessage);
+                this.errorSetPieceSuivante + "pièce actuelle non set" + END_OF_MESSAGE);
     }
 
     @Test
     void testSetProfondeur() {
         Puits puits = new Puits(10, 20);
         puits.setProfondeur(15);
-        assertEquals(15, puits.getProfondeur(), this.errorSetProfondeur + "profondeur non set" + this.endOfMessage);
+        assertEquals(15, puits.getProfondeur(), this.errorSetProfondeur + "profondeur non set" + END_OF_MESSAGE);
     }
 
     @Test
     void testSetProfondeurInf15() {
         Puits puits = new Puits(10, 20);
         IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> puits.setProfondeur(14),
-                this.errorSetProfondeur + "erreur non levé alors que profondeur inf à 15" + this.endOfMessage);
+                this.errorSetProfondeur + "erreur non levé alors que profondeur inf à 15" + END_OF_MESSAGE);
         assertEquals("Erreur un puits doit avoir une profondeur entre 15 et 25 unités !", e.getMessage(),
-                this.errorSetProfondeur + "erreur non levé alors que profondeur inf à 15" + this.endOfMessage);
+                this.errorSetProfondeur + "erreur non levé alors que profondeur inf à 15" + END_OF_MESSAGE);
     }
 
     @Test
     void testSetProfondeurSup25() {
         Puits puits = new Puits(10, 20);
         IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> puits.setProfondeur(26),
-                this.errorSetProfondeur + "erreur non levé alors que profondeur sup à 25" + this.endOfMessage);
+                this.errorSetProfondeur + "erreur non levé alors que profondeur sup à 25" + END_OF_MESSAGE);
         assertEquals("Erreur un puits doit avoir une profondeur entre 15 et 25 unités !", e.getMessage(),
-                this.errorSetProfondeur + "erreur non levé alors que profondeur inf à 15" + this.endOfMessage);
+                this.errorSetProfondeur + "erreur non levé alors que profondeur inf à 15" + END_OF_MESSAGE);
     }
 
     @Test
     void testSetLargueur() {
         Puits puits = new Puits(10, 20);
         puits.setLargueur(5);
-        assertEquals(5, puits.getLargueur(), this.errorSetLargueur + "largueur non set" + this.endOfMessage);
+        assertEquals(5, puits.getLargueur(), this.errorSetLargueur + "largueur non set" + END_OF_MESSAGE);
     }
 
     @Test
     void testSetLargueurInf5() {
         Puits puits = new Puits(10, 20);
         IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> puits.setLargueur(4),
-                this.errorSetLargueur + "exception non levé alors que la largueur inf à 4" + this.endOfMessage);
+                this.errorSetLargueur + "exception non levé alors que la largueur inf à 4" + END_OF_MESSAGE);
         assertEquals("Erreur un puits doit avoir une largueur entre 5 et 15 unités !", e.getMessage(),
-                this.errorSetLargueur + "mauvais message d'erreur" + this.endOfMessage);
+                this.errorSetLargueur + "mauvais message d'erreur" + END_OF_MESSAGE);
     }
 
     @Test
     void testSetLargueurSup15() {
         Puits puits = new Puits(10, 20);
         IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> puits.setLargueur(16),
-                this.errorSetLargueur + "exception non levé alors que la largueur inf à 15" + this.endOfMessage);
+                this.errorSetLargueur + "exception non levé alors que la largueur inf à 15" + END_OF_MESSAGE);
         assertEquals("Erreur un puits doit avoir une largueur entre 5 et 15 unités !", e.getMessage(),
-                this.errorSetLargueur + "mauvais message d'erreur" + this.endOfMessage);
+                this.errorSetLargueur + "mauvais message d'erreur" + END_OF_MESSAGE);
     }
 
     @Test
@@ -186,7 +189,7 @@ class PuitsTest {
         Puits puits = new Puits(10, 20);
         String res = "Puits : Dimension 10 x 20\nPiece Actuelle : <aucune>\nPiece Suivante : <aucune>\n";
         assertEquals(res, puits.toString(), this.errorToString
-                + "mauvais retour de la fonction quand la pièce suivante est vide" + this.endOfMessage);
+                + "mauvais retour de la fonction quand la pièce suivante est vide" + END_OF_MESSAGE);
     }
 
     @Test
@@ -200,36 +203,43 @@ class PuitsTest {
                 + o.toString() + //
                 "Piece Suivante : " + i.toString();
         assertEquals(res, puits.toString(),
-                "mauvais retour de la fonction toString quand la piece suivante n'est pas vide" + this.endOfMessage);
+                "mauvais retour de la fonction toString quand la piece suivante n'est pas vide" + END_OF_MESSAGE);
     }
 
-    @Test
-    void testGravite() {
-        Puits puits = new Puits(10, 21);
-        OTetromino o = new OTetromino(new Coordonnees(5, 20), Couleur.ORANGE);
-        OTetromino o2 = new OTetromino(new Coordonnees(3, 18), Couleur.BLEU);
-        Coordonnees ref = new Coordonnees(5, 21);
-        puits.setPieceSuivante(o);
-        puits.setPieceSuivante(o2);
-        puits.getPieceActuelle().setPosition(5, 21);
-        puits.gravite();
-        assertEquals(ref, o.getElements().getFirst().getCoord(), this.errorGravite
-                + "la gravite ne déplace pas de 1 verticalement les éléments de la pièce" + this.endOfMessage);
-    }
+    //
+    //  Tests gravite()
+    //
+    
+    @Nested
+    class TestsGravite {
+        @Test
+        void testGravite() {
+                Puits puits = new Puits(10, 21);
+                OTetromino o = new OTetromino(new Coordonnees(5, 20), Couleur.ORANGE);
+                OTetromino o2 = new OTetromino(new Coordonnees(3, 18), Couleur.BLEU);
+                Coordonnees ref = new Coordonnees(5, 20);
+                puits.setPieceSuivante(o);
+                puits.setPieceSuivante(o2);
+                puits.getPieceActuelle().setPosition(5, 20);
+                puits.gravite();
+                assertEquals(ref, o.getElements().getFirst().getCoord(), ERROR_GRAVITE
+                        + "la gravite ne déplace pas de 1 verticalement les éléments de la pièce" + END_OF_MESSAGE);
+        }
 
-    @Test
-    void testGraviteCollision() {
-        Puits puits = new Puits(10, 20);
-        OTetromino o = new OTetromino(new Coordonnees(5, 20), Couleur.ORANGE);
-        OTetromino o2 = new OTetromino(new Coordonnees(3, 18), Couleur.BLEU);
-        puits.setPieceSuivante(o);
-        puits.setPieceSuivante(o2);
-        puits.getPieceActuelle().setPosition(5, 20);
-        puits.gravite();
-        assertEquals(o.getElements(), puits.getTas().getElements(), "Erreur dans la gravité !");
-        assertNotNull(puits.getPieceSuivante(),
-                this.errorGravite + "lors de la collision la pièce suivante n'a pas été changée" + this.endOfMessage);
-        assertNotEquals(puits.getPieceSuivante(), o2,
-                this.errorGravite + "lors de la collision la pièce suivante n'a pas été changée" + this.endOfMessage);
+        @Test
+        void testGraviteCollision() {
+                Puits puits = new Puits(10, 20);
+                OTetromino o = new OTetromino(new Coordonnees(5, 20), Couleur.ORANGE);
+                OTetromino o2 = new OTetromino(new Coordonnees(3, 18), Couleur.BLEU);
+                puits.setPieceSuivante(o);
+                puits.setPieceSuivante(o2);
+                puits.getPieceActuelle().setPosition(5, 20);
+                puits.gravite();
+                assertEquals(o.getElements(), puits.getTas().getElements(), "Erreur dans la gravité !");
+                assertNotNull(puits.getPieceSuivante(),
+                        ERROR_GRAVITE + "lors de la collision la pièce suivante n'a pas été changée" + END_OF_MESSAGE);
+                assertNotEquals(puits.getPieceSuivante(), o2,
+                        ERROR_GRAVITE + "lors de la collision la pièce suivante n'a pas été changée" + END_OF_MESSAGE);
+        }
     }
 }

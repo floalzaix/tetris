@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="fr.eseo.e3.poo.projet.blox.modele.pieces.TasTest" time="0.215" tests="0" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="fr.eseo.e3.poo.projet.blox.modele.pieces.TasTest$TestsConstructeurs$TestsConstruireTas" time="0.044" tests="11" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="23"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -60,4 +60,30 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="67.0"/>
   </properties>
+  <testcase name="testConstructeurPuitsIntIntRandomDepassementNbElementsNbLignes" classname="fr.eseo.e3.poo.projet.blox.modele.pieces.TasTest$TestsConstructeurs" time="0.003"/>
+  <testcase name="testConstructeurPuits" classname="fr.eseo.e3.poo.projet.blox.modele.pieces.TasTest$TestsConstructeurs" time="0.002"/>
+  <testcase name="testConstructeurPuitsIntInt" classname="fr.eseo.e3.poo.projet.blox.modele.pieces.TasTest$TestsConstructeurs" time="0.005"/>
+  <testcase name="testConstucteurPuitsIntIntRandomAppelConstructionTas" classname="fr.eseo.e3.poo.projet.blox.modele.pieces.TasTest$TestsConstructeurs" time="0.003"/>
+  <testcase name="testConstructeurPuitsInt" classname="fr.eseo.e3.poo.projet.blox.modele.pieces.TasTest$TestsConstructeurs" time="0.002"/>
+  <testcase name="testConstucteurPuitsIntIntRandomDepassementNbElementsProfondeur" classname="fr.eseo.e3.poo.projet.blox.modele.pieces.TasTest$TestsConstructeurs" time="0.002"/>
+  <testcase name="testNbLignes" classname="fr.eseo.e3.poo.projet.blox.modele.pieces.TasTest$TestsConstructeurs$TestsConstruireTas" time="0.019">
+    <system-out><![CDATA[private void fr.eseo.e3.poo.projet.blox.modele.pieces.Tas.construireTas(int,int,java.util.Random) throws java.lang.IllegalArgumentException
+]]></system-out>
+  </testcase>
+  <testcase name="testAleatoire" classname="fr.eseo.e3.poo.projet.blox.modele.pieces.TasTest$TestsConstructeurs$TestsConstruireTas" time="0.003">
+    <system-out><![CDATA[private void fr.eseo.e3.poo.projet.blox.modele.pieces.Tas.construireTas(int,int,java.util.Random) throws java.lang.IllegalArgumentException
+]]></system-out>
+  </testcase>
+  <testcase name="testDepassementNbElements" classname="fr.eseo.e3.poo.projet.blox.modele.pieces.TasTest$TestsConstructeurs$TestsConstruireTas" time="0.005">
+    <system-out><![CDATA[private void fr.eseo.e3.poo.projet.blox.modele.pieces.Tas.construireTas(int,int,java.util.Random) throws java.lang.IllegalArgumentException
+]]></system-out>
+  </testcase>
+  <testcase name="testDepassementProfondeur" classname="fr.eseo.e3.poo.projet.blox.modele.pieces.TasTest$TestsConstructeurs$TestsConstruireTas" time="0.004">
+    <system-out><![CDATA[private void fr.eseo.e3.poo.projet.blox.modele.pieces.Tas.construireTas(int,int,java.util.Random) throws java.lang.IllegalArgumentException
+]]></system-out>
+  </testcase>
+  <testcase name="testNbrElements" classname="fr.eseo.e3.poo.projet.blox.modele.pieces.TasTest$TestsConstructeurs$TestsConstruireTas" time="0.002">
+    <system-out><![CDATA[private void fr.eseo.e3.poo.projet.blox.modele.pieces.Tas.construireTas(int,int,java.util.Random) throws java.lang.IllegalArgumentException
+]]></system-out>
+  </testcase>
 </testsuite>

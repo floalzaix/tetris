@@ -8,3 +8,4 @@
 * [ ] Implémenter des vs 
 * [ ] Entrainer une ia
 * [ ] Jeu en ligne
+* [ ] Enlever les assertionError

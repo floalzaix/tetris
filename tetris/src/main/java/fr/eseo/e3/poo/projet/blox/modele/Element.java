@@ -56,18 +56,13 @@ public class Element {
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
-            return true;
-        if (obj == null)
+            return true; // même référence
+        if (obj == null || getClass() != obj.getClass())
             return false;
-        if (getClass() != obj.getClass())
-            return false;
+
         Element other = (Element) obj;
-        if (coord == null) {
-            if (other.coord != null)
-                return false;
-        } else if (!coord.equals(other.coord))
-            return false;
-        return couleur == other.couleur;
+        return Objects.equals(coord, other.coord) &&
+                Objects.equals(couleur, other.couleur);
     }
 
     // Getters setters

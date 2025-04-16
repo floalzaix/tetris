@@ -87,16 +87,24 @@ public class Tas {
      * Ajoute les élements d'une pièce dans le tas. Crée dans le but qu'une pièce
      * touche le fond du puits et puis se disloque sur le tas
      * 
-     * @param piece La pièce dont on va ajouter les éléments dans le tas 
+     * @param piece La pièce dont on va ajouter les éléments dans le tas
      */
     public void ajouterElements(Piece piece) {
         this.elements.addAll(piece.getElements());
         puits.addScore(ligneComplete());
     }
-    
-    public int ligneComplete() {
+
+    /**
+     * Test si une ligne est complète. Si c'est le cas alors descent celle de
+     * dessuss de 1 et supprime la ligne.
+     * 
+     * @return Le score en fonction du nombre de ligne complété : 1 -> 40 2 -> 100 3
+     *         -> 300 4 -> 1200
+     * @throws IllegalArgumentException
+     */
+    private int ligneComplete() throws IllegalArgumentException {
         Map<Integer, List<Element>> lines = elements.stream()
-            .collect(Collectors.groupingBy(e -> e.getCoord().getOrdonnee()));
+                .collect(Collectors.groupingBy(e -> e.getCoord().getOrdonnee()));
 
         TreeMap<Integer, List<Element>> sortedLines = new TreeMap<>(Comparator.reverseOrder());
         sortedLines.putAll(lines);
@@ -107,9 +115,7 @@ public class Tas {
 
             // Faire descendre les element si des couches inférieurs ont étés retiré
             for (int i = 0; i < s; i++) {
-                e.getValue().stream().forEach(elt -> 
-                    elt.deplacerDe(0, 1)
-                );
+                e.getValue().stream().forEach(elt -> elt.deplacerDe(0, 1));
             }
 
             // Tester s'il faut retirer la couche et incrémenté le nombre de couche retirées
@@ -117,7 +123,8 @@ public class Tas {
                 s += 1;
                 elements.removeAll(e.getValue());
             } else if (size > this.puits.getLargueur()) {
-                throw new IllegalArgumentException("Le nombre d'élements ne peut pas être plus grand que le nombre de colonnes !");
+                throw new IllegalArgumentException(
+                        "Le nombre d'élements ne peut pas être plus grand que le nombre de colonnes !");
             }
         }
 
@@ -127,7 +134,6 @@ public class Tas {
             case 1 -> 40;
             case 2 -> 100;
             case 3 -> 300;
-            case 4 -> 1200;
             default -> 1200;
         };
     }
