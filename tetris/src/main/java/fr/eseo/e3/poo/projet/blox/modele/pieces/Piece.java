@@ -45,7 +45,17 @@ public interface Piece {
      */
     public void tourner(boolean sensHoraire) throws BloxException;
 
-    // Fonction perso
+    /**
+     * Clones the object
+     * 
+     * @return A copy of the object
+     */
+    public Object copy();
+
+    //
+    //  Méthodes perso
+    //
+
     /**
      * Test si une pièce est en dehors du puits ou si rentre en collision avec le
      * tas. Cette fonction est faite pour être
@@ -96,4 +106,6 @@ public interface Piece {
     public Puits getPuits();
 
     public void setPuits(Puits puits);
+
+    public void setElements(List<Element> elements);
 }

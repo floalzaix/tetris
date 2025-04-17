@@ -38,4 +38,9 @@ public class ITetromino extends Tetromino {
             new Element(x, y-2, couleur)
         };
     }
+
+    @Override
+    public Tetromino copySelf() {
+        return new ITetromino(this.getElements().getFirst().getCoord(), this.couleur);
+    }
 }

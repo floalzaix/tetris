@@ -2,7 +2,7 @@ package fr.eseo.e3.poo.projet.blox.modele;
 
 import java.util.Objects;
 
-public class Element {
+public class Element implements Copiable {
     // Attributs
     private Coordonnees coord;
     private Couleur couleur;
@@ -43,6 +43,11 @@ public class Element {
     }
 
     // Overrides
+    @Override
+    public Object copy() {
+        return new Element((Coordonnees) this.coord.copy(), this.couleur);
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(this.coord, this.couleur);

@@ -2,7 +2,7 @@ package fr.eseo.e3.poo.projet.blox.modele;
 
 import java.util.Objects;
 
-public class Coordonnees {
+public class Coordonnees implements Copiable {
     // Attributs
     private int abscisse;
     private int ordonnee;
@@ -14,6 +14,11 @@ public class Coordonnees {
     }
 
     // Overrides
+    @Override
+    public Object copy() {
+        return new Coordonnees(this.abscisse, this.ordonnee);
+    }
+
     @Override
     public String toString() {
         return "Coordonnees(" + this.abscisse + ", " + this.ordonnee + ")";

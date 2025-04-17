@@ -10,6 +10,10 @@ public class OTetromino extends Tetromino {
         super(coord, couleur);
     }
 
+    //
+    //  Overrides
+    //
+
     /**
      * Cette méthode a pour but d'initialiser les elements du OTetromino donc la
      * variable this.elements
@@ -38,9 +42,14 @@ public class OTetromino extends Tetromino {
                 new Element(x, y - 1, couleur)
         };
     }
-    
+
     @Override
     public void tourner(boolean sensHoraire) {
         // Un OTetromino ne peut pas tourner
+    }
+
+    @Override
+    public Tetromino copySelf() {
+        return new OTetromino(this.getElements().getFirst().getCoord(), this.couleur);
     }
 }

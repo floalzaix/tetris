@@ -4,6 +4,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.List;
 
+import fr.eseo.e3.poo.projet.blox.modele.pieces.Fantome;
 import fr.eseo.e3.poo.projet.blox.modele.pieces.Piece;
 import fr.eseo.e3.poo.projet.blox.modele.pieces.Tas;
 
@@ -23,6 +24,8 @@ public class Puits {
     private Piece pieceActuelle;
     private Piece pieceSuivante;
 
+    private Fantome fantome;
+
     private Tas tas;
 
     private PropertyChangeSupport pcs;
@@ -35,6 +38,7 @@ public class Puits {
         this.profondeur = profondeur;
         this.pieceActuelle = null;
         this.pieceSuivante = null;
+        this.fantome = null;
 
         this.tas = new Tas(this, nbElements, nbLignes);
 
@@ -171,6 +175,7 @@ public class Puits {
     public void setPieceSuivante(Piece pieceSuivante) {
         if (this.pieceSuivante != null) {
             this.pieceSuivante.setPosition(this.largueur / 2, -4);
+            this.fantome = new Fantome(this.pieceSuivante);
             this.pcs.firePropertyChange(MODIFICATION_PIECE_ACTUELLE, this.pieceActuelle, this.pieceSuivante);
             this.pieceActuelle = this.pieceSuivante;
         }
@@ -220,5 +225,9 @@ public class Puits {
 
     public void setScore(int score) {
         this.score = score;
+    }
+
+    public Fantome getFantome() {
+        return fantome;
     }
 }
