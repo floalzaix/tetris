@@ -5,6 +5,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -16,10 +17,12 @@ import fr.eseo.e3.poo.projet.blox.modele.Couleur;
 import fr.eseo.e3.poo.projet.blox.modele.Element;
 
 class ElementTest {
-    private final String endOfMessage = " de la classe Element !";
+    public static final String START_OF_MESSAGE = "Erreur dans la méthode ";
+    public static final String END_OF_MESSAGE = " de la classe Element !";
 
     private final String errorConstructors = "Erreur dans un des constructeurs : ";
     private final String errorDeplacerDe = "Erreur dans deplacerDe() : ";
+    public static final String ERREUR_COPY = START_OF_MESSAGE + "copy()" + END_OF_MESSAGE;
     private final String equalsError = "Erreur dans equals() : ";
     private final String hashCodeError = "Erreur dans le hashCode() : ";
 
@@ -32,7 +35,7 @@ class ElementTest {
         Element e = new Element(1, -1, Couleur.BLEU);
         Coordonnees coord = new Coordonnees(1, -1);
         assertEquals(coord, e.getCoord(), this.errorConstructors
-                + "le constructeur int int couleur définit mal les coordonnées" + this.endOfMessage);
+                + "le constructeur int int couleur définit mal les coordonnées" + END_OF_MESSAGE);
     }
 
     @Test
@@ -40,14 +43,14 @@ class ElementTest {
         Element e = new Element(10, -20);
         Coordonnees coord = new Coordonnees(10, -20);
         assertEquals(coord, e.getCoord(),
-                this.errorConstructors + "le constructeur int int définit mal les coordonnées" + this.endOfMessage);
+                this.errorConstructors + "le constructeur int int définit mal les coordonnées" + END_OF_MESSAGE);
     }
 
     @Test
     void testConstructeurIntIntDefCouleur() {
         Element e = new Element(3, -1);
         assertEquals(Couleur.values()[0], e.getCouleur(), this.errorConstructors
-                + "le constructeur int int définit mal la couleur par défaut" + this.endOfMessage);
+                + "le constructeur int int définit mal la couleur par défaut" + END_OF_MESSAGE);
     }
 
     /**
@@ -69,7 +72,7 @@ class ElementTest {
         Coordonnees c = new Coordonnees(2 + dx, -3 + dy);
         e.deplacerDe(dx, dy);
         assertEquals(c, e.getCoord(),
-                this.errorDeplacerDe + "le déplacement est set mal les abscisse ou/et ordonnee" + this.endOfMessage);
+                this.errorDeplacerDe + "le déplacement est set mal les abscisse ou/et ordonnee" + END_OF_MESSAGE);
     }
 
     private static Stream<Arguments> provideNonValidesDXDYCoords() {
@@ -84,7 +87,7 @@ class ElementTest {
     @MethodSource("provideNonValidesDXDYCoords")
     void testDeplacerDeExceptions(int dx, int dy) {
         String message = this.errorDeplacerDe + "un deplacement invalide n'est pas détecté ou mauvais message d'erreur"
-                + this.endOfMessage;
+                + END_OF_MESSAGE;
         Element e = new Element(new Coordonnees(5, -4));
         IllegalArgumentException error = assertThrows(IllegalArgumentException.class, () -> e.deplacerDe(dx, dy),
                 message);
@@ -98,7 +101,23 @@ class ElementTest {
         Element e = new Element(0, 0, Couleur.ROUGE);
         assertEquals("Element(0, 0) - ROUGE", e.toString(),
                 "Erreur dans toString() : la fonction ne renvoie pas la bonne chaine de caractères"
-                        + this.endOfMessage);
+                        + END_OF_MESSAGE);
+    }
+
+    //
+    //  Tests copy()
+    //
+
+    @Test
+    void testCopy() {
+        Coordonnees coord = new Coordonnees(0, 0);
+        Element e = new Element(coord);
+
+        Element copy = (Element) e.copy();
+
+        // Tests
+        assertNotSame(e, copy, ERREUR_COPY + "la copie reste de la même instance !");
+        assertNotSame(e.getCoord(), copy.getCoord(), ERREUR_COPY + "les coordonnées ne sont pas copiées !");
     }
 
     /**
@@ -108,12 +127,12 @@ class ElementTest {
     @Test
     void testEqualReflexivite() {
         Element coord = new Element(5, -88);
-        assertEquals(coord, coord, this.equalsError + "réflexivité non vérifiée" + this.endOfMessage);
+        assertEquals(coord, coord, this.equalsError + "réflexivité non vérifiée" + END_OF_MESSAGE);
     }
 
     @Test
     void testEqualSymmetrie() {
-        String message = this.equalsError + "symmétrie non vérifié" + this.endOfMessage;
+        String message = this.equalsError + "symmétrie non vérifié" + END_OF_MESSAGE;
         Element e1 = new Element(-1, 6);
         Element e2 = new Element(-1, 6);
         assertEquals(e1, e2, message);
@@ -122,7 +141,7 @@ class ElementTest {
 
     @Test
     void testEqualTransitivite() {
-        String message = this.equalsError + "transitivité non vérifiée" + this.endOfMessage;
+        String message = this.equalsError + "transitivité non vérifiée" + END_OF_MESSAGE;
         Element e1 = new Element(99, 96, Couleur.JAUNE);
         Element e2 = new Element(99, 96, Couleur.JAUNE);
         Element e3 = new Element(99, 96, Couleur.JAUNE);
@@ -134,13 +153,13 @@ class ElementTest {
     @Test
     void testEqualNullite() {
         Element e = new Element(-6, 10);
-        assertNotEquals(e, null, this.equalsError + "nullité non vérifié" + this.endOfMessage);
+        assertNotEquals(e, null, this.equalsError + "nullité non vérifié" + END_OF_MESSAGE);
     }
 
     @Test
     void testEqualClassesDifferentes() {
         Element e = new Element(-4, -3);
-        assertNotEquals(e, new Object(), this.equalsError + "egalité avec une autre classe" + this.endOfMessage);
+        assertNotEquals(e, new Object(), this.equalsError + "egalité avec une autre classe" + END_OF_MESSAGE);
     }
 
     private static Stream<Arguments> provideElements() {
@@ -165,7 +184,7 @@ class ElementTest {
     @ParameterizedTest(name = "testEqualNonEgalite {index} e1 {0} e2 {1}")
     @MethodSource("provideNonEgalsElements")
     void testEqualNonEgalite(Element e1, Element e2) {
-        assertNotEquals(e1, e2, this.equalsError + "des éléments sont détecté égaux alors que non" + this.endOfMessage);
+        assertNotEquals(e1, e2, this.equalsError + "des éléments sont détecté égaux alors que non" + END_OF_MESSAGE);
     }
 
     /**
@@ -174,7 +193,7 @@ class ElementTest {
     @Test
     void testHashCodeConstant() {
         Element e = new Element(10, -3);
-        assertEquals(e.hashCode(), e.hashCode(), this.hashCodeError + "constance non vérifiée" + this.endOfMessage);
+        assertEquals(e.hashCode(), e.hashCode(), this.hashCodeError + "constance non vérifiée" + END_OF_MESSAGE);
     }
 
     private static Stream<Arguments> provideEgalsElements() {
@@ -185,13 +204,13 @@ class ElementTest {
     @MethodSource("provideEgalsElements")
     void testHashCodeEgalite(Element e1, Element e2) {
         assertEquals(e1.hashCode(), e2.hashCode(),
-                this.hashCodeError + "égalité non vérifiée pour deux même Objets" + this.endOfMessage);
+                this.hashCodeError + "égalité non vérifiée pour deux même Objets" + END_OF_MESSAGE);
     }
 
     @ParameterizedTest(name = "testHashCodeInegalite {index} x1 {0} y1 {1} x2 {2} y2 {3}")
     @MethodSource("provideNonEgalsElements")
     void testHashCodeInegalite(Element e1, Element e2) {
         assertNotEquals(e1.hashCode(), e2.hashCode(),
-                this.hashCodeError + "inégalité non vérifiée pour deux objets différents" + this.endOfMessage);
+                this.hashCodeError + "inégalité non vérifiée pour deux objets différents" + END_OF_MESSAGE);
     }
 }

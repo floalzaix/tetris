@@ -7,6 +7,7 @@ import fr.eseo.e3.poo.projet.blox.modele.Coordonnees;
 import fr.eseo.e3.poo.projet.blox.modele.Couleur;
 import fr.eseo.e3.poo.projet.blox.modele.Element;
 import fr.eseo.e3.poo.projet.blox.modele.Puits;
+import fr.eseo.e3.poo.projet.blox.modele.pieces.Fantome;
 import fr.eseo.e3.poo.projet.blox.modele.pieces.Piece;
 
 public abstract class Tetromino implements Piece {
@@ -23,10 +24,16 @@ public abstract class Tetromino implements Piece {
         this.setElements(coord, couleur);
     }
 
-    // Méthodes abstraites
+    //
+    //  Méthodes
+    //
+
     protected abstract void setElements(Coordonnees coord, Couleur couleur);
 
-    // Interface Piece
+    //
+    //  Interface Piece
+    //
+
     @Override
     public List<Element> getElements() {
         return List.of(this.elements);
@@ -72,7 +79,10 @@ public abstract class Tetromino implements Piece {
 
         // Projection de la pièce avec le fantome
         if (!(deltaX == 0 && deltaY == 1)) {
-            this.puits.getFantome().projection();
+            Fantome fantome = this.puits.getFantome();
+            if (fantome != null) {
+                fantome.projection();
+            }
         }
     }
 
@@ -91,10 +101,21 @@ public abstract class Tetromino implements Piece {
         }
 
         // Projection de la pièce avec le fantome
-        this.puits.getFantome().projection();
+        Fantome fantome = this.puits.getFantome();
+        if (fantome != null) {
+            fantome.projection();
+        }
     }
 
-    // Méthodes perso
+    @Override
+    public Object copy() {
+        return copyModel(copySelf());
+    }
+
+    //
+    //  Méthodes perso
+    //
+
     /**
      * Réalise de manière brut la rotation sans test. Son but de permettre de
      * contourner la récursivité
@@ -127,9 +148,9 @@ public abstract class Tetromino implements Piece {
      *                  d'instances
      * @return Une copie complète du tetromino
      */
-    public Object copyModel(Tetromino tetromino) {
+    private Object copyModel(Tetromino tetromino) {
         Tetromino t = tetromino;
-        t.setPuits(this.puits);
+        t.setPuits(this.puits); // Puits non copié reste le même
         List<Element> te = t.getElements();
 
         for (int i = 0; i < te.size(); i++) {
@@ -151,11 +172,6 @@ public abstract class Tetromino implements Piece {
     protected abstract Tetromino copySelf();
 
     // Overrides
-    @Override
-    public Object copy() {
-        return copyModel(copySelf());
-    }
-
     @Override
     public String toString() {
         String res = this.getClass().getSimpleName() + " :\n";
@@ -179,6 +195,6 @@ public abstract class Tetromino implements Piece {
 
     @Override
     public void setElements(List<Element> elements) {
-        this.elements = (Element[]) elements.toArray();
+        this.elements = elements.toArray(Element[]::new);
     }
 }

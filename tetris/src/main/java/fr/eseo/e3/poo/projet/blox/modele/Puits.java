@@ -34,8 +34,9 @@ public class Puits {
 
     // Constructeurs
     public Puits(int largueur, int profondeur, int nbElements, int nbLignes) {
-        this.largueur = largueur;
-        this.profondeur = profondeur;
+        this.setLargueur(largueur);
+        this.setProfondeur(profondeur);
+
         this.pieceActuelle = null;
         this.pieceSuivante = null;
         this.fantome = null;
@@ -68,12 +69,13 @@ public class Puits {
      * Gère la collision en disloquant la pièce actuelle sur le tas et en ajoutant
      * une pièce suivante au puits ce qui va donc pousser l'ancienne pièce suivante
      * à devenir la pièce actuelle.
-     * Si la pièce est à la limite de hauteur alors déclenche un listener pour annoncer 
+     * Si la pièce est à la limite de hauteur alors déclenche un listener pour
+     * annoncer
      * la défaite.
      */
     private void gererCollision() {
         this.tas.ajouterElements(this.pieceActuelle);
-        
+
         // Gestion hauteur
         if (!limiteHauteurAtteinte()) {
             this.setPieceSuivante(UsineDePiece.genererTetromino());
@@ -82,13 +84,17 @@ public class Puits {
         }
     }
 
-
     /**
-     * Tests si les éléments de la pièce actuelle est à la limite de hauteur. Dans le but de 
-     * bloquer la génération de pièce si c'est le cas. Puis de fire un PropertyChangeListener
-     * pour notifier de la défaite si collision à se niveau là donc par la fonction qui appelle
+     * Tests si les éléments de la pièce actuelle est à la limite de hauteur. Dans
+     * le but de
+     * bloquer la génération de pièce si c'est le cas. Puis de fire un
+     * PropertyChangeListener
+     * pour notifier de la défaite si collision à se niveau là donc par la fonction
+     * qui appelle
      * celle-ci.
-     * @return True si le bloque contient des élements à la limite de hauteur false sinon.
+     * 
+     * @return True si le bloque contient des élements à la limite de hauteur false
+     *         sinon.
      */
     private boolean limiteHauteurAtteinte() {
         List<Element> elements = this.pieceActuelle.getElements();
@@ -111,9 +117,7 @@ public class Puits {
         try {
             this.pieceActuelle.deplacerDe(0, 1);
         } catch (BloxException be) {
-            if (be.getType() == BloxException.BLOX_COLLISION_OU_BAS_PUITS) {
-                this.gererCollision();
-            }
+            this.gererCollision();
         }
     }
 
@@ -191,7 +195,7 @@ public class Puits {
      * @throws IllegalArgumentException La profondeur doit être incluse entre 15 et
      *                                  25
      */
-    public void setProfondeur(int profondeur) throws IllegalArgumentException {
+    public final void setProfondeur(int profondeur) throws IllegalArgumentException {
         if (profondeur < 15 || profondeur > 25) {
             throw new IllegalArgumentException("Erreur un puits doit avoir une profondeur entre 15 et 25 unités !");
         }
@@ -204,7 +208,7 @@ public class Puits {
      * @param largueur La largueur du puits
      * @throws IllegalArgumentException La largueur doit être incluse entre 5 et 15
      */
-    public void setLargueur(int largueur) throws IllegalArgumentException {
+    public final void setLargueur(int largueur) throws IllegalArgumentException {
         if (largueur < 5 || largueur > 15) {
             throw new IllegalArgumentException("Erreur un puits doit avoir une largueur entre 5 et 15 unités !");
         }

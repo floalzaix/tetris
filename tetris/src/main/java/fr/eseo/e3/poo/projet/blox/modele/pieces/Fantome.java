@@ -25,7 +25,7 @@ public class Fantome {
     public final void projection() {
         this.copyPiece = (Piece) piece.copy();
 
-        for (int i = 0; i <= piece.getPuits().getProfondeur() + 10; i++) {
+        for (int i = 0; i < piece.getPuits().getProfondeur() + 4; i++) {
             try {
                 copyPiece.deplacerDe(0, 1);
             } catch (BloxException _) {

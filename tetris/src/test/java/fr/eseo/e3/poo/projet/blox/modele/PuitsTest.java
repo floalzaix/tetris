@@ -1,31 +1,38 @@
 package fr.eseo.e3.poo.projet.blox.modele;
 
 import java.beans.PropertyChangeListener;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import fr.eseo.e3.poo.projet.blox.modele.pieces.Piece;
 import fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.ITetromino;
 import fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.OTetromino;
+import fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.Tetromino;
 
 class PuitsTest {
-    public static final String END_OF_MESSAGE = "de la classe Puits !";
+    public static final String END_OF_MESSAGE = "de la classe Puits  : ";
+    public static final String START_OF_MESSAGE = "Erreur dans la méthode ";
     private final String errorConstructors = "Erreur dans les constructeurs : ";
     private final String errorSetPieceSuivante = "Erreur dans setPieceSuivante";
     private final String errorSetProfondeur = "Erreur dans setPosition : ";
     private final String errorSetLargueur = "Erreur dans setLargueur : ";
     private final String errorToString = "Erreur toString : ";
-    public static final String ERROR_GRAVITE = "Erreur dans gravite : ";
+    public static final String ERREUR_GRAVITE = START_OF_MESSAGE + "gravite()" + END_OF_MESSAGE;
+    public static final String ERREUR_GERER_COLLISION = START_OF_MESSAGE + "gerer_collision()" + END_OF_MESSAGE;
+    public static final String ERREUR_LIMITE_HAUTEUR = START_OF_MESSAGE + "limiteHauteurAtteinte()" + END_OF_MESSAGE;
 
     /**
      * Tests constructeurs
@@ -46,14 +53,16 @@ class PuitsTest {
     @Test
     void testConstructeurIntInt() {
         Puits puits = new Puits(10, 20);
-        assertEquals(0, puits.getTas().getElements().size(), this.errorConstructors + "tas mal initialisé" + END_OF_MESSAGE);
+        assertEquals(0, puits.getTas().getElements().size(),
+                this.errorConstructors + "tas mal initialisé" + END_OF_MESSAGE);
     }
 
     @Test
     void testConstructeurVide() {
         Puits puits = new Puits();
         assertEquals(Puits.LARGUEUR_PAR_DEFAUT, puits.getLargueur(),
-                this.errorConstructors + "mauvaise initialisation des tailles par défaut" + END_OF_MESSAGE);
+                this.errorConstructors + "mauvaise initialisation des tailles par défaut"
+                        + END_OF_MESSAGE);
     }
 
     /**
@@ -118,8 +127,9 @@ class PuitsTest {
         // Test nouvelle position de la pièce actuelle
         Coordonnees coord = o.getElements().get(0).getCoord();
         Coordonnees ref = new Coordonnees(puits.getLargueur() / 2, -4);
-        assertEquals(ref, coord, this.errorSetPieceSuivante + "position mal/pas ajusté de la nouvelle pièce actuelle"
-                + END_OF_MESSAGE);
+        assertEquals(ref, coord,
+                this.errorSetPieceSuivante + "position mal/pas ajusté de la nouvelle pièce actuelle"
+                        + END_OF_MESSAGE);
 
         assertEquals(puits, o.getPuits(),
                 this.errorSetPieceSuivante + "le puits de la pièce n'est pas set" + END_OF_MESSAGE);
@@ -138,25 +148,30 @@ class PuitsTest {
     void testSetProfondeur() {
         Puits puits = new Puits(10, 20);
         puits.setProfondeur(15);
-        assertEquals(15, puits.getProfondeur(), this.errorSetProfondeur + "profondeur non set" + END_OF_MESSAGE);
+        assertEquals(15, puits.getProfondeur(),
+                this.errorSetProfondeur + "profondeur non set" + END_OF_MESSAGE);
     }
 
     @Test
     void testSetProfondeurInf15() {
         Puits puits = new Puits(10, 20);
         IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> puits.setProfondeur(14),
-                this.errorSetProfondeur + "erreur non levé alors que profondeur inf à 15" + END_OF_MESSAGE);
+                this.errorSetProfondeur + "erreur non levé alors que profondeur inf à 15"
+                        + END_OF_MESSAGE);
         assertEquals("Erreur un puits doit avoir une profondeur entre 15 et 25 unités !", e.getMessage(),
-                this.errorSetProfondeur + "erreur non levé alors que profondeur inf à 15" + END_OF_MESSAGE);
+                this.errorSetProfondeur + "erreur non levé alors que profondeur inf à 15"
+                        + END_OF_MESSAGE);
     }
 
     @Test
     void testSetProfondeurSup25() {
         Puits puits = new Puits(10, 20);
         IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> puits.setProfondeur(26),
-                this.errorSetProfondeur + "erreur non levé alors que profondeur sup à 25" + END_OF_MESSAGE);
+                this.errorSetProfondeur + "erreur non levé alors que profondeur sup à 25"
+                        + END_OF_MESSAGE);
         assertEquals("Erreur un puits doit avoir une profondeur entre 15 et 25 unités !", e.getMessage(),
-                this.errorSetProfondeur + "erreur non levé alors que profondeur inf à 15" + END_OF_MESSAGE);
+                this.errorSetProfondeur + "erreur non levé alors que profondeur inf à 15"
+                        + END_OF_MESSAGE);
     }
 
     @Test
@@ -170,7 +185,8 @@ class PuitsTest {
     void testSetLargueurInf5() {
         Puits puits = new Puits(10, 20);
         IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> puits.setLargueur(4),
-                this.errorSetLargueur + "exception non levé alors que la largueur inf à 4" + END_OF_MESSAGE);
+                this.errorSetLargueur + "exception non levé alors que la largueur inf à 4"
+                        + END_OF_MESSAGE);
         assertEquals("Erreur un puits doit avoir une largueur entre 5 et 15 unités !", e.getMessage(),
                 this.errorSetLargueur + "mauvais message d'erreur" + END_OF_MESSAGE);
     }
@@ -179,7 +195,8 @@ class PuitsTest {
     void testSetLargueurSup15() {
         Puits puits = new Puits(10, 20);
         IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> puits.setLargueur(16),
-                this.errorSetLargueur + "exception non levé alors que la largueur inf à 15" + END_OF_MESSAGE);
+                this.errorSetLargueur + "exception non levé alors que la largueur inf à 15"
+                        + END_OF_MESSAGE);
         assertEquals("Erreur un puits doit avoir une largueur entre 5 et 15 unités !", e.getMessage(),
                 this.errorSetLargueur + "mauvais message d'erreur" + END_OF_MESSAGE);
     }
@@ -203,43 +220,172 @@ class PuitsTest {
                 + o.toString() + //
                 "Piece Suivante : " + i.toString();
         assertEquals(res, puits.toString(),
-                "mauvais retour de la fonction toString quand la piece suivante n'est pas vide" + END_OF_MESSAGE);
+                "mauvais retour de la fonction toString quand la piece suivante n'est pas vide"
+                        + END_OF_MESSAGE);
     }
 
     //
-    //  Tests gravite()
+    // Tests gravite()
     //
-    
+
     @Nested
     class TestsGravite {
         @Test
-        void testGravite() {
-                Puits puits = new Puits(10, 21);
-                OTetromino o = new OTetromino(new Coordonnees(5, 20), Couleur.ORANGE);
-                OTetromino o2 = new OTetromino(new Coordonnees(3, 18), Couleur.BLEU);
-                Coordonnees ref = new Coordonnees(5, 20);
-                puits.setPieceSuivante(o);
-                puits.setPieceSuivante(o2);
-                puits.getPieceActuelle().setPosition(5, 20);
-                puits.gravite();
-                assertEquals(ref, o.getElements().getFirst().getCoord(), ERROR_GRAVITE
-                        + "la gravite ne déplace pas de 1 verticalement les éléments de la pièce" + END_OF_MESSAGE);
+        void testDeplacementVertical() {
+            Puits puits = new Puits(10, 20);
+            Coordonnees coord = new Coordonnees(0, 0);
+            OTetromino o = new OTetromino((Coordonnees) coord.copy(), Couleur.ORANGE);
+            puits.setPieceSuivante(o);
+            puits.setPieceSuivante(o);
+            o.setPosition(0, 0);
+
+            // Target
+            coord.setOrdonnee(1);
+
+            // gravite
+            puits.gravite();
+
+            // Tests
+            assertEquals(coord, o.getElements().getFirst().getCoord(),
+                    ERREUR_GRAVITE + "la gravité n'abaisse pas la pièce pour un déplacement valable !");
         }
 
         @Test
-        void testGraviteCollision() {
-                Puits puits = new Puits(10, 20);
-                OTetromino o = new OTetromino(new Coordonnees(5, 20), Couleur.ORANGE);
-                OTetromino o2 = new OTetromino(new Coordonnees(3, 18), Couleur.BLEU);
+        void testAppelGestionCollision() {
+            Puits puits = new Puits(10, 20);
+            Coordonnees coord = new Coordonnees(0, 0);
+            OTetromino o = new OTetromino((Coordonnees) coord.copy(), Couleur.ORANGE);
+            puits.setPieceSuivante(o);
+            puits.setPieceSuivante((OTetromino) o.copy());
+            o.setPosition(5, 20);
+
+            // gravite
+            puits.gravite();
+
+            // Tests
+            assertNotSame(o, puits.getPieceActuelle(), ERREUR_GRAVITE
+                    + "la méthode gererCollision() n'est pas appelé alors que déplacement entraine collision dû à la gravité !");
+        }
+
+        //
+        // Test gererCollision()
+        //
+
+        @Nested
+        class TestsGererCollision {
+            private Method gererCollision;
+
+            @BeforeEach
+            void setUp() throws NoSuchMethodException, SecurityException {
+                this.gererCollision = Puits.class.getDeclaredMethod("gererCollision");
+                this.gererCollision.setAccessible(true);
+            }
+
+            @Test
+            void testAjoutsElements() throws IllegalAccessException, InvocationTargetException {
+                Puits puits = new Puits(10, 16);
+                Coordonnees coord = new Coordonnees(5, 0);
+                Tetromino o = new OTetromino(coord, Couleur.CYAN);
+                puits.setPieceSuivante(o);
+                puits.setPieceSuivante(o);
+                o.setPosition(5, 16);
+
+                // gererCollision
+                this.gererCollision.invoke(puits);
+
+                // Tests
+                assertEquals(o.getElements(), puits.getTas().getElements(),
+                        ERREUR_GERER_COLLISION + "les élements ne sont pas ajouté au tas alors que collision !");
+            }
+
+            @Test
+            void testLimiteHauteurPasAtteinte() throws IllegalAccessException, InvocationTargetException {
+                Puits puits = new Puits(10, 16);
+                Coordonnees coord = new Coordonnees(5, 0);
+                Tetromino o = new OTetromino(coord, Couleur.CYAN);
+                Tetromino o2 = new OTetromino(coord, Couleur.CYAN);
                 puits.setPieceSuivante(o);
                 puits.setPieceSuivante(o2);
-                puits.getPieceActuelle().setPosition(5, 20);
-                puits.gravite();
-                assertEquals(o.getElements(), puits.getTas().getElements(), "Erreur dans la gravité !");
-                assertNotNull(puits.getPieceSuivante(),
-                        ERROR_GRAVITE + "lors de la collision la pièce suivante n'a pas été changée" + END_OF_MESSAGE);
-                assertNotEquals(puits.getPieceSuivante(), o2,
-                        ERROR_GRAVITE + "lors de la collision la pièce suivante n'a pas été changée" + END_OF_MESSAGE);
+                o.setPosition(5, 16);
+
+                // gererCollision
+                this.gererCollision.invoke(puits);
+
+                // Tests
+                assertNotSame(o, puits.getPieceActuelle(),
+                        ERREUR_GERER_COLLISION + "pièce actuele inchangé alors qu'il n'y a pas de défaites !");
+                assertNotSame(o2, puits.getPieceSuivante(),
+                        ERREUR_GERER_COLLISION + "pièce suivante inchangé alors qu'il y a pas défaite !");
+            }
+
+            @Test
+            void testLimiteHauteurAtteinte() throws IllegalAccessException, InvocationTargetException {
+                Puits puits = new Puits(10, 16);
+                Coordonnees coord = new Coordonnees(5, 0);
+                Tetromino i = new ITetromino(coord, Couleur.CYAN);
+                puits.setPieceSuivante(i);
+                puits.setPieceSuivante(i);
+                i.setPosition(5, 1);
+
+                // Listener
+                AtomicBoolean triggered = new AtomicBoolean(false);
+                PropertyChangeListener listener = evt -> {
+                    triggered.set(true);
+                    assertEquals(Puits.LIMITE_HAUTEUR_ATTEINTE,
+                            evt.getPropertyName(),
+                            ERREUR_GERER_COLLISION
+                                    + "listener triggered mais mauvaise erreur pour la défaite et l'arrêt du controlleur de gravité !");
+                };
+
+                puits.addPropertyChangeListener(listener);
+
+                // gererCollision
+                this.gererCollision.invoke(puits);
+
+                // Test si triggered défaite
+                assertTrue(triggered.get(), ERREUR_GERER_COLLISION
+                        + "listener pas triggered pour la défaite et l'arrêt du controlleur de gravité !");
+            }
+        }
+
+        //
+        //  Tests limiteHauteurAtteinte()
+        //
+
+        @Nested
+        class TestsLimiteHauteurAtteinte {
+            private Method limiteHauteurAtteinte;
+
+            @BeforeEach
+            void setUp() throws NoSuchMethodException {
+                this.limiteHauteurAtteinte = Puits.class.getDeclaredMethod("limiteHauteurAtteinte");
+                this.limiteHauteurAtteinte.setAccessible(true);
+            }
+
+            @Test
+            void testLimiteAtteinte() throws IllegalAccessException, InvocationTargetException {
+                Puits puits = new Puits(10, 20);
+                Coordonnees coord = new Coordonnees(0, 0);
+                Tetromino t = new OTetromino(coord, Couleur.BLEU);
+                puits.setPieceSuivante(t);
+                puits.setPieceSuivante(t);
+
+                // Test
+                assertTrue((boolean) this.limiteHauteurAtteinte.invoke(puits), ERREUR_LIMITE_HAUTEUR + "la méthode ne renvoie pas true alors que la limite est atteinte !");
+            }
+
+            @Test
+            void tesElementValide() throws IllegalAccessException, InvocationTargetException {
+                Puits puits = new Puits(10, 20);
+                Coordonnees coord = new Coordonnees(0, 0);
+                Tetromino t = new OTetromino(coord, Couleur.BLEU);
+                puits.setPieceSuivante(t);
+                puits.setPieceSuivante(t);
+                t.setPosition(5, 5);
+
+                // Test
+                assertFalse((boolean) this.limiteHauteurAtteinte.invoke(puits), ERREUR_LIMITE_HAUTEUR + "la méthode ne renvoie pas false alors que la limite n'est pas atteinte !");
+            }
         }
     }
 }

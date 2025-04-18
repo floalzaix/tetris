@@ -49,7 +49,7 @@ public class OTetromino extends Tetromino {
     }
 
     @Override
-    public Tetromino copySelf() {
+    protected Tetromino copySelf() {
         return new OTetromino(this.getElements().getFirst().getCoord(), this.couleur);
     }
 }

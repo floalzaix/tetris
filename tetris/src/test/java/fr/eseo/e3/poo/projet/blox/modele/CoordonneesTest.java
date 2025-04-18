@@ -5,21 +5,38 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 class CoordonneesTest {
-    private final String endOfMessage = " de la class Coordonnee !";
+    public static final String END_OF_MESSAGE = " de la class Coordonnee  : ";
+    public static final String START_OF_MESSAGE = "Erreur dans la méthode ";
     
+    public static final String ERREUR_COPY = START_OF_MESSAGE + "copy()" + END_OF_MESSAGE;
     private final String equalsError = "Erreur dans equals() : ";
     private final String hashCodeError = "Erreur dans le hashCode() : ";
 
     @Test
     void testToString() {
         Coordonnees coord = new Coordonnees(80, 1000);
-        assertEquals("Coordonnees(80, 1000)", coord.toString(), "Erreur dans toString() : chaine probablement erronée" + this.endOfMessage);
+        assertEquals("Coordonnees(80, 1000)", coord.toString(), "Erreur dans toString() : chaine probablement erronée" + END_OF_MESSAGE);
+    }
+
+    //
+    //  Tests copy()
+    //
+
+    @Test
+    void testCopy() {
+        Coordonnees coord = new Coordonnees(0, 0);
+
+        Coordonnees copy = (Coordonnees) coord.copy();
+
+        // Tests
+        assertNotSame(coord, copy, ERREUR_COPY + "la copie reste de la même instance !");
     }
 
     /**
@@ -29,12 +46,12 @@ class CoordonneesTest {
     @Test
     void testEqualReflexivite() {
         Coordonnees coord = new Coordonnees(5, -88);
-        assertEquals(coord, coord, this.equalsError + "réflexivité non vérifiée" + this.endOfMessage);
+        assertEquals(coord, coord, this.equalsError + "réflexivité non vérifiée" + END_OF_MESSAGE);
     }
 
     @Test
     void testEqualSymmetrie() {
-        String message = this.equalsError + "symmétrie non vérifié" + this.endOfMessage;
+        String message = this.equalsError + "symmétrie non vérifié" + END_OF_MESSAGE;
         Coordonnees c1 = new Coordonnees(-1, 6);
         Coordonnees c2 = new Coordonnees(-1, 6);
         assertEquals(c1, c2, message);
@@ -43,7 +60,7 @@ class CoordonneesTest {
 
     @Test
     void testEqualTransitivite() {
-        String message = this.equalsError + "transitivité non vérifiée" + this.endOfMessage;
+        String message = this.equalsError + "transitivité non vérifiée" + END_OF_MESSAGE;
         Coordonnees c1 = new Coordonnees(99, 96);
         Coordonnees c2 = new Coordonnees(99, 96);
         Coordonnees c3 = new Coordonnees(99, 96);
@@ -55,13 +72,13 @@ class CoordonneesTest {
     @Test 
     void testEqualNullite() {
         Coordonnees coord = new Coordonnees(-6, 10);
-        assertNotEquals(coord, null, this.equalsError + "nullité non vérifié" + this.endOfMessage);
+        assertNotEquals(coord, null, this.equalsError + "nullité non vérifié" + END_OF_MESSAGE);
     }
 
     @Test
     void testEqualClassesDifferentes() {
         Coordonnees coord = new Coordonnees(-4, -3);
-        assertNotEquals(coord, new Object(), this.equalsError + "egalité avec une autre classe" + this.endOfMessage);
+        assertNotEquals(coord, new Object(), this.equalsError + "egalité avec une autre classe" + END_OF_MESSAGE);
     }
 
     private static Stream<Arguments> provideCoords() {
@@ -86,7 +103,7 @@ class CoordonneesTest {
     @ParameterizedTest(name = "testEqualNonEgalite {index} c1 {0} c2 {1}")
     @MethodSource("provideNonEgalesCoords")
     void testEqualNonEgalite(Coordonnees c1, Coordonnees c2) {
-        assertNotEquals(c1, c2, this.equalsError + "égalité d'abscisses alors que non" + this.endOfMessage);
+        assertNotEquals(c1, c2, this.equalsError + "égalité d'abscisses alors que non" + END_OF_MESSAGE);
     }
 
     /**
@@ -96,7 +113,7 @@ class CoordonneesTest {
     @Test
     void testHashCodeConstant() {
         Coordonnees coord = new Coordonnees(10, -3);
-        assertEquals(coord.hashCode(), coord.hashCode(), this.hashCodeError + "constance non vérifiée" + this.endOfMessage);
+        assertEquals(coord.hashCode(), coord.hashCode(), this.hashCodeError + "constance non vérifiée" + END_OF_MESSAGE);
     }
 
     private static Stream<Arguments> provideEgalsCoords() {
@@ -108,12 +125,12 @@ class CoordonneesTest {
     void testHashCodeEgalite() {
         Coordonnees c1 = new Coordonnees(-3, 9);
         Coordonnees c2 = new Coordonnees(-3, 9);
-        assertEquals(c1.hashCode(), c2.hashCode(), this.hashCodeError + "égalité non vérifiée pour deux même Objets" + this.endOfMessage);
+        assertEquals(c1.hashCode(), c2.hashCode(), this.hashCodeError + "égalité non vérifiée pour deux même Objets" + END_OF_MESSAGE);
     }
 
     @ParameterizedTest(name = "testHashCodeInegalite {index} c1 {0} c2 {1}")
     @MethodSource("provideNonEgalesCoords")
     void testHashCodeInegalite(Coordonnees c1, Coordonnees c2) {
-        assertNotEquals(c1.hashCode(), c2.hashCode(), this.hashCodeError + "inégalité non vérifiée pour deux objets différents" + this.endOfMessage);
+        assertNotEquals(c1.hashCode(), c2.hashCode(), this.hashCodeError + "inégalité non vérifiée pour deux objets différents" + END_OF_MESSAGE);
     }
 }
