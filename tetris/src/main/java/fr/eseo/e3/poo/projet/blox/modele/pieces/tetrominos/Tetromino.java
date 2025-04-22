@@ -3,59 +3,116 @@ package fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+
+import org.reflections.Reflections;
 
 import fr.eseo.e3.poo.projet.blox.modele.BloxException;
 import fr.eseo.e3.poo.projet.blox.modele.Coordonnees;
 import fr.eseo.e3.poo.projet.blox.modele.Couleur;
 import fr.eseo.e3.poo.projet.blox.modele.Element;
+import fr.eseo.e3.poo.projet.blox.modele.Generable;
 import fr.eseo.e3.poo.projet.blox.modele.Puits;
 import fr.eseo.e3.poo.projet.blox.modele.pieces.Fantome;
-import fr.eseo.e3.poo.projet.blox.modele.pieces.Generable;
 import fr.eseo.e3.poo.projet.blox.modele.pieces.Piece;
 
 public abstract class Tetromino implements Generable, Piece {
+    //
     // Variables de classe
+    //
     public static final List<Tetromino> TETROMINOS = new ArrayList<>();
 
-    // Attributs
+    //
+    // Variables d'instance
+    //
     protected Element[] elements;
     protected Couleur couleur;
 
     private Puits puits;
 
+    //
     // Constructeurs
-    protected Tetromino(Coordonnees coord, Couleur couleur) {
-        this.couleur = couleur;
-
-        this.setElements(coord, couleur);
-
-        // Register
+    //
+    protected Tetromino() {
         this.register();
     }
 
+    protected Tetromino(Coordonnees coord, Couleur couleur) {
+        this.elements = new Element[4];
+        this.couleur = couleur;
+
+        // GABARIT
+        int[][] gabarit = this.defGabarit();
+        this.setElements(coord, couleur, gabarit);
+    }
+
     //
-    //  Méthodes
+    // Fonctions
     //
+
+    public static void init() {
+        Reflections r = new Reflections("fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos");
+
+        Set<Class<? extends Tetromino>> sousClasses = r.getSubTypesOf(Tetromino.class);
+        for (Class<? extends Tetromino> classe : sousClasses) {
+            try {
+                classe.getConstructor().newInstance();
+            } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
+                    | InvocationTargetException _) {
+                throw new IllegalArgumentException("Problème d'héritage avec les Tetrominos !");
+            }
+        }
+    }
+
+    //
+    // Méthodes
+    //
+
+    /**
+     * Méthode qui permet de définir le gabarit de la pièce (pour un OTetromino par
+     * exemple : [[0, 0], [1, 0], [1, -1], [0, -1]]). Fait pour être appelé dans le
+     * constucteur pour être passé à la méthode set élements, qui va ensuite définir
+     * les élement de la pièce.
+     * 
+     * @return Le gabarit en question.
+     */
+    protected abstract int[][] defGabarit();
 
     /**
      * Défini la possitions des différents élements du Tetromino
-     * @param coord Les coordonnées de l'élement de base
+     * 
+     * @param coord   Les coordonnées de l'élement de base
      * @param couleur Couleur qui sera attribué au élements du Tetromino
+     * @param gabarit Le gabarit de la pièce (pour un OTetromino par exemple : [[0,
+     *                0], [1, 0], [1, -1], [0, -1]])
      */
-    protected abstract void setElements(Coordonnees coord, Couleur couleur);
+    protected void setElements(Coordonnees coordRef, Couleur couleur, int[][] gabarit) {
+        if (gabarit == null || gabarit.length != 4) {
+            throw new IllegalArgumentException("Mauvais gabarit !");
+        }
+
+        for (int i = 0; i < 4; i++) {
+            Coordonnees coord = new Coordonnees(coordRef.getAbscisse() + gabarit[i][0],
+                    coordRef.getOrdonnee() + gabarit[i][1]);
+            Element e = new Element(coord, couleur);
+
+            this.elements[i] = e;
+        }
+    }
 
     /**
-     * Récupère la couleur par défaut de la pièce si besoins (ex: OTetromino => ROUGE)
+     * Récupère la couleur par défaut de la pièce si besoins (ex: OTetromino =>
+     * ROUGE)
      * 
      * Ex de def :
-     *      return Couleur.ROUGE;
+     * return Couleur.ROUGE;
      * 
      * @return La couleur par défaut de la pièce.
      */
     public abstract Couleur getCouleurDefaut();
 
     //
-    //  Interface Generable
+    // Interface Generable
     //
 
     @Override
@@ -72,10 +129,11 @@ public abstract class Tetromino implements Generable, Piece {
     }
 
     @Override
-    public Object generer(Object... args) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+    public Object generer(Object... args) throws InstantiationException, IllegalAccessException,
+            IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
         if (args.length != 2) {
             throw new IllegalArgumentException("Mauvais nombres d'aguments !");
-        } 
+        }
         if (!(args[0] instanceof Coordonnees && args[1] instanceof Couleur)) {
             throw new IllegalArgumentException("Mauvais types d'arguments !");
         }
@@ -84,7 +142,7 @@ public abstract class Tetromino implements Generable, Piece {
     }
 
     //
-    //  Interface Piece
+    // Interface Piece
     //
 
     @Override
@@ -166,7 +224,7 @@ public abstract class Tetromino implements Generable, Piece {
     }
 
     //
-    //  Méthodes perso
+    // Méthodes perso
     //
 
     /**

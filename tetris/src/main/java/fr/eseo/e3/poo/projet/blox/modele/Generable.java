@@ -1,10 +1,8 @@
-package fr.eseo.e3.poo.projet.blox.modele.pieces;
+package fr.eseo.e3.poo.projet.blox.modele;
 
 import java.lang.reflect.InvocationTargetException;
 
-import fr.eseo.e3.poo.projet.blox.modele.initialisation.Initialisable;
-
-public interface Generable extends Initialisable {
+public interface Generable {
     /**
      * S'enregistre dans une liste des différentes classes qui sont dans ces
      * relations d'héritage.
