@@ -44,6 +44,11 @@ public class OTetromino extends Tetromino {
     }
 
     @Override
+    public Couleur getCouleurDefaut() {
+        return Couleur.ORANGE;
+    }
+
+    @Override
     public void tourner(boolean sensHoraire) {
         // Un OTetromino ne peut pas tourner
     }

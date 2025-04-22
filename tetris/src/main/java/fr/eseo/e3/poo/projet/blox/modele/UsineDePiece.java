@@ -2,6 +2,8 @@ package fr.eseo.e3.poo.projet.blox.modele;
 
 import java.util.Random;
 
+import javax.naming.OperationNotSupportedException;
+
 import fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.ITetromino;
 import fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.OTetromino;
 import fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.Tetromino;
@@ -19,8 +21,8 @@ public class UsineDePiece {
 
     // Constructeur privé
     @SuppressWarnings("unused")
-    private UsineDePiece() {
-        throw new AssertionError("Classe non instanciable !");
+    private UsineDePiece() throws OperationNotSupportedException {
+        throw new OperationNotSupportedException("Classe non instanciable !");
     }
 
     /**

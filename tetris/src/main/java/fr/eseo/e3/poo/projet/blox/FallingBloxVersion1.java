@@ -8,12 +8,21 @@ import javax.swing.WindowConstants;
 import fr.eseo.e3.poo.projet.blox.controleur.Gravite;      
 import fr.eseo.e3.poo.projet.blox.modele.Puits;
 import fr.eseo.e3.poo.projet.blox.modele.UsineDePiece;
+import fr.eseo.e3.poo.projet.blox.modele.initialisation.Initialisateur;
 import fr.eseo.e3.poo.projet.blox.modele.pieces.Tas;
 import fr.eseo.e3.poo.projet.blox.vue.PanneauInformation;
 import fr.eseo.e3.poo.projet.blox.vue.VuePuits;
 
 public class FallingBloxVersion1 {
     public static void main(String[] args) {
+        // Initialisateur
+        Initialisateur init = new Initialisateur();
+
+        //
+        //  Inits
+        //
+
+
         JFrame frame = new JFrame("Falling Blox");
 
         // Création du puits

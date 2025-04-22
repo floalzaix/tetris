@@ -1,5 +1,7 @@
 package fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 
 import fr.eseo.e3.poo.projet.blox.modele.BloxException;
@@ -8,9 +10,13 @@ import fr.eseo.e3.poo.projet.blox.modele.Couleur;
 import fr.eseo.e3.poo.projet.blox.modele.Element;
 import fr.eseo.e3.poo.projet.blox.modele.Puits;
 import fr.eseo.e3.poo.projet.blox.modele.pieces.Fantome;
+import fr.eseo.e3.poo.projet.blox.modele.pieces.Generable;
 import fr.eseo.e3.poo.projet.blox.modele.pieces.Piece;
 
-public abstract class Tetromino implements Piece {
+public abstract class Tetromino implements Generable, Piece {
+    // Variables de classe
+    public static final List<Tetromino> TETROMINOS = new ArrayList<>();
+
     // Attributs
     protected Element[] elements;
     protected Couleur couleur;
@@ -22,13 +28,60 @@ public abstract class Tetromino implements Piece {
         this.couleur = couleur;
 
         this.setElements(coord, couleur);
+
+        // Register
+        this.register();
     }
 
     //
     //  Méthodes
     //
 
+    /**
+     * Défini la possitions des différents élements du Tetromino
+     * @param coord Les coordonnées de l'élement de base
+     * @param couleur Couleur qui sera attribué au élements du Tetromino
+     */
     protected abstract void setElements(Coordonnees coord, Couleur couleur);
+
+    /**
+     * Récupère la couleur par défaut de la pièce si besoins (ex: OTetromino => ROUGE)
+     * 
+     * Ex de def :
+     *      return Couleur.ROUGE;
+     * 
+     * @return La couleur par défaut de la pièce.
+     */
+    public abstract Couleur getCouleurDefaut();
+
+    //
+    //  Interface Generable
+    //
+
+    @Override
+    public void register() {
+        boolean instance = true;
+        for (Tetromino t : Tetromino.TETROMINOS) {
+            if (this.getClass().isInstance(t)) {
+                instance = false;
+            }
+        }
+        if (instance) {
+            Tetromino.TETROMINOS.add(this);
+        }
+    }
+
+    @Override
+    public Object generer(Object... args) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+        if (args.length != 2) {
+            throw new IllegalArgumentException("Mauvais nombres d'aguments !");
+        } 
+        if (!(args[0] instanceof Coordonnees && args[1] instanceof Couleur)) {
+            throw new IllegalArgumentException("Mauvais types d'arguments !");
+        }
+
+        return this.getClass().getConstructor(Coordonnees.class, Couleur.class).newInstance(args[0], args[1]);
+    }
 
     //
     //  Interface Piece

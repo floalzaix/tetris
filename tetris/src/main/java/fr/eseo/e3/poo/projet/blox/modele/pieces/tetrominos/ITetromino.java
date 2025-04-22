@@ -10,7 +10,10 @@ public class ITetromino extends Tetromino {
         super(coord, couleur);
     }
 
-    // Héritage de la classe abtraite Tetromino
+    //
+    //  Overrides
+    //
+
     /**
      * Le but de cette méthode est d'initialisé les elements du ITetromino
      * 
@@ -38,6 +41,11 @@ public class ITetromino extends Tetromino {
             new Element(x, y-2, couleur)
         };
     }
+
+    @Override
+    public Couleur getCouleurDefaut() {
+        return Couleur.ROUGE;
+    } 
 
     @Override
     protected Tetromino copySelf() {
