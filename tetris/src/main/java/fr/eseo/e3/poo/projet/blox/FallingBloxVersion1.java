@@ -45,7 +45,7 @@ public class FallingBloxVersion1 {
         PanneauInformation pi = new PanneauInformation(puits);
 
         // Selection du mode de l'usine
-        UsineDePiece.setMode(UsineDePiece.ALEATOIRE_COMPLET);
+        UsineDePiece.setMode(UsineDePiece.ALEATOIRE_PIECE);
 
         // Création des premières pièces
         puits.setPieceSuivante(UsineDePiece.genererTetromino());

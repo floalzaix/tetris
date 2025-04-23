@@ -21,7 +21,7 @@ public class Gravite implements ActionListener, PropertyChangeListener {
         this.vuePuits = vuePuits;
         this.puits = vuePuits.getPuits();
 
-        this.timer = new Timer(200, this);
+        this.timer = new Timer(400, this);
         this.timer.start();
 
         // S'enregistre au listeners de puits

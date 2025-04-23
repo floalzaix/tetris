@@ -26,7 +26,7 @@ public class OTetromino extends Tetromino {
 
     @Override
     public Couleur getCouleurDefaut() {
-        return Couleur.ORANGE;
+        return Couleur.ROUGE;
     }
 
     @Override
