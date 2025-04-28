@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.TetrominoTest$TestConstructeurs" time="0.016" tests="9" errors="2" skipped="0" failures="1">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.TetrominoTest$testRegister" time="0.007" tests="2" errors="2" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="23"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -60,33 +60,7 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="67.0"/>
   </properties>
-  <testcase name="testCopyModel" classname="fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.OTetrominoTest" time="0.035"/>
-  <testcase name="testCopy" classname="fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.OTetrominoTest" time="0.002"/>
-  <testcase name="testGetCouleurParDefaut" classname="fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.OTetrominoTest" time="0.002"/>
-  <testcase name="testInitAjoutInstance" classname="fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.OTetrominoTest" time="0.116">
-    <error message="Problème d&apos;héritage avec les Tetrominos !" type="java.lang.IllegalArgumentException"><![CDATA[java.lang.IllegalArgumentException: Problème d'héritage avec les Tetrominos !
-	at fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.Tetromino.init(Tetromino.java:62)
-	at fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.TetrominoTest.testInitAjoutInstance(TetrominoTest.java:191)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
-]]></error>
-    <system-err><![CDATA[SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
-SLF4J: Defaulting to no-operation (NOP) logger implementation
-SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
-]]></system-err>
-  </testcase>
-  <testcase name="testCopySelf" classname="fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.OTetrominoTest" time="0.001"/>
-  <testcase name="testDefGabarit" classname="fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.OTetrominoTest" time="0.004">
-    <failure message="Erreur de la méthode defGabarit() dans la classe Tetromino : gabarit non retourné ou non valide ! ==&gt; expected: [[I@47e2e487&lt;[[0, 0], [1, 0], [1, -1], [0, -1]]&gt; but was: [[I@201a4587&lt;[[0, 0], [1, 0], [1, -1], [0, -1]]&gt;" type="org.opentest4j.AssertionFailedError"><![CDATA[org.opentest4j.AssertionFailedError: Erreur de la méthode defGabarit() dans la classe Tetromino : gabarit non retourné ou non valide ! ==> expected: [[I@47e2e487<[[0, 0], [1, 0], [1, -1], [0, -1]]]]><![CDATA[> but was: [[I@201a4587<[[0, 0], [1, 0], [1, -1], [0, -1]]]]><![CDATA[>
-	at fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.TetrominoTest.testDefGabarit(TetrominoTest.java:207)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
-]]></failure>
-  </testcase>
-  <testcase name="testSetPosition" classname="fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.OTetrominoTest" time="0.005"/>
-  <testcase name="testConstructeur" classname="fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.TetrominoTest$TestConstructeurs" time="0.005">
+  <testcase name="testInstanceNonPresente" classname="fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.TetrominoTest$testRegister" time="0.001">
     <error message="Cannot read the array length because &quot;this.elements&quot; is null" type="java.lang.NullPointerException"><![CDATA[java.lang.NullPointerException: Cannot read the array length because "this.elements" is null
 	at fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.Tetromino.toString(Tetromino.java:290)
 	at java.base/java.lang.String.valueOf(String.java:4556)
@@ -95,15 +69,27 @@ SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further detail
 	at java.base/java.lang.String.valueOf(String.java:4556)
 	at org.apache.maven.surefire.api.report.ConsoleOutputCapture$ForwardingPrintStream.println(ConsoleOutputCapture.java:110)
 	at fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.Tetromino.register(Tetromino.java:129)
-	at fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.Tetromino.<init>(Tetromino.java:37)
-	at fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.OTetromino.<init>(OTetromino.java:12)
-	at fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.OTetrominoTest.instance(OTetrominoTest.java:18)
-	at fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.TetrominoTest$TestConstructeurs.testConstructeur(TetrominoTest.java:82)
+	at fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.TetrominoTest$testRegister.testInstanceNonPresente(TetrominoTest.java:311)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
 ]]></error>
   </testcase>
-  <testcase name="testConstructeurCoordonneesCouleurAppelSetElements" classname="fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.TetrominoTest$TestConstructeurs" time="0.002"/>
+  <testcase name="testInstancePresente" classname="fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.TetrominoTest$testRegister" time="0.001">
+    <error message="Cannot read the array length because &quot;this.elements&quot; is null" type="java.lang.NullPointerException"><![CDATA[java.lang.NullPointerException: Cannot read the array length because "this.elements" is null
+	at fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.Tetromino.toString(Tetromino.java:290)
+	at java.base/java.lang.String.valueOf(String.java:4556)
+	at java.base/java.lang.StringBuilder.append(StringBuilder.java:173)
+	at java.base/java.util.AbstractCollection.toString(AbstractCollection.java:459)
+	at java.base/java.lang.String.valueOf(String.java:4556)
+	at org.apache.maven.surefire.api.report.ConsoleOutputCapture$ForwardingPrintStream.println(ConsoleOutputCapture.java:110)
+	at fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.Tetromino.register(Tetromino.java:129)
+	at fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.TetrominoTest$testRegister.testInstancePresente(TetrominoTest.java:296)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+]]></error>
+  </testcase>
 </testsuite>

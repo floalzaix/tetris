@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
@@ -32,7 +34,13 @@ public abstract class TetrominoTest {
     public static final String START_OF_MESSAGE = "Erreur de la méthode ";
     private static final String END_OF_MESSAGE = " dans la classe Tetromino : ";
     public static final String ERREUR_CONSTRUCTEUR = "Erreur dans un constructeur" + END_OF_MESSAGE;
+    public static final String ERREUR_INIT = START_OF_MESSAGE + "init()" + END_OF_MESSAGE;
+    public static final String ERREUR_DEF_GABARIT = START_OF_MESSAGE + "defGabarit()" + END_OF_MESSAGE;
     public static final String ERREUR_SET_ELEMENTS = START_OF_MESSAGE + "setElements()" + END_OF_MESSAGE;
+    public static final String ERREUR_GET_COULEUR_PAR_DEFAUT = START_OF_MESSAGE + "getCouleurParDefaut()"
+            + END_OF_MESSAGE;
+    public static final String ERREUR_REGISTER = START_OF_MESSAGE + "register()" + END_OF_MESSAGE;
+    public static final String ERREUR_GENERER = START_OF_MESSAGE + "generer()" + END_OF_MESSAGE;
     public static final String ERREUR_SET_POSITION = "Erreur dans la méthode setPosition()" + END_OF_MESSAGE;
     public static final String ERREUR_COPY_SELF = START_OF_MESSAGE + "copySelf()" + END_OF_MESSAGE;
     public static final String ERREUR_DEPLACER_DE = "Erreur dans la méthode deplacerDe()" + END_OF_MESSAGE;
@@ -48,6 +56,22 @@ public abstract class TetrominoTest {
      */
     public abstract Tetromino instance(Coordonnees coord, Couleur couleur);
 
+    public abstract Tetromino instance();
+
+    /**
+     * Définition du gabarit pour tester des méthodes comme setElements par exemple
+     * 
+     * @return
+     */
+    public abstract int[][] getGabarit();
+
+    /**
+     * Récupère la couleur par défaut expected.
+     * 
+     * @return La couleur paar défaut expected
+     */
+    public abstract Couleur getCouleurParDefaut();
+
     //
     // Constructeurs
     //
@@ -55,9 +79,20 @@ public abstract class TetrominoTest {
     @Nested
     class TestConstructeurs {
         @Test
+        void testConstructeur() {
+            Tetromino.TETROMINOS.clear();
+            Tetromino t = instance();
+
+            // Tests
+            assertTrue(Tetromino.TETROMINOS.contains(t),
+                    ERREUR_CONSTRUCTEUR + "la fonction register n'est pas appelé dans le constructeur par défaut !");
+        }
+
+        @Test
         void testConstructeurCoordonneesCouleurAppelSetElements() {
             Tetromino t = instance(new Coordonnees(1, 5), Couleur.BLEU);
 
+            // Tests
             assertNotNull(t.getElements(),
                     ERREUR_CONSTRUCTEUR + "le constructeur n'appelle pas setElements ou setElements est mal def !");
         }
@@ -75,11 +110,12 @@ public abstract class TetrominoTest {
      * @param gabarit Le model de la sous-classe de Tetromino (ex: pour OTetromino
      *                gabarit = [[0, 0], [1, 0],
      *                [1, -1], [0, -1]])
+     * @return True si les bons élements sont au bons endroits par rapport au
+     *         gabarit donnée false sinon
      */
-    protected void bonsElements(int[][] gabarit) {
-        int x = 4, y = 5;
+    protected static boolean bonsElements(Tetromino t, int[][] gabarit) {
+        int x = 5, y = 5;
         Coordonnees c = new Coordonnees(x, y);
-        Tetromino t = instance(c, Couleur.VERT); // Appel automatiquement setElements normalement
 
         // Récupération des coordonnées
         List<Coordonnees> coords = t.getElements().stream()
@@ -90,25 +126,12 @@ public abstract class TetrominoTest {
         List<Coordonnees> coordsRef = creerCoordonneesRef(x, y, gabarit);
 
         // Tests
+        boolean ret = true;
         for (int i = 0; i < coords.size(); i++) {
-            assertEquals(coords.get(i), coordsRef.get(i), ERREUR_SET_ELEMENTS + "élements mals set ou pas set !");
+            ret &= coords.get(i).equals(coordsRef.get(i));
         }
-    }
 
-    //
-    // Tests copySelf()
-    //
-
-    @Test
-    void testCopySelf() {
-        Coordonnees coord = new Coordonnees(0, 0);
-        Tetromino o = instance(coord, Couleur.JAUNE);
-
-        // Tests
-        assertEquals(o.getClass(), o.copySelf().getClass(),
-                ERREUR_COPY_SELF + "la copie n'est pas une instance du bon type !");
-        assertNotSame(o, o.copySelf(),
-                ERREUR_COPY_SELF + "l'instance et la copie sont les même alors qu'elles ne devraient pas !");
+        return ret;
     }
 
     /**
@@ -120,7 +143,7 @@ public abstract class TetrominoTest {
      * @param gabarit cf bonsElements()
      * @return La liste des coordonnées de réferences
      */
-    private List<Coordonnees> creerCoordonneesRef(int x, int y, int[][] gabarit) {
+    protected static List<Coordonnees> creerCoordonneesRef(int x, int y, int[][] gabarit) {
         List<Coordonnees> coordsRef = new ArrayList<>();
         for (int[] g : gabarit) {
             coordsRef.add(new Coordonnees(x + g[0], y + g[1]));
@@ -152,6 +175,222 @@ public abstract class TetrominoTest {
         }
 
         return res;
+    }
+
+    //
+    // Tests init()
+    //
+
+    @Test
+    void testInitAjoutInstance() {
+        //
+        final int NB_OF_SUB_CLASSES = 7;
+        //
+
+        // init()
+        Tetromino.init();
+
+        // Tests
+        assertEquals(NB_OF_SUB_CLASSES, Tetromino.TETROMINOS.size(),
+                ERREUR_INIT + "ne créer pas les nouvelles instances de toutes les sous classes !");
+    }
+
+    //
+    // Tests defGabarit()
+    //
+
+    @Test
+    void testDefGabarit() {
+        Tetromino t = instance(new Coordonnees(1, 0), Couleur.ROUGE);
+
+        // Tests
+        assertArrayEquals(this.getGabarit(), t.defGabarit(), ERREUR_DEF_GABARIT + "gabarit non retourné ou non valide !");
+    }
+
+    //
+    // Tests setElements()
+    //
+
+    @Nested
+    class testSetElements {
+        private Method setElements;
+
+        @BeforeEach
+        void setUp() throws NoSuchMethodException, SecurityException {
+            this.setElements = Tetromino.class.getDeclaredMethod("setElements", Coordonnees.class, Couleur.class,
+                    int[][].class);
+        }
+
+        @Test
+        void testGabaritNull() {
+            Coordonnees coord = new Coordonnees(5, 5);
+            Tetromino t = instance(coord, Couleur.ORANGE);
+
+            // Tests
+            InvocationTargetException e = assertThrows(
+                    InvocationTargetException.class,
+                    () -> this.setElements.invoke(t, coord, Couleur.ROUGE, null),
+                    ERREUR_SET_ELEMENTS + "ne lève pas une exception alors que le gabarit est null !");
+            assertTrue(e.getCause() instanceof IllegalArgumentException,
+                    ERREUR_SET_ELEMENTS + "lève la mauvaise exception !");
+        }
+
+        @Test
+        void testGabaritTailleDifferentDeQuatre() {
+            Coordonnees coord = new Coordonnees(5, 5);
+            Tetromino t = instance(coord, Couleur.ORANGE);
+
+            // Tests
+            InvocationTargetException e = assertThrows(
+                    InvocationTargetException.class,
+                    () -> this.setElements.invoke(t, coord, Couleur.ROUGE, new int[][] { { 1, 1 } }),
+                    ERREUR_SET_ELEMENTS + "ne lève pas une exception alors que le gabarit n'est pas de tailel 4 !");
+            assertTrue(e.getCause() instanceof IllegalArgumentException,
+                    ERREUR_SET_ELEMENTS + "lève la mauvaise exception !");
+        }
+
+        @Test
+        void testValidite() throws IllegalAccessException, InvocationTargetException {
+            Coordonnees coord = new Coordonnees(0, 0);
+            Tetromino t = instance(coord, Couleur.VERT);
+
+            // Def objectifs
+            Coordonnees c2 = new Coordonnees(5, 5);
+
+            // setElements()
+            this.setElements.invoke(t, c2, Couleur.ORANGE, getGabarit());
+
+            // Tests
+            assertTrue(
+                    bonsElements(t, getGabarit()),
+                    ERREUR_SET_ELEMENTS + "les élements ne sont pas bien positionnés !");
+            assertEquals(Couleur.ORANGE, t.getElements().getFirst().getCouleur(),
+                    ERREUR_SET_ELEMENTS + "ne set pas la bonne couleur !");
+        }
+    }
+
+    //
+    // Tests getCouleurParDefaut()
+    //
+
+    @Test
+    void testGetCouleurParDefaut() {
+        Tetromino t = instance(new Coordonnees(2, 5), Couleur.JAUNE);
+
+        // Tests
+        assertEquals(getCouleurParDefaut(), t.getCouleurDefaut(),
+                ERREUR_GET_COULEUR_PAR_DEFAUT + "la couleur par défaut n'est aps définie !");
+    }
+
+    //
+    // Tests register()
+    //
+
+    @Nested
+    class testRegister {
+        @Test
+        void testInstancePresente() {
+            Tetromino t1 = instance(new Coordonnees(0, 0), Couleur.CYAN);
+            Tetromino t2 = instance(new Coordonnees(5, 0), Couleur.CYAN);
+
+            t1.register();
+
+            // register()
+            t2.register();
+
+            // Tests
+            assertFalse(Tetromino.TETROMINOS.contains(t2),
+                    ERREUR_REGISTER + "deux tetrominos de mêmes type sont enregistrés !");
+        }
+
+        @Test
+        void testInstanceNonPresente() {
+            Tetromino.TETROMINOS.clear();
+            Tetromino t1 = instance(new Coordonnees(0, 0), Couleur.CYAN);
+
+            // register()
+            t1.register();
+
+            // Tests
+            assertTrue(Tetromino.TETROMINOS.contains(t1), ERREUR_REGISTER + "n'enregistre pas le tetromino !");
+        }
+    }
+
+    //
+    // Tests generer()
+    //
+
+    @Nested
+    class testGenerer {
+        @Test
+        void testMauvaisNombreParametres() {
+            Tetromino t = instance(new Coordonnees(5, 5), Couleur.VERT);
+
+            // Tests
+            IllegalArgumentException e = assertThrows(
+                IllegalArgumentException.class,
+                    t::generer,
+                    ERREUR_GENERER
+                            + "erreur non levée alors que le nombre d'arguments fournis à la méthode n'est pas le bon !");
+            assertEquals(
+                "Mauvais nombres d'aguments !",
+                e.getMessage(),
+                ERREUR_GENERER + "mauvais message d'erreur !");
+        }
+
+        @Test
+        void testMauvaisTypeCoordonne() {
+            Tetromino t = instance(new Coordonnees(5, 5), Couleur.VERT);
+
+            // Tests
+            IllegalArgumentException e = assertThrows(
+                    IllegalArgumentException.class,
+                    () -> t.generer(Couleur.CYAN, Couleur.CYAN),
+                    ERREUR_GENERER
+                            + "erreur non levée alors que le type d'argument n'est pas le bon");
+            assertEquals(
+                "Mauvais types d'arguments !",
+                e.getMessage(),
+                ERREUR_GENERER + "Mauvais types d'arguments !");
+        }
+
+        @Test
+        void testMauvaisTypeCouleur() {
+            Tetromino t = instance(new Coordonnees(5, 5), Couleur.VERT);
+
+            // Tests
+            IllegalArgumentException e = assertThrows(
+                    IllegalArgumentException.class,
+                    () -> t.generer(new Coordonnees(10, 10), new Object()),
+                    ERREUR_GENERER
+                            + "erreur non levée alors que le type d'argument n'est pas le bon");
+            assertEquals(
+                "Mauvais types d'arguments !",
+                e.getMessage(),
+                ERREUR_GENERER + "Mauvais types d'arguments !");
+        }
+
+        @Test
+        void testValide() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+            Coordonnees coord = new Coordonnees(5, 5);
+            Tetromino t = instance(coord, Couleur.VIOLET);
+
+            // generer()
+            Tetromino newT = (Tetromino) t.generer(coord, Couleur.VIOLET);
+
+            // Tests
+            assertNotSame(newT, t, ERREUR_GENERER + "génère une copie et pas un nouveau Tetromnio !");
+            assertEquals(
+                coord,
+                newT.getElements().getFirst().getCoord(),
+                ERREUR_GENERER + "les coordonnée données ne sont pas les même aprés l'appel de la fonction !"
+            );
+            assertEquals(
+                Couleur.VIOLET,
+                newT.getElements().getFirst().getCouleur(),
+                ERREUR_GENERER + "la couleur donnée ne sont pas les même aprés l'appel de la fonction !"
+            );
+        }
     }
 
     //
@@ -308,7 +547,7 @@ public abstract class TetrominoTest {
     @Nested
     class testsTourner {
         //
-        //  Opérations
+        // Opérations
         //
 
         @Test
@@ -345,9 +584,8 @@ public abstract class TetrominoTest {
                 t.tourner(false);
             } else {
                 assertThrows(BloxException.class,
-                    () -> t.tourner(false),
-                    ERREUR_TOURNER + "exception non lancée alors que devrait de type BloxException !"
-                );
+                        () -> t.tourner(false),
+                        ERREUR_TOURNER + "exception non lancée alors que devrait de type BloxException !");
             }
 
             // Tests
@@ -356,7 +594,7 @@ public abstract class TetrominoTest {
         }
 
         //
-        //  Projection
+        // Projection
         //
 
         @Test
@@ -378,9 +616,9 @@ public abstract class TetrominoTest {
             // Test
             if (!(t instanceof OTetromino)) {
                 assertNotEquals(copyInitiale.getElements(),
-                    puits.getFantome().getCopyPiece().getElements(),
-                    ERREUR_SET_POSITION
-                            + "la méthode projection() du puits n'a pas été appelée alors qu'elle aurait dûe !");
+                        puits.getFantome().getCopyPiece().getElements(),
+                        ERREUR_SET_POSITION
+                                + "la méthode projection() du puits n'a pas été appelée alors qu'elle aurait dûe !");
             }
         }
     }
@@ -399,6 +637,22 @@ public abstract class TetrominoTest {
         // Tests
         assertTrue(t.copy() instanceof Tetromino, ERREUR_COPY + "la copie n'est pas une instance de Tetromino");
         assertNotSame(t, t.copy(), ERREUR_COPY + "l'instance de tertromino a mal été copiée !");
+    }
+
+    //
+    // Tests copySelf()
+    //
+
+    @Test
+    void testCopySelf() {
+        Coordonnees coord = new Coordonnees(0, 0);
+        Tetromino o = instance(coord, Couleur.JAUNE);
+
+        // Tests
+        assertEquals(o.getClass(), o.copySelf().getClass(),
+                ERREUR_COPY_SELF + "la copie n'est pas une instance du bon type !");
+        assertNotSame(o, o.copySelf(),
+                ERREUR_COPY_SELF + "l'instance et la copie sont les même alors qu'elles ne devraient pas !");
     }
 
     //

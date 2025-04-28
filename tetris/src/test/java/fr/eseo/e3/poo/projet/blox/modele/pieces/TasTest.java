@@ -296,24 +296,28 @@ class TasTest {
 
             @Test
             void testDescenteElements() throws IllegalAccessException, InvocationTargetException {
-                Tas tas = new Tas(new Puits(3, 20), 6, 2);
+                Tas tas = new Tas(new Puits(5, 20), 10, 2);
 
                 Element e1 = new Element(new Coordonnees(0, 16));
                 Element e2 = new Element(new Coordonnees(0, 15));
                 Element e3 = new Element(new Coordonnees(1, 15));
                 Element e4 = new Element(new Coordonnees(2, 15));
-                Element e5 = new Element(new Coordonnees(0, 14));
+                Element e5 = new Element(new Coordonnees(3, 15));
+                Element e6 = new Element(new Coordonnees(4, 15));
+                Element e7 = new Element(new Coordonnees(0, 14));
                 tas.getElements().add(e1);
                 tas.getElements().add(e2);
                 tas.getElements().add(e3);
                 tas.getElements().add(e4);
                 tas.getElements().add(e5);
+                tas.getElements().add(e6);
+                tas.getElements().add(e7);
 
                 method.invoke(tas);
 
                 assertEquals(18, e1.getCoord().getOrdonnee(),
                         ERREUR_LIGNE_COMPLETE + "mauvaise descente des élements !");
-                assertEquals(17, e5.getCoord().getOrdonnee(),
+                assertEquals(17, e7.getCoord().getOrdonnee(),
                         ERREUR_LIGNE_COMPLETE + "mauvaise descente des élements !");
             }
 
