@@ -14,6 +14,13 @@ import fr.eseo.e3.poo.projet.blox.vue.PanneauInformation;
 import fr.eseo.e3.poo.projet.blox.vue.VuePuits;
 
 public class FallingBloxVersion1 {
+    //
+    //  Params
+    //
+
+    public static final int SIZE = 30;
+    public static final int SIZE_INFO = 10;
+
     public static void main(String[] args) {
         //
         //  Init
@@ -42,7 +49,7 @@ public class FallingBloxVersion1 {
         VuePuits vuePuits = new VuePuits(puits, 30);
 
         // Création de la panneau d'information
-        PanneauInformation pi = new PanneauInformation(puits);
+        PanneauInformation pi = new PanneauInformation(puits, SIZE_INFO);
 
         // Selection du mode de l'usine
         UsineDePiece.setMode(UsineDePiece.ALEATOIRE_PIECE);
