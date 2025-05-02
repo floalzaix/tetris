@@ -28,7 +28,7 @@ public class PanneauInformation extends JPanel implements PropertyChangeListener
 
         this.puits.addPropertyChangeListener(this);
 
-        this.setPreferredSize(new Dimension(sizeInfo + 60, this.getHeight()));
+        this.setPreferredSize(new Dimension(sizeInfo + 50, this.getHeight()));
 
         // Affichage du score
         this.score = new JLabel("0");
