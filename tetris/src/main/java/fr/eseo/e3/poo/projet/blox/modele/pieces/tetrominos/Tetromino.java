@@ -121,6 +121,7 @@ public abstract class Tetromino implements Generable, Piece {
         for (Tetromino t : Tetromino.TETROMINOS) {
             if (this.getClass().isInstance(t)) {
                 instance = false;
+                break;
             }
         }
         if (instance) {

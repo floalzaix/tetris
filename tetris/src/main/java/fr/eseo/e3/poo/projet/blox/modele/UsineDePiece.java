@@ -49,7 +49,7 @@ public class UsineDePiece {
             case ALEATOIRE_PIECE -> genererAleatoirePiece(nbTetromino);
             case CYCLIC -> genererCyclic(nbTetromino);
             default -> {
-                throw new IllegalArgumentException("Mode non valide !");
+                throw new IllegalArgumentException("Mode non supporté valide !");
             }
         };
     }
