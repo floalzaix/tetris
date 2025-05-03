@@ -1,6 +1,7 @@
 package fr.eseo.e3.poo.projet.blox.controleur;
 
 import java.awt.CardLayout;
+import java.util.HashMap;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -9,15 +10,19 @@ public class Router {
     //
     //  Variables d'instances
     //
+    private JFrame frame;
     private final CardLayout layout;
     private final JPanel panels;
+    private final HashMap<String, JPanel> routes;
 
     //
     //  Constructeurs
     //
     public Router(JFrame frame) {
+        this.frame = frame;
         this.layout = new CardLayout();
         this.panels = new JPanel(this.layout);
+        this.routes = new HashMap<>();
 
         frame.add(panels);
     }
@@ -33,6 +38,7 @@ public class Router {
      */
     public void ajouterRoute(JPanel panel, String routeName) {
         this.panels.add(panel, routeName);
+        this.routes.put(routeName, panel);
     }
 
     /**
@@ -40,6 +46,15 @@ public class Router {
      * @param routeName L'alias de la route
      */
     public void router(String routeName) {
-        this.layout.show(panels, routeName);
+        // Récupération panel
+        JPanel panel = this.routes.get(routeName);
+
+        // Changement de panel
+        this.layout.show(this.panels, routeName);
+
+        // Adaptation de la taille
+        this.panels.setPreferredSize(panel.getPreferredSize());
+        this.frame.pack();
+        this.frame.setLocationRelativeTo(null);
     }
 }

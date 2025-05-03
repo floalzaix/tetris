@@ -3,6 +3,7 @@ package fr.eseo.e3.poo.projet.blox.vue;
 import java.awt.BorderLayout;
 
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import fr.eseo.e3.poo.projet.blox.controleur.Gravite;
 import fr.eseo.e3.poo.projet.blox.modele.Jeu;
@@ -41,10 +42,13 @@ public class VueJeu extends JPanel {
         // Layout
         this.setLayout(new BorderLayout());
 
-        this.add(vuePuits, BorderLayout.CENTER);
-        this.add(pi, BorderLayout.EAST);
+        this.add(this.vuePuits, BorderLayout.CENTER);
+        this.add(this.pi, BorderLayout.EAST);
 
         // Gravite
         Gravite _ = new Gravite(this.vuePuits);
+
+        // Clavier
+        SwingUtilities.invokeLater(this.vuePuits::requestFocusInWindow);
     }
 }

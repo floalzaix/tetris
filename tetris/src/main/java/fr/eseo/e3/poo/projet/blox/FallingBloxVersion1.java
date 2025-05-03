@@ -4,20 +4,16 @@ import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
 import fr.eseo.e3.poo.projet.blox.controleur.Router;
-import fr.eseo.e3.poo.projet.blox.modele.Jeu;
-import fr.eseo.e3.poo.projet.blox.vue.VueJeu;
+import fr.eseo.e3.poo.projet.blox.vue.VueMenu;
 
 public class FallingBloxVersion1 {
     public static void main(String[] args) {
         // Fenêtre
-        JFrame frame = new JFrame("Falling Blox");
-
-        // Jeu
-        Jeu jeu = new Jeu();
+        JFrame frame = new JFrame("Falling Blox V1");
 
         // Router
         Router router = new Router(frame);
-        router.ajouterRoute(new VueJeu(jeu), "JEU");
+        router.ajouterRoute(new VueMenu(router), "MENU");
 
         // Parametrage de la fenêtre
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
