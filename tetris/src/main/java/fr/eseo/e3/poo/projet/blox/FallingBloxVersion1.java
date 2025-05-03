@@ -1,11 +1,9 @@
 package fr.eseo.e3.poo.projet.blox;
 
-import java.awt.CardLayout;
-
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
+import fr.eseo.e3.poo.projet.blox.controleur.Router;
 import fr.eseo.e3.poo.projet.blox.modele.Jeu;
 import fr.eseo.e3.poo.projet.blox.vue.VueJeu;
 
@@ -14,19 +12,16 @@ public class FallingBloxVersion1 {
         // Fenêtre
         JFrame frame = new JFrame("Falling Blox");
 
-        // Layout
-        CardLayout layout = new CardLayout();
-        frame.setLayout(layout);
-
-        // Panels
-        JPanel panels = new JPanel(layout);
+        // Jeu
         Jeu jeu = new Jeu();
-        panels.add(new VueJeu(jeu), "JEU");
+
+        // Router
+        Router router = new Router(frame);
+        router.ajouterRoute(new VueJeu(jeu), "JEU");
 
         // Parametrage de la fenêtre
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
-        frame.add(panels);
         frame.pack();
         frame.setResizable(false);
         frame.setLocationRelativeTo(null); 
