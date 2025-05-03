@@ -11,20 +11,20 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import fr.eseo.e3.poo.projet.blox.controleur.Router;
+import fr.eseo.e3.poo.projet.blox.controleur.Routeur;
 import fr.eseo.e3.poo.projet.blox.modele.Jeu;
 
 public class VueMenu extends JPanel {
     //
     // Variables d'instance
     //
-    private Router router;
+    private Routeur routeur;
 
     //
     // Constructeurs
     //
-    public VueMenu(Router router) {
-        this.router = router;
+    public VueMenu(Routeur routeur) {
+        this.routeur = routeur;
 
         // Layout
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -52,8 +52,8 @@ public class VueMenu extends JPanel {
         nouvellePartie.setAlignmentX(Component.CENTER_ALIGNMENT);
         nouvellePartie.addActionListener(_ -> {
             Jeu jeu = new Jeu();
-            router.ajouterRoute(new VueJeu(jeu), "JEU");
-            router.router("JEU");
+            routeur.ajouterRoute(new VueJeu(jeu), "JEU");
+            routeur.router("JEU");
         });
         this.add(nouvellePartie);
 

@@ -6,11 +6,11 @@ import java.util.HashMap;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-public class Router {
+public class Routeur {
     //
     //  Variables d'instances
     //
-    private JFrame frame;
+    private final JFrame frame;
     private final CardLayout layout;
     private final JPanel panels;
     private final HashMap<String, JPanel> routes;
@@ -18,7 +18,7 @@ public class Router {
     //
     //  Constructeurs
     //
-    public Router(JFrame frame) {
+    public Routeur(JFrame frame) {
         this.frame = frame;
         this.layout = new CardLayout();
         this.panels = new JPanel(this.layout);
