@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Optional;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -26,6 +27,12 @@ public class PanneauInformation extends JPanel implements PropertyChangeListener
         this.sizeInfo = sizeInfo;
         this.puits = puits;
 
+        Optional<Piece> pieceSuivante = Optional.ofNullable(puits.getPieceSuivante());
+
+        pieceSuivante.ifPresent(
+            p -> this.vuePiece = new VuePiece(p, sizeInfo)
+        );
+
         this.puits.addPropertyChangeListener(this);
 
         this.setPreferredSize(new Dimension(sizeInfo + 50, this.getHeight()));
@@ -40,7 +47,7 @@ public class PanneauInformation extends JPanel implements PropertyChangeListener
         this.add(this.score, BorderLayout.CENTER);
     }
 
-    // Implemente PropertyChangeListener
+    // Implementation de PropertyChangeListener
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (Puits.MODIFICATION_PIECE_SUIVANTE.equals(evt.getPropertyName())) {

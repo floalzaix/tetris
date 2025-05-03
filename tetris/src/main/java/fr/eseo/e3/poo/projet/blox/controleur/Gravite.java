@@ -11,7 +11,7 @@ import fr.eseo.e3.poo.projet.blox.modele.Puits;
 import fr.eseo.e3.poo.projet.blox.vue.VuePuits;
 
 public class Gravite implements ActionListener, PropertyChangeListener {
-    // Atttributs
+    // Attributs
     private final Timer timer;
 
     private final VuePuits vuePuits;

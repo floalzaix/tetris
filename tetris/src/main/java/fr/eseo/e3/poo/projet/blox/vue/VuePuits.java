@@ -6,12 +6,14 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Optional;
 
 import javax.swing.JPanel;
 
 import fr.eseo.e3.poo.projet.blox.controleur.Clavier;
 import fr.eseo.e3.poo.projet.blox.controleur.Souris;
 import fr.eseo.e3.poo.projet.blox.modele.Puits;
+import fr.eseo.e3.poo.projet.blox.modele.pieces.Fantome;
 import fr.eseo.e3.poo.projet.blox.modele.pieces.Piece;
 
 /**
@@ -37,8 +39,15 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
         this.setPuits(puits);
         this.setTaille(taille);
 
-        this.vuePiece = null;
-        this.vueFantome = null;
+        Optional<Piece> pieceActuelle = Optional.ofNullable(this.puits.getPieceActuelle()); 
+        Optional<Fantome> fantome = Optional.ofNullable(this.puits.getFantome());
+
+        pieceActuelle.ifPresent(
+            p -> this.vuePiece = new VuePiece(p, taille)
+        );
+        fantome.ifPresent(
+            f -> this.vueFantome = new VueFantome(f, taille)
+        );
         this.vueTas = new VueTas(this, this.taille);
 
         this.setBackground(Color.WHITE);
