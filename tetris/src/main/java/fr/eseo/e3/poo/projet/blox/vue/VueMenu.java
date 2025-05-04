@@ -54,16 +54,6 @@ public class VueMenu extends JPanel {
             this.routeur.router("CONFIG");
         });
         this.add(np);
-        
-        // Boutons
-        // JButton nouvellePartie = new JButton("Nouvelle Partie");
-        // nouvellePartie.setAlignmentX(Component.CENTER_ALIGNMENT);
-        // nouvellePartie.addActionListener(_ -> {
-        //     Jeu jeu = new Jeu();
-        //     routeur.ajouterRoute(new VueJeu(jeu), "JEU");
-        //     routeur.router("JEU");
-        // });
-        // this.add(nouvellePartie);
 
         this.add(Box.createVerticalGlue());
     }

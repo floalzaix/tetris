@@ -9,3 +9,4 @@
 * [ ] Entrainer une ia
 * [ ] Jeu en ligne
 * [ ] Enlever les assertionError
+* [ ] Ajouter acceleration

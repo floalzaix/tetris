@@ -3,6 +3,7 @@ package fr.eseo.e3.poo.projet.blox.controleur;
 import java.awt.CardLayout;
 import java.util.HashMap;
 
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -12,8 +13,8 @@ public class Routeur {
     //
     private final JFrame frame;
     private final CardLayout layout;
-    private final JPanel panels;
-    private final HashMap<String, JPanel> routes;
+    private final JComponent panels;
+    private final HashMap<String, JComponent> routes;
 
     //
     //  Constructeurs
@@ -36,7 +37,7 @@ public class Routeur {
      * @param panel La page ajouter au layout
      * @param routeName L'alias donné à la page
      */
-    public void ajouterRoute(JPanel panel, String routeName) {
+    public void ajouterRoute(JComponent panel, String routeName) {
         this.panels.add(panel, routeName);
         this.routes.put(routeName, panel);
     }
@@ -47,7 +48,7 @@ public class Routeur {
      */
     public void router(String routeName) {
         // Récupération panel
-        JPanel panel = this.routes.get(routeName);
+        JComponent panel = this.routes.get(routeName);
 
         // Changement de panel
         this.layout.show(this.panels, routeName);

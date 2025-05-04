@@ -18,6 +18,10 @@ public class FallingBloxVersion1 {
         routeur.ajouterRoute(new VueConfig(routeur), "CONFIG");
         routeur.router("MENU");
 
+        // Jeu jeu = new Jeu(10, 20, 0, UsineDePiece.ALEATOIRE_PIECE);
+        // routeur.ajouterRoute(new VueJeu(routeur, jeu), "JEU");
+        // routeur.router("JEU");
+
         // Parametrage de la fenêtre
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);

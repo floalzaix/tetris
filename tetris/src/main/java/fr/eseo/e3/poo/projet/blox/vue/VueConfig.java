@@ -89,7 +89,7 @@ public class VueConfig extends JPanel {
         conf.setBackground(Color.WHITE);
         conf.addActionListener(_ -> {
             Jeu jeu = new Jeu(largueur.getValue(), profondeur.getValue(), niveau.getValue(), options.get(modes.getSelectedItem()));
-            this.routeur.ajouterRoute(new VueJeu(jeu), "JEU");
+            this.routeur.ajouterRoute(new VueJeu(this.routeur, jeu), "JEU");
             this.routeur.router("JEU");
         });
         this.add(conf);
