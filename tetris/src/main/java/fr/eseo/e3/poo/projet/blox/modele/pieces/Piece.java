@@ -46,6 +46,11 @@ public interface Piece {
     public void tourner(boolean sensHoraire) throws BloxException;
 
     /**
+     * Permet de déposer au fond du puits la pièce.
+     */
+    public void faireTomber();
+
+    /**
      * Clones the object
      * 
      * @return A copy of the object

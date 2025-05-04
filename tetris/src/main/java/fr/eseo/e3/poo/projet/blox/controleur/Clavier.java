@@ -54,13 +54,7 @@ public class Clavier extends KeyAdapter {
                     }
                 }
                 case KeyEvent.VK_SPACE -> {
-                    try {
-                        for (int i = 0; i < 24; i++) {
-                            piece.deplacerDe(0, 1);
-                        }
-                    } catch (BloxException e1) {
-                        break;
-                    }
+                    piece.faireTomber();
                 }
                 default -> {/* Rien ne se passe si une autre touche est pressée */}
             }

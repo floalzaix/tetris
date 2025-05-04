@@ -220,6 +220,17 @@ public abstract class Tetromino implements Generable, Piece {
     }
 
     @Override
+    public void faireTomber() {
+        try {
+            for (int i = 0; i < 25; i++) {
+                this.deplacerDe(0, 1);
+            }
+        } catch (BloxException e1) {
+            // Pas besoin de gérer la collision ici
+        }
+    }
+
+    @Override
     public Object copy() {
         return copyModel(copySelf());
     }
