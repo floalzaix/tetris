@@ -12,7 +12,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import fr.eseo.e3.poo.projet.blox.controleur.Routeur;
-import fr.eseo.e3.poo.projet.blox.modele.Jeu;
 
 public class VueMenu extends JPanel {
     //
@@ -46,16 +45,25 @@ public class VueMenu extends JPanel {
         this.add(titre);
 
         this.add(Box.createRigidArea(new Dimension(0, 35)));
+
+        // Nouvelle partie
+        JButton np = new JButton("Nouvelle Partie");
+        np.setAlignmentX(Component.CENTER_ALIGNMENT);
+        np.setBackground(Color.WHITE);
+        np.addActionListener(_ -> {
+            this.routeur.router("CONFIG");
+        });
+        this.add(np);
         
         // Boutons
-        JButton nouvellePartie = new JButton("Nouvelle Partie");
-        nouvellePartie.setAlignmentX(Component.CENTER_ALIGNMENT);
-        nouvellePartie.addActionListener(_ -> {
-            Jeu jeu = new Jeu();
-            routeur.ajouterRoute(new VueJeu(jeu), "JEU");
-            routeur.router("JEU");
-        });
-        this.add(nouvellePartie);
+        // JButton nouvellePartie = new JButton("Nouvelle Partie");
+        // nouvellePartie.setAlignmentX(Component.CENTER_ALIGNMENT);
+        // nouvellePartie.addActionListener(_ -> {
+        //     Jeu jeu = new Jeu();
+        //     routeur.ajouterRoute(new VueJeu(jeu), "JEU");
+        //     routeur.router("JEU");
+        // });
+        // this.add(nouvellePartie);
 
         this.add(Box.createVerticalGlue());
     }

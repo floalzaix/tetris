@@ -40,7 +40,7 @@ public class Tas {
     }
 
     public Tas(Puits puits, int nbElements) throws IllegalArgumentException {
-        this(puits, nbElements, nbElements / puits.getLargueur() + 1, null);
+        this(puits, nbElements, nbElements / puits.getLargueur() + 1, null); 
     }
 
     public Tas(Puits puits, int nbElements, int nbLignes) throws IllegalArgumentException {

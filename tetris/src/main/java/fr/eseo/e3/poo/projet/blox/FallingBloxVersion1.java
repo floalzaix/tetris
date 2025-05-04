@@ -4,6 +4,7 @@ import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
 import fr.eseo.e3.poo.projet.blox.controleur.Routeur;
+import fr.eseo.e3.poo.projet.blox.vue.VueConfig;
 import fr.eseo.e3.poo.projet.blox.vue.VueMenu;
 
 public class FallingBloxVersion1 {
@@ -14,6 +15,8 @@ public class FallingBloxVersion1 {
         // Routeur
         Routeur routeur = new Routeur(frame);
         routeur.ajouterRoute(new VueMenu(routeur), "MENU");
+        routeur.ajouterRoute(new VueConfig(routeur), "CONFIG");
+        routeur.router("MENU");
 
         // Parametrage de la fenêtre
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

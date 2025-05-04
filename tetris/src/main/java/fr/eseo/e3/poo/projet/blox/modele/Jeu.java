@@ -1,5 +1,6 @@
 package fr.eseo.e3.poo.projet.blox.modele;
 
+import fr.eseo.e3.poo.projet.blox.modele.pieces.Tas;
 import fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.Tetromino;
 
 public class Jeu {
@@ -12,7 +13,7 @@ public class Jeu {
     //
     //  Constructeurs
     //
-    public Jeu() {
+    public Jeu(int largueur, int profondeur, int niveau, int modeUsine) {
         //
         //  Init
         //
@@ -20,10 +21,11 @@ public class Jeu {
         Tetromino.init();
 
         // Selection du mode de l'usine
-        UsineDePiece.setMode(UsineDePiece.ALEATOIRE_PIECE);
+        UsineDePiece.setMode(modeUsine);
 
         // Puits
-        this.puits = new Puits(10, 20);
+        this.puits = new Puits(largueur, profondeur);
+        this.puits.setTas(new Tas(this.puits, niveau));
         puits.setPieceSuivante(UsineDePiece.genererTetromino());
         puits.setPieceSuivante(UsineDePiece.genererTetromino());
     }
