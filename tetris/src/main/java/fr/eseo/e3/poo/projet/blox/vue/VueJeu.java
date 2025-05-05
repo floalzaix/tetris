@@ -2,12 +2,14 @@ package fr.eseo.e3.poo.projet.blox.vue;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.KeyboardFocusManager;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 
 import fr.eseo.e3.poo.projet.blox.controleur.Gravite;
 import fr.eseo.e3.poo.projet.blox.controleur.Routeur;
@@ -64,7 +66,18 @@ public class VueJeu extends JLayeredPane implements PropertyChangeListener {
         Gravite _ = new Gravite(this.vuePuits);
 
         // Clavier
-        SwingUtilities.invokeLater(this.vuePuits::requestFocusInWindow);
+        SwingUtilities.invokeLater(() -> {
+            Timer timer = new Timer(100, null);
+
+            timer.addActionListener(_ -> {
+                this.vuePuits.requestFocusInWindow();
+                if (KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner() == this.vuePuits) {
+                    timer.stop();
+                }
+            });
+
+            timer.start();
+        });
 
         // Fin de partie
         this.jeu.getPuits().addPropertyChangeListener(this);

@@ -17,11 +17,12 @@ import javax.swing.JPanel;
 import fr.eseo.e3.poo.projet.blox.controleur.Client;
 import fr.eseo.e3.poo.projet.blox.controleur.Routeur;
 import fr.eseo.e3.poo.projet.blox.modele.Couleur;
+import fr.eseo.e3.poo.projet.blox.modele.Jeu;
 import fr.eseo.e3.poo.projet.blox.modele.Joueur;
 
 public class VueJoueurs extends JPanel implements PropertyChangeListener {
     //
-    //  Variables d'instance
+    // Variables d'instance
     //
     private final Routeur routeur;
     private final Joueur joueur;
@@ -29,7 +30,7 @@ public class VueJoueurs extends JPanel implements PropertyChangeListener {
     private final boolean admin;
 
     //
-    //   Constructeurs
+    // Constructeurs
     //
     public VueJoueurs(Routeur routeur, Joueur joueur, Client client, boolean admin) {
         this.routeur = routeur;
@@ -48,13 +49,13 @@ public class VueJoueurs extends JPanel implements PropertyChangeListener {
         this.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
         //
-        //  Contenu
+        // Contenu
         //
 
         this.add(Box.createVerticalGlue());
 
         // Titre
-        JLabel titre = new JLabel("Lobby : " + this.client.getLocalSocketAddress());
+        JLabel titre = new JLabel("Lobby : " + this.client.getRemoteSocketAddress());
         titre.setAlignmentX(Component.CENTER_ALIGNMENT);
         titre.setFont(new Font("sans-serif", Font.BOLD, 20));
         this.add(titre);
@@ -73,7 +74,6 @@ public class VueJoueurs extends JPanel implements PropertyChangeListener {
             this.add(j);
             this.add(Box.createRigidArea(new Dimension(0, 15)));
         }
-        
 
         // Bouton démarrer si admin
         if (admin) {
@@ -81,7 +81,7 @@ public class VueJoueurs extends JPanel implements PropertyChangeListener {
             start.setAlignmentX(Component.CENTER_ALIGNMENT);
             start.setBackground(Color.WHITE);
             start.addActionListener(_ -> {
-
+                client.startJeu();
             });
             this.add(start);
         }
@@ -93,13 +93,15 @@ public class VueJoueurs extends JPanel implements PropertyChangeListener {
     }
 
     //
-    //   Overrides
+    // Overrides
     //
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (Joueur.EVT_JEU_CREER.equals(evt.getPropertyName())) {
-            
+            Jeu jeu = (Jeu) evt.getNewValue();
+            this.routeur.ajouterRoute(new VueJeu(routeur, jeu), "JEU");
+            this.routeur.router("JEU");
         }
     }
 }

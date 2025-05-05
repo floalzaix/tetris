@@ -20,7 +20,7 @@ public class FallingBloxVersion1 {
         routeur.ajouterRoute(new VueConfig(routeur), "CONFIG");
         routeur.ajouterRoute(new VueLobby(routeur), "LOBBY");
         routeur.ajouterRoute(new VueConnexion(routeur), "CONNEXION");
-        routeur.router("LOBBY");
+        routeur.router("MENU");
 
         // Jeu jeu = new Jeu(10, 20, 0, UsineDePiece.ALEATOIRE_PIECE);
         // routeur.ajouterRoute(new VueJeu(routeur, jeu), "JEU");
