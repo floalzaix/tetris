@@ -1,4 +1,4 @@
-package fr.eseo.e3.poo.projet.blox.modele;
+package fr.eseo.e3.poo.projet.blox.controleur;
 
 import java.net.InetSocketAddress;
 import java.util.HashMap;
@@ -6,6 +6,8 @@ import java.util.HashMap;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
+
+import fr.eseo.e3.poo.projet.blox.modele.Couleur;
 
 public class Lobby extends WebSocketServer {
     //
@@ -68,7 +70,7 @@ public class Lobby extends WebSocketServer {
         String command = params[0];
         switch (command) {
             case "LIGNES" -> {
-                int nbLignes = Integer.parseInt(msg);
+                int nbLignes = Integer.parseInt(params[2]);
                 this.broadcast("LIGNES|" + this.users.get(ws) + "|" + nbLignes);
             }
             case "START" -> {
@@ -77,7 +79,7 @@ public class Lobby extends WebSocketServer {
                         "START" + "|" + this.largueur + "|" + this.profondeur + "|" + this.niveau + "|" + this.mode);
             }
             default -> {
-                ws.send("ERREUR|" + "Mauvaise commande !");
+                ws.send("ERREUR|" + "Mauvaise commande : " + command);
             }
         }
     }

@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.net.InetSocketAddress;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -55,7 +56,10 @@ public class VueJoueurs extends JPanel implements PropertyChangeListener {
         this.add(Box.createVerticalGlue());
 
         // Titre
-        JLabel titre = new JLabel("Lobby : " + this.client.getRemoteSocketAddress());
+        InetSocketAddress add = this.client.getRemoteSocketAddress();
+        String host = add.getAddress().getHostAddress();
+        int port = add.getPort();
+        JLabel titre = new JLabel("Lobby : " + "ws://" + host + ":" + port);
         titre.setAlignmentX(Component.CENTER_ALIGNMENT);
         titre.setFont(new Font("sans-serif", Font.BOLD, 20));
         this.add(titre);

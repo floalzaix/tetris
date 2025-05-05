@@ -1,5 +1,6 @@
 package fr.eseo.e3.poo.projet.blox.modele.pieces;
 
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -134,11 +135,13 @@ public class Tas {
                 elements.removeAll(e.getValue());
             } else if (size > this.puits.getLargueur()) {
                 throw new IllegalArgumentException(
-                        "Le nombre d'élements ne peut pas être plus grand que le nombre de colonnes !");
+                        "Le nombre d'élements ne peut pas être plus grand que le nombre de colonnes :" + size);
             }
         }
 
-        this.pcs.firePropertyChange(EVT_LIGNE_COMPLETE, null, s);
+        if (s != 0) {
+            this.pcs.firePropertyChange(EVT_LIGNE_COMPLETE, null, s);
+        }
 
         // Attributing score to the lines
         return switch (s) {
@@ -160,21 +163,29 @@ public class Tas {
      * @param nb Le nombre de lignes à ajouter
      */
     public void ajouterLignes(Couleur couleur, int nb) {
+        System.out.println(nb);
         int largueur = this.puits.getLargueur();
         int profondeur = this.puits.getProfondeur();
-        List<Coordonnees> coords = this.elements.stream().map(Element::getCoord).toList();
         for (int i = 0; i < nb; i++) {
+            List<Coordonnees> coords = this.elements.stream().map(Element::getCoord).toList();
             for (Coordonnees c : coords) {
-                c.setAbscisse(c.getAbscisse() - 1);
+                c.setOrdonnee(c.getOrdonnee() - 1);
             }
 
             for (int j = 1; j < largueur - 1; j++) {
-                Coordonnees coord = new Coordonnees(i, profondeur - 1);
+                Coordonnees coord = new Coordonnees(j, profondeur - 1);
                 Element e = new Element(coord, couleur);
                 this.elements.add(e);
             }
         }
+    }
 
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        this.pcs.addPropertyChangeListener(listener);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        this.pcs.removePropertyChangeListener(listener);
     }
 
     // Getters setters

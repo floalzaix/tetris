@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -13,6 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import fr.eseo.e3.poo.projet.blox.controleur.Client;
 import fr.eseo.e3.poo.projet.blox.controleur.Routeur;
 
 public class VueConnexion extends JPanel {
@@ -64,7 +67,18 @@ public class VueConnexion extends JPanel {
         conf.setAlignmentX(Component.CENTER_ALIGNMENT);
         conf.setBackground(Color.WHITE);
         conf.addActionListener(_ -> {
-            
+            try {
+                URI u = new URI(uri.getText());
+                Client client = new Client(u);
+                client.connect();
+                
+                client.getLatch().await();
+
+                this.routeur.ajouterRoute(new VueJoueurs(routeur, client.getJoueur(), client, false), "JEU");
+                this.routeur.router("JEU");
+            } catch (URISyntaxException | InterruptedException e) {
+                System.out.println("A RETIRER DEBUG :" + e.getMessage());
+            }
         });
         this.add(conf);
 

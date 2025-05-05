@@ -54,7 +54,6 @@ public class Client extends WebSocketClient implements PropertyChangeListener {
         if (joueur == null) {
             if ("COULEUR".equals(command)) {
                 this.joueur = new Joueur(Couleur.getCouleur(params[1]));
-                this.joueur.addPropertyChangeListener(this);
                 this.latch.countDown();
             }
         } else {
@@ -72,8 +71,9 @@ public class Client extends WebSocketClient implements PropertyChangeListener {
                         Integer.parseInt(params[3]),
                         Integer.parseInt(params[4])
                     );
+                    this.joueur.getJeu().getPuits().getTas().addPropertyChangeListener(this);
                 }
-                case "LIGNE" -> {
+                case "LIGNES" -> {
                     this.joueur.ajouterLigne(
                         Couleur.getCouleur(params[1]),
                         Integer.parseInt(params[2])
@@ -83,7 +83,7 @@ public class Client extends WebSocketClient implements PropertyChangeListener {
                     System.out.println(params[1]);
                 }
                 default -> {
-                    System.out.println("Mauvaise commande serveur !");
+                    System.out.println("Mauvaise commande serveur :" + command);
                 }
             }
         }
@@ -103,7 +103,7 @@ public class Client extends WebSocketClient implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (Tas.EVT_LIGNE_COMPLETE.equals(evt.getPropertyName())) {
-            this.send("LIGNE" + "|" + joueur.getCouleur() + "|" + evt.getNewValue());
+            this.send("LIGNES" + "|" + joueur.getCouleur() + "|" + evt.getNewValue());
         }
     }
 

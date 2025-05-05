@@ -20,8 +20,8 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
 import fr.eseo.e3.poo.projet.blox.controleur.Client;
+import fr.eseo.e3.poo.projet.blox.controleur.Lobby;
 import fr.eseo.e3.poo.projet.blox.controleur.Routeur;
-import fr.eseo.e3.poo.projet.blox.modele.Lobby;
 import fr.eseo.e3.poo.projet.blox.modele.UsineDePiece;
 
 public class VueLobby extends JPanel {
