@@ -1,5 +1,6 @@
 package fr.eseo.e3.poo.projet.blox.modele.pieces;
 
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -14,9 +15,16 @@ import fr.eseo.e3.poo.projet.blox.modele.Element;
 import fr.eseo.e3.poo.projet.blox.modele.Puits;
 
 public class Tas {
+    //
+    //  Variables d'instance
+    //
+    public static final String EVT_LIGNE_COMPLETE = "COMPLETE";
+
     // Attributs
     private List<Element> elements;
     private Puits puits;
+    
+    private PropertyChangeSupport pcs;
 
     // Constructeurs
     public Tas(Puits puits, int nbElements, int nbLignes, Random rand) throws IllegalArgumentException {
@@ -33,6 +41,8 @@ public class Tas {
             rand = new Random();
         }
         this.construireTas(nbElements, nbLignes, rand);
+
+        this.pcs = new PropertyChangeSupport(this);
     }
 
     public Tas(Puits puits) throws IllegalArgumentException {
@@ -127,6 +137,8 @@ public class Tas {
                         "Le nombre d'élements ne peut pas être plus grand que le nombre de colonnes !");
             }
         }
+
+        this.pcs.firePropertyChange(EVT_LIGNE_COMPLETE, null, s);
 
         // Attributing score to the lines
         return switch (s) {

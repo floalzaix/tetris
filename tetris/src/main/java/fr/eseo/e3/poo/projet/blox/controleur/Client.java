@@ -1,5 +1,7 @@
 package fr.eseo.e3.poo.projet.blox.controleur;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.net.URI;
 import java.util.concurrent.CountDownLatch;
 
@@ -8,8 +10,9 @@ import org.java_websocket.handshake.ServerHandshake;
 
 import fr.eseo.e3.poo.projet.blox.modele.Couleur;
 import fr.eseo.e3.poo.projet.blox.modele.Joueur;
+import fr.eseo.e3.poo.projet.blox.modele.pieces.Tas;
 
-public class Client extends WebSocketClient {
+public class Client extends WebSocketClient implements PropertyChangeListener {
     //
     // Variables d'instance
     //
@@ -51,6 +54,7 @@ public class Client extends WebSocketClient {
         if (joueur == null) {
             if ("COULEUR".equals(command)) {
                 this.joueur = new Joueur(Couleur.getCouleur(params[1]));
+                this.joueur.addPropertyChangeListener(this);
                 this.latch.countDown();
             }
         } else {
@@ -93,6 +97,14 @@ public class Client extends WebSocketClient {
     @Override
     public void onError(Exception e) {
         System.out.println(e.getMessage());
+    }
+
+    // PropertyChangeListener
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (Tas.EVT_LIGNE_COMPLETE.equals(evt.getPropertyName())) {
+            this.send("LIGNE" + "|" + joueur.getCouleur() + "|" + evt.getNewValue());
+        }
     }
 
     // Getters setters
