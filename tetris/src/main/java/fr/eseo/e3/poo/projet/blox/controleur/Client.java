@@ -6,6 +6,7 @@ import java.net.URI;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
+import fr.eseo.e3.poo.projet.blox.modele.Couleur;
 import fr.eseo.e3.poo.projet.blox.modele.Joueur;
 
 public class Client extends WebSocketClient {
@@ -63,7 +64,10 @@ public class Client extends WebSocketClient {
                     );
                 }
                 case "LIGNE" -> {
-    
+                    this.joueur.ajouterLigne(
+                        Couleur.getCouleur(Color.getColor(params[1])),
+                        Integer.parseInt(params[2])
+                    );
                 }
                 case "ERREUR" -> {
                     System.out.println(params[1]);

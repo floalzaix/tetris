@@ -1,6 +1,5 @@
 package fr.eseo.e3.poo.projet.blox.modele.pieces;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -41,7 +40,7 @@ public class Tas {
     }
 
     public Tas(Puits puits, int nbElements) throws IllegalArgumentException {
-        this(puits, nbElements, nbElements / puits.getLargueur() + 1, null); 
+        this(puits, nbElements, nbElements / puits.getLargueur() + 1, null);
     }
 
     public Tas(Puits puits, int nbElements, int nbLignes) throws IllegalArgumentException {
@@ -139,8 +138,31 @@ public class Tas {
         };
     }
 
-    public void ajouterLigne(Color couleur) {
-        // TODO !!!!!!!!!!!!
+    /**
+     * Ajoute une ligne au tas à la fin. Pensé pour être utilisé dans le cadre des
+     * lobbies quand les joueurs font des lignes alors ils en envoient à leurs
+     * adversaires grâce à cette fonction.
+     * 
+     * @param couleur La couleur de la ligne ajouté (couleur du joueur dans le cadre
+     *                de lobbies)
+     * @param nb Le nombre de lignes à ajouter
+     */
+    public void ajouterLignes(Couleur couleur, int nb) {
+        int largueur = this.puits.getLargueur();
+        int profondeur = this.puits.getProfondeur();
+        List<Coordonnees> coords = this.elements.stream().map(Element::getCoord).toList();
+        for (int i = 0; i < nb; i++) {
+            for (Coordonnees c : coords) {
+                c.setAbscisse(c.getAbscisse() - 1);
+            }
+
+            for (int j = 1; j < largueur - 1; j++) {
+                Coordonnees coord = new Coordonnees(i, profondeur - 1);
+                Element e = new Element(coord, couleur);
+                this.elements.add(e);
+            }
+        }
+
     }
 
     // Getters setters

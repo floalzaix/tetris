@@ -12,3 +12,4 @@
 * [ ] Ajouter acceleration
 * [ ] Système de sauvegarde
 * [ ] Boutons de retour sur les fenêtre et de déconnexion
+* [ ] Parametres de vitesse

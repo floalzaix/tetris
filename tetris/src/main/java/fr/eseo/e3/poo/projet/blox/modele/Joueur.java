@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Joueur {
     //
-    //  Constantes de classe
+    // Constantes de classe
     //
     public static final String EVT_JEU_CREER = "JEU";
 
@@ -32,8 +32,6 @@ public class Joueur {
         this.pcs = new PropertyChangeSupport(this);
     }
 
-    // TODO : paramtres de la partie ...
-
     //
     // Méthodes
     //
@@ -49,6 +47,17 @@ public class Joueur {
     public void creationJeu(int largeur, int profondeur, int niveau, int mode) {
         this.jeu = new Jeu(largeur, profondeur, niveau, mode);
         this.pcs.firePropertyChange(EVT_JEU_CREER, null, this.jeu);
+    }
+
+    /**
+     * Reprends juste la fonction du puits pour la rendre plus accessible avec les
+     * même paramètres.
+     * 
+     * @param couleur
+     * @param nb
+     */
+    public void ajouterLigne(Couleur couleur, int nb) {
+        this.jeu.getPuits().getTas().ajouterLignes(couleur, nb);
     }
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
