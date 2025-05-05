@@ -1,6 +1,5 @@
 package fr.eseo.e3.poo.projet.blox.controleur;
 
-import java.awt.Color;
 import java.net.URI;
 import java.util.concurrent.CountDownLatch;
 
@@ -49,14 +48,15 @@ public class Client extends WebSocketClient {
     public void onMessage(String msg) {
         String[] params = msg.split("\\|");
         String command = params[0];
-        if (joueur == null && "COULEUR".equals(command)) {
-            System.out.println(Color.getColor(params[1]));
-            this.joueur = new Joueur(Color.getColor(params[1]));
-            this.latch.countDown();
+        if (joueur == null) {
+            if ("COULEUR".equals(command)) {
+                this.joueur = new Joueur(Couleur.getCouleur(params[1]));
+                this.latch.countDown();
+            }
         } else {
             switch (command) {
                 case "JOUEUR" -> {
-                    Color c = Color.getColor(params[1]);
+                    Couleur c = Couleur.getCouleur(params[1]);
                     if (c != this.joueur.getCouleur()) {
                         this.joueur.getAutresJoueurs().add(c);
                     }
@@ -71,7 +71,7 @@ public class Client extends WebSocketClient {
                 }
                 case "LIGNE" -> {
                     this.joueur.ajouterLigne(
-                        Couleur.getCouleur(Color.getColor(params[1])),
+                        Couleur.getCouleur(params[1]),
                         Integer.parseInt(params[2])
                     );
                 }

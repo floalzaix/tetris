@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -14,9 +16,10 @@ import javax.swing.JPanel;
 
 import fr.eseo.e3.poo.projet.blox.controleur.Client;
 import fr.eseo.e3.poo.projet.blox.controleur.Routeur;
+import fr.eseo.e3.poo.projet.blox.modele.Couleur;
 import fr.eseo.e3.poo.projet.blox.modele.Joueur;
 
-public class VueJoueurs extends JPanel {
+public class VueJoueurs extends JPanel implements PropertyChangeListener {
     //
     //  Variables d'instance
     //
@@ -60,13 +63,13 @@ public class VueJoueurs extends JPanel {
 
         // Liste des joueurs
         JPanel j = new JPanel();
-        j.setBackground(this.joueur.getCouleur());
-        j.setMaximumSize(new Dimension((int) this.getPreferredSize().getWidth(), 50));
+        j.setBackground(this.joueur.getCouleur().getCouleurPourAffichage());
+        j.setMaximumSize(new Dimension((int) this.getPreferredSize().getWidth(), 100));
         this.add(j);
         this.add(Box.createRigidArea(new Dimension(0, 15)));
-        for (Color color : this.joueur.getAutresJoueurs()) {
+        for (Couleur couleur : this.joueur.getAutresJoueurs()) {
             j = new JPanel();
-            j.setBackground(color);
+            j.setBackground(couleur.getCouleurPourAffichage());
             this.add(j);
             this.add(Box.createRigidArea(new Dimension(0, 15)));
         }
@@ -84,5 +87,19 @@ public class VueJoueurs extends JPanel {
         }
 
         this.add(Box.createVerticalGlue());
+
+        // Enregistrement à joueur
+        this.joueur.addPropertyChangeListener(this);
+    }
+
+    //
+    //   Overrides
+    //
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (Joueur.EVT_JEU_CREER.equals(evt.getPropertyName())) {
+            
+        }
     }
 }

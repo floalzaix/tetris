@@ -32,9 +32,9 @@ public enum Couleur {
      * @param color La couleur à rechercher dans les Couleurs
      * @return La première Couleur trouvée
      */
-    public static Couleur getCouleur(Color color) {
+    public static Couleur getCouleur(String color) {
         Stream<Couleur> couleurs = Stream.of(Couleur.values());
-        return couleurs.filter(c -> c.getCouleurPourAffichage() == color).findFirst().orElse(null);
+        return couleurs.filter(c -> c.name().equals(color)).findFirst().orElse(null);
     }
 
     // Getters et setters

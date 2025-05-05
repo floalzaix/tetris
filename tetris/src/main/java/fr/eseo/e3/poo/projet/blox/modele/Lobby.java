@@ -1,6 +1,5 @@
 package fr.eseo.e3.poo.projet.blox.modele;
 
-import java.awt.Color;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
 
@@ -21,7 +20,7 @@ public class Lobby extends WebSocketServer {
     private final int  profondeur;
     private final int  niveau;
     private final int  mode;
-    private final HashMap<WebSocket, Color> users;
+    private final HashMap<WebSocket, Couleur> users;
     private boolean started = false;
 
     //
@@ -48,8 +47,8 @@ public class Lobby extends WebSocketServer {
         } else if (this.started) {
             ws.send("ERREUR|" + "Partie déjà commencé !");
         } else {
-            Color color = Couleur.values()[users.size()].getCouleurPourAffichage();
-            for (Color c : this.users.values()) {
+            Couleur color = Couleur.values()[users.size()];
+            for (Couleur c : this.users.values()) {
                 ws.send("JOUEUR|" + c);
             }
             users.put(ws, color);

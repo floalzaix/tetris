@@ -1,6 +1,5 @@
 package fr.eseo.e3.poo.projet.blox.modele;
 
-import java.awt.Color;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
@@ -15,8 +14,8 @@ public class Joueur {
     //
     // Variables d'instance
     //
-    private Color couleur;
-    private final List<Color> autresJoueurs;
+    private Couleur couleur;
+    private final List<Couleur> autresJoueurs;
 
     private Jeu jeu;
 
@@ -25,7 +24,7 @@ public class Joueur {
     //
     // Constructeurs
     //
-    public Joueur(Color couleur) {
+    public Joueur(Couleur couleur) {
         this.couleur = couleur;
         this.autresJoueurs = new ArrayList<>();
 
@@ -70,11 +69,11 @@ public class Joueur {
 
     // Getters setters
 
-    public Color getCouleur() {
+    public Couleur getCouleur() {
         return couleur;
     }
 
-    public void setCouleur(Color couleur) {
+    public void setCouleur(Couleur couleur) {
         this.couleur = couleur;
     }
 
@@ -82,7 +81,7 @@ public class Joueur {
         return jeu;
     }
 
-    public List<Color> getAutresJoueurs() {
+    public List<Couleur> getAutresJoueurs() {
         return autresJoueurs;
     }
 }
