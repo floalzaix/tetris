@@ -1,5 +1,6 @@
 package fr.eseo.e3.poo.projet.blox.modele.pieces;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -136,6 +137,10 @@ public class Tas {
             case 3 -> 300;
             default -> 1200;
         };
+    }
+
+    public void ajouterLigne(Color couleur) {
+        // TODO !!!!!!!!!!!!
     }
 
     // Getters setters

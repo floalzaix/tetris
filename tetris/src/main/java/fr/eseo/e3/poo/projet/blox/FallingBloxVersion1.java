@@ -27,6 +27,6 @@ public class FallingBloxVersion1 {
         frame.setVisible(true);
         frame.pack();
         frame.setResizable(false);
-        frame.setLocationRelativeTo(null); 
+        frame.setLocationRelativeTo(null);
     }
 }
