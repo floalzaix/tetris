@@ -2,6 +2,7 @@ package fr.eseo.e3.poo.projet.blox.controleur;
 
 import java.awt.Color;
 import java.net.URI;
+import java.util.concurrent.CountDownLatch;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
@@ -14,12 +15,15 @@ public class Client extends WebSocketClient {
     // Variables d'instance
     //
     private Joueur joueur;
+    private CountDownLatch latch;
 
     //
     // Constructeurs
     //
     public Client(URI uri) {
         super(uri);
+
+        this.latch = new CountDownLatch(1);
     }
 
     //
@@ -46,7 +50,9 @@ public class Client extends WebSocketClient {
         String[] params = msg.split("\\|");
         String command = params[0];
         if (joueur == null && "COULEUR".equals(command)) {
+            System.out.println(Color.getColor(params[1]));
             this.joueur = new Joueur(Color.getColor(params[1]));
+            this.latch.countDown();
         } else {
             switch (command) {
                 case "JOUEUR" -> {
@@ -87,5 +93,13 @@ public class Client extends WebSocketClient {
     @Override
     public void onError(Exception e) {
         System.out.println(e.getMessage());
+    }
+
+    // Getters setters
+    public Joueur getJoueur() {
+        return joueur;
+    }
+    public CountDownLatch getLatch() {
+        return latch;
     }
 }

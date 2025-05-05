@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 
 import javax.swing.BorderFactory;
@@ -14,12 +16,15 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 
+import fr.eseo.e3.poo.projet.blox.controleur.Client;
 import fr.eseo.e3.poo.projet.blox.controleur.Routeur;
-import fr.eseo.e3.poo.projet.blox.modele.Jeu;
+import fr.eseo.e3.poo.projet.blox.modele.Lobby;
 import fr.eseo.e3.poo.projet.blox.modele.UsineDePiece;
 
-public class VueConfig extends JPanel {
+public class VueLobby extends JPanel {
     //
     //  Variables d'instance
     //
@@ -28,7 +33,7 @@ public class VueConfig extends JPanel {
     //
     //  Constructeur
     //
-    public VueConfig(Routeur routeur) {
+    public VueLobby(Routeur routeur) {
         this.routeur = routeur;
 
         // Layout
@@ -48,7 +53,7 @@ public class VueConfig extends JPanel {
         this.add(Box.createVerticalGlue());
         
         // Titre
-        JLabel titre = new JLabel("Nouvelle partie");
+        JLabel titre = new JLabel("Nouveau Lobby");
         titre.setAlignmentX(Component.CENTER_ALIGNMENT);
         titre.setFont(new Font("sans-serif", Font.BOLD, 20));
         this.add(titre);
@@ -77,9 +82,19 @@ public class VueConfig extends JPanel {
         options.put("Cyclique", UsineDePiece.CYCLIC);
         JComboBox<String> modes = new JComboBox<>(options.keySet().toArray(String[]::new));
         modes.setBackground(Color.WHITE);
-        modes.setMaximumSize(new Dimension((int) this.getPreferredSize().getWidth(), 50));
+        modes.setMaximumSize(new Dimension((int) this.getPreferredSize().getWidth(), 65));
         modes.setSelectedItem("Aléatoire pièce");
         this.add(modes);
+
+        this.add(Box.createRigidArea(new Dimension(0, 15)));
+
+        // Port
+        JSpinner port = new JSpinner(new SpinnerNumberModel(4000, 0, 65535, 1));
+        port.setAlignmentX(Component.CENTER_ALIGNMENT);
+        port.setBackground(Color.WHITE);
+        port.setMaximumSize(new Dimension((int) this.getPreferredSize().getWidth(), 100));
+        port.setBorder(BorderFactory.createTitledBorder("Port"));
+        this.add(port);
 
         this.add(Box.createRigidArea(new Dimension(0, 15)));
 
@@ -88,9 +103,25 @@ public class VueConfig extends JPanel {
         conf.setAlignmentX(Component.CENTER_ALIGNMENT);
         conf.setBackground(Color.WHITE);
         conf.addActionListener(_ -> {
-            Jeu jeu = new Jeu(largueur.getValue(), profondeur.getValue(), niveau.getValue(), options.get(String.valueOf(modes.getSelectedItem())));
-            this.routeur.ajouterRoute(new VueJeu(this.routeur, jeu), "JEU");
-            this.routeur.router("JEU");
+            Lobby lobby = new Lobby(largueur.getValue(), profondeur.getValue(), niveau.getValue(), options.get(String.valueOf(modes.getSelectedItem())));
+            lobby.start();
+
+            String host = lobby.getAddress().getHostName();
+            try {
+                URI uri = new URI("ws", null, host, (int) port.getValue(), null, null, null);
+
+                Client client = new Client(uri);
+                client.connect();
+
+                client.getLatch().await();
+
+                this.routeur.ajouterRoute(new VueJoueurs(routeur, client.getJoueur(), client, true), "JOUEURS");
+                this.routeur.router("JOUEURS");
+            } catch (URISyntaxException e) {
+                System.out.println("A ENLEVER DANS la VUELOBBY : " + e.getMessage());
+            } catch (InterruptedException e) {
+                System.out.println("A ENLEVER DANS la VUELOBBY : " + e.getMessage());
+            }
         });
         this.add(conf);
 

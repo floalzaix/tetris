@@ -55,6 +55,24 @@ public class VueMenu extends JPanel {
         });
         this.add(np);
 
+        // Nouvelle partie
+        JButton co = new JButton("Connexion");
+        co.setAlignmentX(Component.CENTER_ALIGNMENT);
+        co.setBackground(Color.WHITE);
+        co.addActionListener(_ -> {
+            this.routeur.router("CONNEXION");
+        });
+        this.add(co);
+
+        // Nouvelle partie
+        JButton nl = new JButton("Nouveau Lobby");
+        nl.setAlignmentX(Component.CENTER_ALIGNMENT);
+        nl.setBackground(Color.WHITE);
+        nl.addActionListener(_ -> {
+            this.routeur.router("LOBBY");
+        });
+        this.add(nl);
+
         this.add(Box.createVerticalGlue());
     }
 }

@@ -5,6 +5,8 @@ import javax.swing.WindowConstants;
 
 import fr.eseo.e3.poo.projet.blox.controleur.Routeur;
 import fr.eseo.e3.poo.projet.blox.vue.VueConfig;
+import fr.eseo.e3.poo.projet.blox.vue.VueConnexion;
+import fr.eseo.e3.poo.projet.blox.vue.VueLobby;
 import fr.eseo.e3.poo.projet.blox.vue.VueMenu;
 
 public class FallingBloxVersion1 {
@@ -16,7 +18,9 @@ public class FallingBloxVersion1 {
         Routeur routeur = new Routeur(frame);
         routeur.ajouterRoute(new VueMenu(routeur), "MENU");
         routeur.ajouterRoute(new VueConfig(routeur), "CONFIG");
-        routeur.router("MENU");
+        routeur.ajouterRoute(new VueLobby(routeur), "LOBBY");
+        routeur.ajouterRoute(new VueConnexion(routeur), "CONNEXION");
+        routeur.router("LOBBY");
 
         // Jeu jeu = new Jeu(10, 20, 0, UsineDePiece.ALEATOIRE_PIECE);
         // routeur.ajouterRoute(new VueJeu(routeur, jeu), "JEU");

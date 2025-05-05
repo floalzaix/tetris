@@ -20,7 +20,7 @@ public class Joueur {
 
     private Jeu jeu;
 
-    private PropertyChangeSupport pcs;
+    private final PropertyChangeSupport pcs;
 
     //
     // Constructeurs

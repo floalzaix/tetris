@@ -17,7 +17,10 @@ public class Lobby extends WebSocketServer {
     //
     // Variables d'instances
     //
-    private int largueur, profondeur, niveau, mode;
+    private final int largueur;
+    private final int  profondeur;
+    private final int  niveau;
+    private final int  mode;
     private final HashMap<WebSocket, Color> users;
     private boolean started = false;
 
@@ -53,7 +56,6 @@ public class Lobby extends WebSocketServer {
             ws.send("COULEUR|" + color);
             this.broadcast("JOUEUR|" + color);
         }
-
     }
 
     @Override
