@@ -74,10 +74,13 @@ public class Client extends WebSocketClient implements PropertyChangeListener {
                     this.joueur.getJeu().getPuits().getTas().addPropertyChangeListener(this);
                 }
                 case "LIGNES" -> {
-                    this.joueur.ajouterLigne(
-                        Couleur.getCouleur(params[1]),
+                    Couleur couleur = Couleur.getCouleur(params[1]);
+                    if (this.joueur.getCouleur() != couleur) {
+                        this.joueur.ajouterLigne(
+                        couleur,
                         Integer.parseInt(params[2])
                     );
+                    }
                 }
                 case "ERREUR" -> {
                     System.out.println(params[1]);
