@@ -55,6 +55,8 @@ public class VueMenu extends JPanel {
         });
         this.add(np);
 
+        this.add(Box.createRigidArea(new Dimension(0, 15)));
+
         // Nouvelle partie
         JButton co = new JButton("Connexion");
         co.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -63,6 +65,8 @@ public class VueMenu extends JPanel {
             this.routeur.router("CONNEXION");
         });
         this.add(co);
+
+        this.add(Box.createRigidArea(new Dimension(0, 15)));
 
         // Nouvelle partie
         JButton nl = new JButton("Nouveau Lobby");
