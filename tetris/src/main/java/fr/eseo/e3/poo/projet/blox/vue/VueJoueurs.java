@@ -53,6 +53,23 @@ public class VueJoueurs extends JPanel implements PropertyChangeListener {
         // Contenu
         //
 
+        this.afficherContenu();
+
+        // Enregistrement pour la création du jeu et l'ajout de joueurs
+        this.joueur.addPropertyChangeListener(this);
+        this.client.addPropertyChangeListener(this);
+    }
+
+    //
+    //  Méthodes
+    //
+
+    /**
+     * Affiche le contenu de la page
+     */
+    private void afficherContenu() {
+        this.removeAll();
+
         this.add(Box.createVerticalGlue());
 
         // Titre
@@ -75,6 +92,7 @@ public class VueJoueurs extends JPanel implements PropertyChangeListener {
         for (Couleur couleur : this.joueur.getAutresJoueurs()) {
             j = new JPanel();
             j.setBackground(couleur.getCouleurPourAffichage());
+            j.setMaximumSize(new Dimension((int) this.getPreferredSize().getWidth(), 100));
             this.add(j);
             this.add(Box.createRigidArea(new Dimension(0, 15)));
         }
@@ -91,9 +109,6 @@ public class VueJoueurs extends JPanel implements PropertyChangeListener {
         }
 
         this.add(Box.createVerticalGlue());
-
-        // Enregistrement à joueur
-        this.joueur.addPropertyChangeListener(this);
     }
 
     //
@@ -106,6 +121,11 @@ public class VueJoueurs extends JPanel implements PropertyChangeListener {
             Jeu jeu = (Jeu) evt.getNewValue();
             this.routeur.ajouterRoute(new VueJeu(routeur, jeu), "JEU");
             this.routeur.router("JEU");
+        }
+        if (Client.EVT_NOUVEAU_JOUEUR.equals(evt.getPropertyName())) {
+            this.afficherContenu();
+            this.revalidate();
+            this.repaint();
         }
     }
 }

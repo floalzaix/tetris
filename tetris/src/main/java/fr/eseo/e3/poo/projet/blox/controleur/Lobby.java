@@ -50,11 +50,11 @@ public class Lobby extends WebSocketServer {
             ws.send("ERREUR|" + "Partie déjà commencé !");
         } else {
             Couleur color = Couleur.values()[users.size()];
+            ws.send("COULEUR|" + color);
             for (Couleur c : this.users.values()) {
                 ws.send("JOUEUR|" + c);
             }
             users.put(ws, color);
-            ws.send("COULEUR|" + color);
             this.broadcast("JOUEUR|" + color);
         }
     }

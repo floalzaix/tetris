@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.TetrominoTest$TestsRotation
--------------------------------------------------------------------------------
-Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.052 s -- in fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.TetrominoTest$TestsRotation

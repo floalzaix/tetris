@@ -2,6 +2,7 @@ package fr.eseo.e3.poo.projet.blox.controleur;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.net.URI;
 import java.util.concurrent.CountDownLatch;
 
@@ -14,10 +15,17 @@ import fr.eseo.e3.poo.projet.blox.modele.pieces.Tas;
 
 public class Client extends WebSocketClient implements PropertyChangeListener {
     //
+    //  Constantes de classe
+    //
+    public static final String EVT_NOUVEAU_JOUEUR = "NJ";
+    
+    //
     // Variables d'instance
     //
     private Joueur joueur;
     private CountDownLatch latch;
+
+    private final PropertyChangeSupport pcs;
 
     //
     // Constructeurs
@@ -26,6 +34,9 @@ public class Client extends WebSocketClient implements PropertyChangeListener {
         super(uri);
 
         this.latch = new CountDownLatch(1);
+
+        // Nouveau Joueur
+        this.pcs = new PropertyChangeSupport(this);
     }
 
     //
@@ -63,6 +74,7 @@ public class Client extends WebSocketClient implements PropertyChangeListener {
                     if (c != this.joueur.getCouleur()) {
                         this.joueur.getAutresJoueurs().add(c);
                     }
+                    this.pcs.firePropertyChange(EVT_NOUVEAU_JOUEUR, null, c);
                 }
                 case "START" -> {
                     this.joueur.creationJeu(
@@ -108,6 +120,14 @@ public class Client extends WebSocketClient implements PropertyChangeListener {
         if (Tas.EVT_LIGNE_COMPLETE.equals(evt.getPropertyName())) {
             this.send("LIGNES" + "|" + joueur.getCouleur() + "|" + evt.getNewValue());
         }
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        this.pcs.addPropertyChangeListener(listener);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        this.pcs.removePropertyChangeListener(listener);
     }
 
     // Getters setters
