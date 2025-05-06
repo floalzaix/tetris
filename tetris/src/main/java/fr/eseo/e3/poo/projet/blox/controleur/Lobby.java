@@ -86,6 +86,15 @@ public class Lobby extends WebSocketServer {
             case "DEFAITE" -> {
                 this.nbJoueur--;
                 this.broadcast("PLACE|" + this.nbJoueur);
+
+                // Ferme le lobby une fois que le dernier joueur perds.
+                if (this.nbJoueur <= 0) {
+                    try {
+                        this.stop();
+                    } catch (InterruptedException _) {
+                        Thread.currentThread().interrupt();
+                    }
+                }
             }
             default -> {
                 ws.send("ERREUR|" + "Mauvaise commande : " + command);

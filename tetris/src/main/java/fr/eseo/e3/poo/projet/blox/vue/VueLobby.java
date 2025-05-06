@@ -118,9 +118,9 @@ public class VueLobby extends JPanel {
                 this.routeur.ajouterRoute(new VueJoueurs(routeur, client.getJoueur(), client, true), "JOUEURS");
                 this.routeur.router("JOUEURS");
             } catch (URISyntaxException e) {
-                System.out.println("A ENLEVER DANS la VUELOBBY : " + e.getMessage());
+                // Pas géré ici
             } catch (InterruptedException e) {
-                System.out.println("A ENLEVER DANS la VUELOBBY : " + e.getMessage());
+                Thread.currentThread().interrupt();
             }
         });
         this.add(conf);

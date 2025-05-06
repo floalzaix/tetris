@@ -76,8 +76,10 @@ public class VueConnexion extends JPanel {
 
                 this.routeur.ajouterRoute(new VueJoueurs(routeur, client.getJoueur(), client, false), "JEU");
                 this.routeur.router("JEU");
-            } catch (URISyntaxException | InterruptedException e) {
-                System.out.println("A RETIRER DEBUG :" + e.getMessage());
+            } catch (URISyntaxException e) {
+                // Pas géré ici
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
         });
         this.add(conf);
