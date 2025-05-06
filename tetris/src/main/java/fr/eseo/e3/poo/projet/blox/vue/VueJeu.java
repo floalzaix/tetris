@@ -90,7 +90,7 @@ public class VueJeu extends JLayeredPane implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (Puits.LIMITE_HAUTEUR_ATTEINTE.equals(evt.getPropertyName())) {
-            VueFinJeu fin = new VueFinJeu(this.routeur, this.jeu.getPuits());
+            VueFinJeu fin = new VueFinJeu(this.routeur, this.jeu);
 
             this.add(fin, JLayeredPane.PALETTE_LAYER);
 

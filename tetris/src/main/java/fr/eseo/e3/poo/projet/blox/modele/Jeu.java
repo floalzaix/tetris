@@ -5,17 +5,20 @@ import fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.Tetromino;
 
 public class Jeu {
     //
-    //  Variables d'instance
+    // Variables d'instance
     //
 
     private final Puits puits;
+    private int place;
 
     //
-    //  Constructeurs
+    // Constructeurs
     //
     public Jeu(int largueur, int profondeur, int niveau, int modeUsine) {
+        this.place = 1;
+
         //
-        //  Init
+        // Init
         //
 
         Tetromino.init();
@@ -33,5 +36,13 @@ public class Jeu {
     // Getters setters
     public Puits getPuits() {
         return puits;
+    }
+
+    public int getPlace() {
+        return place;
+    }
+
+    public void setPlace(int place) {
+        this.place = place;
     }
 }

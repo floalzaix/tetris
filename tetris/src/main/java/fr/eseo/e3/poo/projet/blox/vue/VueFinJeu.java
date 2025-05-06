@@ -12,19 +12,22 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import fr.eseo.e3.poo.projet.blox.controleur.Routeur;
+import fr.eseo.e3.poo.projet.blox.modele.Jeu;
 import fr.eseo.e3.poo.projet.blox.modele.Puits;
 
 public class VueFinJeu extends JPanel {
     //
     //  Variables d'instance
     //
-    private Puits puits;
+    private final Jeu jeu;
+    private final Puits puits;
 
     //
     //  Constructeurs
     //
-    public VueFinJeu(Routeur routeur, Puits puits) {
-        this.puits = puits;
+    public VueFinJeu(Routeur routeur, Jeu jeu) {
+        this.jeu = jeu;
+        this.puits = jeu.getPuits();
 
         // Layout
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -48,6 +51,12 @@ public class VueFinJeu extends JPanel {
         score.setAlignmentX(Component.CENTER_ALIGNMENT);
         score.setForeground(Color.WHITE);
         this.add(score);
+        // Score
+        JLabel place = new JLabel("Place : " + this.jeu.getPlace());
+        place.setFont(new Font("sans-serif", Font.ITALIC, 19));
+        place.setAlignmentX(Component.CENTER_ALIGNMENT);
+        place.setForeground(Color.WHITE);
+        this.add(place);
 
         this.add(Box.createRigidArea(new Dimension(0, 25)));
 

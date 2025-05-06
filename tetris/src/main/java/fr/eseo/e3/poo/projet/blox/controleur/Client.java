@@ -11,14 +11,15 @@ import org.java_websocket.handshake.ServerHandshake;
 
 import fr.eseo.e3.poo.projet.blox.modele.Couleur;
 import fr.eseo.e3.poo.projet.blox.modele.Joueur;
+import fr.eseo.e3.poo.projet.blox.modele.Puits;
 import fr.eseo.e3.poo.projet.blox.modele.pieces.Tas;
 
 public class Client extends WebSocketClient implements PropertyChangeListener {
     //
-    //  Constantes de classe
+    // Constantes de classe
     //
     public static final String EVT_NOUVEAU_JOUEUR = "NJ";
-    
+
     //
     // Variables d'instance
     //
@@ -78,21 +79,24 @@ public class Client extends WebSocketClient implements PropertyChangeListener {
                 }
                 case "START" -> {
                     this.joueur.creationJeu(
-                        Integer.parseInt(params[1]),
-                        Integer.parseInt(params[2]),
-                        Integer.parseInt(params[3]),
-                        Integer.parseInt(params[4])
-                    );
+                            Integer.parseInt(params[1]),
+                            Integer.parseInt(params[2]),
+                            Integer.parseInt(params[3]),
+                            Integer.parseInt(params[4]));
                     this.joueur.getJeu().getPuits().getTas().addPropertyChangeListener(this);
+                    this.joueur.getJeu().getPuits().addPropertyChangeListener(this);
                 }
                 case "LIGNES" -> {
                     Couleur couleur = Couleur.getCouleur(params[1]);
                     if (this.joueur.getCouleur() != couleur) {
                         this.joueur.ajouterLigne(
-                        couleur,
-                        Integer.parseInt(params[2])
-                    );
+                                couleur,
+                                Integer.parseInt(params[2]));
                     }
+                }
+                case "PLACE" -> {
+                    int place = Integer.parseInt(params[1]);
+                    this.joueur.getJeu().setPlace(place);
                 }
                 case "ERREUR" -> {
                     System.out.println(params[1]);
@@ -120,6 +124,10 @@ public class Client extends WebSocketClient implements PropertyChangeListener {
         if (Tas.EVT_LIGNE_COMPLETE.equals(evt.getPropertyName())) {
             this.send("LIGNES" + "|" + joueur.getCouleur() + "|" + evt.getNewValue());
         }
+
+        if (Puits.LIMITE_HAUTEUR_ATTEINTE.equals(evt.getPropertyName())) {
+            this.send("DEFAITE");
+        }
     }
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -134,6 +142,7 @@ public class Client extends WebSocketClient implements PropertyChangeListener {
     public Joueur getJoueur() {
         return joueur;
     }
+
     public CountDownLatch getLatch() {
         return latch;
     }

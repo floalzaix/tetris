@@ -23,7 +23,8 @@ public class Lobby extends WebSocketServer {
     private final int  niveau;
     private final int  mode;
     private final HashMap<WebSocket, Couleur> users;
-    private boolean started = false;
+    private boolean started;
+    private int nbJoueur;
 
     //
     // Constructeurs
@@ -36,6 +37,8 @@ public class Lobby extends WebSocketServer {
         this.niveau = niveau;
         this.mode = mode;
         this.users = new HashMap<>();
+        this.started = false;
+        this.nbJoueur = 0;
     }
 
     //
@@ -55,6 +58,7 @@ public class Lobby extends WebSocketServer {
                 ws.send("JOUEUR|" + c);
             }
             users.put(ws, color);
+            this.nbJoueur++;
             this.broadcast("JOUEUR|" + color);
         }
     }
@@ -77,6 +81,11 @@ public class Lobby extends WebSocketServer {
                 this.started = true;
                 this.broadcast(
                         "START" + "|" + this.largueur + "|" + this.profondeur + "|" + this.niveau + "|" + this.mode);
+                this.broadcast("PLACE|" + this.nbJoueur);
+            }
+            case "DEFAITE" -> {
+                this.nbJoueur--;
+                this.broadcast("PLACE|" + this.nbJoueur);
             }
             default -> {
                 ws.send("ERREUR|" + "Mauvaise commande : " + command);
