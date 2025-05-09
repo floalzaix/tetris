@@ -7,7 +7,6 @@ public class Jeu {
     //
     // Variables d'instance
     //
-
     private final Puits puits;
     private int place;
 
@@ -20,7 +19,6 @@ public class Jeu {
         //
         // Init
         //
-
         Tetromino.init();
 
         // Selection du mode de l'usine

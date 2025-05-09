@@ -25,11 +25,11 @@ public enum Couleur {
     //
 
     /**
-     * Réalise un mapping inverse de Color à Couleur.
+     * Réalise un mapping inverse de String à Couleur.
      * 
-     * Récupère la première des Couleur qui à pour couleur d'affichage color
+     * Récupère la première des Couleur qui à pour nom color
      * 
-     * @param color La couleur à rechercher dans les Couleurs
+     * @param color Le nom à rechercher dans les Couleurs
      * @return La première Couleur trouvée
      */
     public static Couleur getCouleur(String color) {

@@ -34,6 +34,15 @@ class PuitsTest {
     public static final String ERREUR_GERER_COLLISION = START_OF_MESSAGE + "gerer_collision()" + END_OF_MESSAGE;
     public static final String ERREUR_LIMITE_HAUTEUR = START_OF_MESSAGE + "limiteHauteurAtteinte()" + END_OF_MESSAGE;
 
+    //
+    //  SetUp
+    //
+
+    @BeforeEach
+    void setUp() {
+        Tetromino.init();
+    }
+
     /**
      * Tests constructeurs
      */

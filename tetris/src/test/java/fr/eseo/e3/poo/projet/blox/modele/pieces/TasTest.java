@@ -13,6 +13,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import fr.eseo.e3.poo.projet.blox.modele.Coordonnees;
 import fr.eseo.e3.poo.projet.blox.modele.Couleur;
@@ -21,11 +23,13 @@ import fr.eseo.e3.poo.projet.blox.modele.Puits;
 import fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.OTetromino;
 
 class TasTest {
-    public static final String FIN_MESSAGE = " dans la classe Tas : ";
+    public static final String FIN_MESSAGE = " de la classe Tas : ";
+    public static final String DEBUT_MESSAGE = "Erreur dans la méthode ";
     public static final String ERREUR_CONSTRUCTEUR = "Erreur dans un constructeur" + FIN_MESSAGE;
     public static final String ERREUR_CONSTRUIRE_TAS = "Erreur dans la cosntruction du tas" + FIN_MESSAGE;
     public static final String ERREUR_LIGNE_COMPLETE = "Erreur dans la fonction ligneComplete()" + FIN_MESSAGE;
     public static final String ERREUR_AJOUTER_ELEMENTS = "Erreur dans la fonction ajouterElements()" + FIN_MESSAGE;
+    public static final String ERREUR_AJOUTER_LIGNES = DEBUT_MESSAGE + "ajouterLigne()" + FIN_MESSAGE;
 
     private Puits puits;
     private Random rand;
@@ -335,6 +339,57 @@ class TasTest {
                         e.getCause().getMessage(),
                         ERREUR_LIGNE_COMPLETE + "mauvais message d'erreur quand trop d'élement sur la même ligne !");
             }
+        }
+    }
+
+    //
+    //  Tests ajouterLignes()
+    //
+    @Nested
+    class TestAjouterLignes {
+        @ParameterizedTest(name ="testElevationElements")
+        @ValueSource(ints = {1, 2, 3})
+        void testElevationElements(int nb) {
+            Puits puits = new Puits(10, 20);
+            Tas tas = new Tas(puits, 30);
+
+            // Sauvegarde des élements
+            List<Coordonnees> copyCoordonnees = tas.getElements().stream()
+                .map(e -> (Coordonnees) e.getCoord().copy())
+                .toList();
+
+            // ajouterLigne()
+            tas.ajouterLignes(Couleur.BLEU, nb);
+
+            // Tests
+            for (int i = 0; i < copyCoordonnees.size(); i++) {
+                Coordonnees coord = tas.getElements().get(i).getCoord();
+                Coordonnees copyCoord = copyCoordonnees.get(i);
+                assertEquals(copyCoord.getOrdonnee() - nb, coord.getOrdonnee(), ERREUR_AJOUTER_LIGNES + "les élements ne sont pas décalés vers le haut !");
+            }
+        } 
+
+        @ParameterizedTest(name ="testAjoutLigneIncomplete")
+        @ValueSource(ints = {1, 2, 3})
+        void testAjoutLigneIncomplete(int nb) {
+            Puits puits = new Puits(10, 20);
+            Tas tas = new Tas(puits);
+
+            // Creation des élements de ref
+            List<Element> elements = new ArrayList<>();
+            for (int i = nb; i > 0; i--) {
+                for (int j = 1; j < puits.getLargueur() - 1; j++) {
+                    Coordonnees coord = new Coordonnees(j, puits.getProfondeur() - i);
+                    Element e = new Element(coord, Couleur.BLEU);
+                    elements.add(e);
+                }
+            }
+
+            // ajouterLigne()
+            tas.ajouterLignes(Couleur.BLEU, nb);
+
+            // Tests
+            assertEquals(elements, tas.getElements(), ERREUR_AJOUTER_LIGNES + "les première lignes ne sont pas ou mal générées !");
         }
     }
 }

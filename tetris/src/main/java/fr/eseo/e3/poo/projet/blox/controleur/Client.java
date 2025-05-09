@@ -6,6 +6,8 @@ import java.beans.PropertyChangeSupport;
 import java.net.URI;
 import java.util.concurrent.CountDownLatch;
 
+import javax.naming.OperationNotSupportedException;
+
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
@@ -56,6 +58,7 @@ public class Client extends WebSocketClient implements PropertyChangeListener {
     //
     @Override
     public void onOpen(ServerHandshake sh) {
+        System.out.println("Connexion du client au serveur !");
         // Pas utilisé ici !
     }
 
@@ -89,9 +92,13 @@ public class Client extends WebSocketClient implements PropertyChangeListener {
                 case "LIGNES" -> {
                     Couleur couleur = Couleur.getCouleur(params[1]);
                     if (this.joueur.getCouleur() != couleur) {
-                        this.joueur.ajouterLigne(
-                                couleur,
-                                Integer.parseInt(params[2]));
+                        try {
+                            this.joueur.ajouterLigne(
+                                    couleur,
+                                    Integer.parseInt(params[2]));
+                        } catch (OperationNotSupportedException e) {
+                            System.out.println("Erreur pour le client : " + e.getMessage());
+                        }
                     }
                 }
                 case "PLACE" -> {

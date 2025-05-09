@@ -135,7 +135,7 @@ public class Tas {
                 elements.removeAll(e.getValue());
             } else if (size > this.puits.getLargueur()) {
                 throw new IllegalArgumentException(
-                        "Le nombre d'élements ne peut pas être plus grand que le nombre de colonnes :" + size);
+                        "Le nombre d'élements ne peut pas être plus grand que le nombre de colonnes !");
             }
         }
 
@@ -163,7 +163,6 @@ public class Tas {
      * @param nb Le nombre de lignes à ajouter
      */
     public void ajouterLignes(Couleur couleur, int nb) {
-        System.out.println(nb);
         int largueur = this.puits.getLargueur();
         int profondeur = this.puits.getProfondeur();
         for (int i = 0; i < nb; i++) {

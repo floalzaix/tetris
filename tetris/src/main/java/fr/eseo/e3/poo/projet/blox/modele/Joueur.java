@@ -5,6 +5,8 @@ import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.naming.OperationNotSupportedException;
+
 public class Joueur {
     //
     // Constantes de classe
@@ -54,8 +56,12 @@ public class Joueur {
      * 
      * @param couleur
      * @param nb
+     * @param OperationNotSupportedException Si le jeu n'est pas set avant
      */
-    public void ajouterLigne(Couleur couleur, int nb) {
+    public void ajouterLigne(Couleur couleur, int nb) throws OperationNotSupportedException {
+        if (this.jeu == null) {
+            throw new OperationNotSupportedException("Le jeu n'est pas encore créer !");
+        }
         this.jeu.getPuits().getTas().ajouterLignes(couleur, nb);
     }
 
