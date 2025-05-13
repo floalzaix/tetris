@@ -100,6 +100,6 @@ public class VueJeu extends JLayeredPane implements PropertyChangeListener {
             fin.setBounds(0, 0, (int) size.getWidth(), (int) size.getHeight());
 
             this.revalidate();
-        }
+        } 
     }
 }

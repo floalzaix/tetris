@@ -103,6 +103,7 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
         if (Puits.MODIFICATION_PIECE_ACTUELLE.equals(evt.getPropertyName())) {
             this.setVuePiece(new VuePiece((Piece) evt.getNewValue(), this.taille));
             this.vueFantome = new VueFantome(this.puits.getFantome(), this.taille);
+            this.repaint();
         }
     }
 

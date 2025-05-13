@@ -20,6 +20,7 @@ public class Tas {
     //  Variables d'instance
     //
     public static final String EVT_LIGNE_COMPLETE = "COMPLETE";
+    public static final String EVT_AJOUT_LIGNE = "AJOUT";
 
     // Attributs
     private List<Element> elements;
@@ -163,7 +164,6 @@ public class Tas {
      * @param nb Le nombre de lignes à ajouter
      */
     public void ajouterLignes(Couleur couleur, int nb) {
-        System.out.println(nb);
         int largueur = this.puits.getLargueur();
         int profondeur = this.puits.getProfondeur();
         for (int i = 0; i < nb; i++) {
@@ -178,6 +178,8 @@ public class Tas {
                 this.elements.add(e);
             }
         }
+
+        this.pcs.firePropertyChange(EVT_AJOUT_LIGNE, null, this);
     }
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
