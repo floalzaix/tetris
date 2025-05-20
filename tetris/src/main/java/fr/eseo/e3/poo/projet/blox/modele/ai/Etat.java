@@ -16,11 +16,9 @@ public class Etat {
     //
     private static final int PIECE_SUIVANTE_OFFSET_ABSCISSE = -2;
     private static final int PIECE_SUIVANTE_OFFSET_ORDONNEE = -4 + 2;
-    private static final int PIECE_ACTUELLE_OFFSET_ORDONNEE = 4 + 3;
+    private static final int PIECE_ACTUELLE_OFFSET_ORDONNEE = 2 * 4 + 3;
 
-    private static final int TAS_OFFSET_ORDONNEE = 2 * 4 + 2; // 4 pour le nombre d'élements max verticaux d'un
-                                                              // Tetromino. 2 pour les deux lignes de négatif rajouté où
-                                                              // la pièce apparait c-a-d (largeur / 2, -4)
+    private static final int TAS_OFFSET_ORDONNEE = 2 * 4 + 3;
 
     //
     // Variables d'instance
@@ -29,12 +27,18 @@ public class Etat {
     private final int profondeur;
     private final float[] carteJeu;
 
+    private final int etatLargeur;
+    private final int etatProfondeur;
+
     //
     // Constructeurs
     //
     public Etat(int largeur, int profondeur) {
         this.largeur = largeur;
         this.profondeur = profondeur;
+
+        this.etatLargeur = this.largeur;
+        this.etatProfondeur = this.profondeur + Etat.TAS_OFFSET_ORDONNEE;
 
         this.carteJeu = new float[this.largeur * (this.profondeur + Etat.TAS_OFFSET_ORDONNEE)];
     }
@@ -124,6 +128,31 @@ public class Etat {
      */
     public void unset(int x, int y) {
         this.carteJeu[x + this.largeur * y] = 0;
+    }
+
+    /**
+     * Gets the number of completed lines in the current state
+     * 
+     * @return The number of completed lines
+     */
+    public int getLignesCompletee() {
+        int lignesCompletee = 0;
+        for (int x = 0; x < this.etatLargeur; x++) {
+            boolean completee = true;
+            for (int y = 0; y < this.etatProfondeur; y++) {
+                completee &= this.carteJeu[x * this.etatLargeur + y] == 1;
+            }
+            lignesCompletee += completee ? 1 : 0;
+        }
+        return lignesCompletee;
+    }
+
+    //
+    //  Functions
+    //
+
+    public static int getNumberOfInput(int largeurPuits, int profondeurPuits) {
+        return largeurPuits * (profondeurPuits + Etat.TAS_OFFSET_ORDONNEE); 
     }
 
     // Getters setters

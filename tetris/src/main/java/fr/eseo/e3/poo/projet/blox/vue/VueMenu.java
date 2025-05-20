@@ -77,6 +77,8 @@ public class VueMenu extends JPanel {
         });
         this.add(nl);
 
+        this.add(Box.createRigidArea(new Dimension(0, 15)));
+
         this.add(Box.createVerticalGlue());
     }
 }

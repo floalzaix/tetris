@@ -82,16 +82,22 @@ public abstract class Action {
     public static void init() {
         Reflections r = new Reflections("fr.eseo.e3.poo.projet.blox.modele.ai.actions");
 
-        Action.actions = new ArrayList<>(r.getSubTypesOf(Action.class));
+        Action.actions = new ArrayList<Class<? extends Action>>(r.getSubTypesOf(Action.class));
     }
 
     public static int getNbActions() {
         return Action.actions.size();
     }
 
-    public static Action getAction(int index, Piece piece) throws InstantiationException, IllegalAccessException,
-            IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-        return Action.actions.get(index).getConstructor(Piece.class).newInstance(piece);
+    public static Action getAction(int index, Piece piece) {
+        Action action;
+        try {
+            action = Action.actions.get(index).getConstructor(Piece.class).newInstance(piece);
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+                | NoSuchMethodException | SecurityException e) {
+            throw new IllegalArgumentException("Erreur lors de la création d'une nouvelle action pour l'ia !");
+        }
+        return action;
     }
 
     /**
