@@ -39,12 +39,12 @@ public class VueJeu extends JLayeredPane implements PropertyChangeListener {
     //
     //  Constructeurs
     //
-    public VueJeu(Routeur routeur, Jeu jeu) {
+    public VueJeu(Routeur routeur, Jeu jeu, boolean ia) {
         this.routeur = routeur;
         this.jeu = jeu;
 
         // Création panneau du puits
-        this.vuePuits = new VuePuits(jeu.getPuits(), SIZE);
+        this.vuePuits = new VuePuits(jeu.getPuits(), SIZE, ia);
 
         // Création de la panneau d'information
         this.pi = new PanneauInformation(jeu.getPuits(), SIZE_INFO);
@@ -62,22 +62,24 @@ public class VueJeu extends JLayeredPane implements PropertyChangeListener {
         // Tailles
         this.setPreferredSize(size);
 
-        // Gravite
-        Gravite _ = new Gravite(this.vuePuits);
+        if (!ia) {
+            // Gravite
+            Gravite _ = new Gravite(this.vuePuits);
 
-        // Clavier
-        SwingUtilities.invokeLater(() -> {
-            Timer timer = new Timer(100, null);
+            // Clavier
+            SwingUtilities.invokeLater(() -> {
+                Timer timer = new Timer(100, null);
 
-            timer.addActionListener(_ -> {
-                this.vuePuits.requestFocusInWindow();
-                if (KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner() == this.vuePuits) {
-                    timer.stop();
-                }
+                timer.addActionListener(_ -> {
+                    this.vuePuits.requestFocusInWindow();
+                    if (KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner() == this.vuePuits) {
+                        timer.stop();
+                    }
+                });
+
+                timer.start();
             });
-
-            timer.start();
-        });
+        }
 
         // Fin de partie
         this.jeu.getPuits().addPropertyChangeListener(this);
@@ -89,7 +91,7 @@ public class VueJeu extends JLayeredPane implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if (Puits.LIMITE_HAUTEUR_ATTEINTE.equals(evt.getPropertyName())) {
+        if (Puits.LIMITE_HAUTEUR_ATTEINTE.equals(evt.getPropertyName()) && this.routeur != null) {
             VueFinJeu fin = new VueFinJeu(this.routeur, this.jeu);
 
             this.add(fin, JLayeredPane.PALETTE_LAYER);

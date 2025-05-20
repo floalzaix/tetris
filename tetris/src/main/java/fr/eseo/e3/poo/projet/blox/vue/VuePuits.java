@@ -26,6 +26,7 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
     // Attributs
     private Puits puits;
     private int taille;
+    private final boolean ia;
 
     private VuePiece vuePiece;
     private VueFantome vueFantome;
@@ -35,7 +36,8 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
     private Clavier clavier;
 
     // Constructeurs
-    public VuePuits(Puits puits, int taille) {
+    public VuePuits(Puits puits, int taille, boolean ia) {
+        this.ia = ia;
         this.setPuits(puits);
         this.setTaille(taille);
 
@@ -56,8 +58,8 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
         this.setFocusable(true);
     }
 
-    public VuePuits(Puits puits) {
-        this(puits, TAILLE_PAR_DEFAUT);
+    public VuePuits(Puits puits, boolean ia) {
+        this(puits, TAILLE_PAR_DEFAUT, ia);
     }
 
     // Overrides
@@ -152,11 +154,13 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
         // Réglage de la taille
         this.setPreferredSize(new Dimension(this.taille * puits.getLargueur(), this.taille * puits.getProfondeur()));
 
-        // Ajout de la souris
-        this.souris = new Souris(this);
-        this.addMouseMotionListener(this.souris);
-        this.addMouseListener(this.souris);
-        this.addMouseWheelListener(this.souris);
+        if (!this.ia) {
+            // Ajout de la souris
+            this.souris = new Souris(this);
+            this.addMouseMotionListener(this.souris);
+            this.addMouseListener(this.souris);
+            this.addMouseWheelListener(this.souris);
+        }
 
         // Ajout du clavier
         this.clavier = new Clavier(this);

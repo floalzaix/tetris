@@ -53,7 +53,7 @@ public class Etat {
      * @return Le INDArray de carteJeu
      */
     public INDArray get() {
-        return Nd4j.create(this.carteJeu);
+        return Nd4j.create(this.carteJeu).reshape(1, this.carteJeu.length);
     }
 
     /**

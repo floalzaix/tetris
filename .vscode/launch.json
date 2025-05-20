@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "FallingBloxIATrainer",
+            "request": "launch",
+            "mainClass": "fr.eseo.e3.poo.projet.blox.FallingBloxIATrainer",
+            "projectName": "tetris"
+        },
+        {
+            "type": "java",
             "name": "IA",
             "request": "launch",
             "mainClass": "fr.eseo.e3.poo.projet.blox.modele.IA",

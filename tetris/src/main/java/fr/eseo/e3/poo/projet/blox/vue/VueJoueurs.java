@@ -119,7 +119,7 @@ public class VueJoueurs extends JPanel implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent evt) {
         if (Joueur.EVT_JEU_CREER.equals(evt.getPropertyName())) {
             Jeu jeu = (Jeu) evt.getNewValue();
-            this.routeur.ajouterRoute(new VueJeu(routeur, jeu), "JEU");
+            this.routeur.ajouterRoute(new VueJeu(routeur, jeu, false), "JEU");
             this.routeur.router("JEU");
         }
         if (Client.EVT_NOUVEAU_JOUEUR.equals(evt.getPropertyName())) {
