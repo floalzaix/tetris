@@ -4,7 +4,18 @@ C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris
 C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\controleur\Lobby.java
 C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\controleur\Routeur.java
 C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\controleur\Souris.java
+C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\FallingBloxIATrainer.java
 C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\FallingBloxVersion1.java
+C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\modele\ai\actions\Action.java
+C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\modele\ai\actions\MoveDown.java
+C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\modele\ai\actions\MoveLeft.java
+C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\modele\ai\actions\MoveRight.java
+C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\modele\ai\actions\RotateLeft.java
+C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\modele\ai\actions\RotateRight.java
+C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\modele\ai\Etat.java
+C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\modele\ai\Feedback.java
+C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\modele\ai\Hyperparametres.java
+C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\modele\ai\IA.java
 C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\modele\BloxException.java
 C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\modele\Coordonnees.java
 C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\modele\Copiable.java
@@ -31,6 +42,7 @@ C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris
 C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\vue\VueConnexion.java
 C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\vue\VueFantome.java
 C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\vue\VueFinJeu.java
+C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\vue\VueIA.java
 C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\vue\VueJeu.java
 C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\vue\VueJoueurs.java
 C:\Users\floal\Documents\General\Cours\Sup\Eseo\E3e\S2\PDLO\Projet Tetris\tetris\src\main\java\fr\eseo\e3\poo\projet\blox\vue\VueLobby.java

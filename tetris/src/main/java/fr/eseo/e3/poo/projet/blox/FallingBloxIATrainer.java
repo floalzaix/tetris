@@ -1,9 +1,9 @@
 package fr.eseo.e3.poo.projet.blox;
 
-import java.util.function.UnaryOperator;
-
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
+
+import org.nd4j.linalg.factory.Nd4j;
 
 import fr.eseo.e3.poo.projet.blox.modele.UsineDePiece;
 import fr.eseo.e3.poo.projet.blox.modele.ai.IA;
@@ -12,6 +12,8 @@ import fr.eseo.e3.poo.projet.blox.vue.VueIA;
 public class FallingBloxIATrainer {
     public static void main(String[] args) {
         final boolean VUE = true;
+
+        System.out.println(Nd4j.getExecutioner().getClass().getName());
 
         // IA
         IA ia = new IA(10, 20, UsineDePiece.ALEATOIRE_COMPLET);

@@ -156,11 +156,12 @@ public class Etat {
     }
 
     // Getters setters
+    
     public int getLargeur() {
-        return largeur;
+        return this.largeur;
     }
 
     public int getProfondeur() {
-        return profondeur;
+        return this.profondeur;
     }
 }

@@ -11,11 +11,11 @@ public class Hyperparametres {
 
     // Init
     private static final double ALPHA_INIT = 0.4;
-    private static final double GAMMA_INIT = 0.1;
-    private static final double EPSILON_INIT = 0.9;
+    private static final double GAMMA_INIT = 0.3;
+    private static final double EPSILON_INIT = 1;
 
     // Growth
-    private static final double GAMMA_GROWTH = 1.002;
+    private static final double GAMMA_GROWTH = 1.02;
 
     // Decays
     private static final double ALPHA_DECAY = 0.999;
@@ -27,11 +27,9 @@ public class Hyperparametres {
     private static final double EPSILON_MIN = 0.005;
 
     // Update des hyperparametres
-    private final UnaryOperator<Double> ALPHA_UPDATE = a -> Math.max(ALPHA_DECAY * a, ALPHA_MIN);
-    private final UnaryOperator<Double> GAMMA_UPDATE = g -> Math.min(GAMMA_GROWTH * g, GAMMA_MAX);
-    private final UnaryOperator<Double> EPSILON_UPDATE = e -> Math.max(EPSILON_DECAY * e, EPSILON_MIN);
-
-    private final Adam adam;
+    private static final UnaryOperator<Double> ALPHA_UPDATE = a -> Math.max(ALPHA_DECAY * a, ALPHA_MIN);
+    private static final UnaryOperator<Double> GAMMA_UPDATE = g -> Math.min(GAMMA_GROWTH * g, GAMMA_MAX);
+    private static final UnaryOperator<Double> EPSILON_UPDATE = e -> Math.max(EPSILON_DECAY * e, EPSILON_MIN);
 
     //
     // Variables d'instance
@@ -39,6 +37,8 @@ public class Hyperparametres {
     private double alpha;
     private double epsilon;
     private double gamma;
+
+    private final Adam adam;
 
     //
     // Constructeurs

@@ -3,6 +3,7 @@ package fr.eseo.e3.poo.projet.blox.modele.ai;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
@@ -129,6 +130,13 @@ public class IA implements PropertyChangeListener {
 
     /// Q LEARNING (Entrainement)
 
+    /**
+     * Recupère l'état actuel du système (cf Etat)
+     * 
+     * @param puits Le puits du jeu dont on veut récupérer l'Etat
+     * @param tas   Le tas du jeu dont on veut récupérer l'Etat
+     * @return L'etat en question
+     */
     private Etat getEtat(Puits puits, Tas tas) {
         Etat etat = new Etat(puits.getLargueur(), puits.getProfondeur());
 
@@ -151,10 +159,22 @@ public class IA implements PropertyChangeListener {
         return etat;
     }
 
+    /**
+     * Récupère la valeur maximale des qValeurs du système
+     * 
+     * @param etat L'etat dont on veut récupèrer la valeur max de Q
+     * @return La Q valeur max pour l'Etat
+     */
     private double getQMax(Etat etat) {
         return this.getQValues(etat).max(0).getDouble(0);
     }
 
+    /**
+     * Recupère les Q valeurs du système
+     * 
+     * @param etat L'Etat à partir duquel on veut récupérer les Q valeurs
+     * @return Les Q valeurs
+     */
     private INDArray getQValues(Etat etat) {
         if (etat == this.etatActuel) {
             return this.qValuesActuelles;
@@ -164,17 +184,24 @@ public class IA implements PropertyChangeListener {
         return this.qValuesActuelles;
     }
 
+    /**
+     * Recupère la récompense du système pour un Etat et une pièce donnée
+     * 
+     * @param etat  L'etat à partir duquel ont veut calculer la récompense
+     * @param piece La pièce qui a été bougée
+     * @return La récompense (cf méthode pour les montant de récompense attribués)
+     */
     private int getRecompense(Etat etat, Piece piece) {
         int recompense = 0;
 
+        Puits puits = piece.getPuits();
+
+        /// Récompense pour la position de la PIECE ACTUELLE
+        List<Coordonnees> coordsPiece = piece.getElements().stream()
+                .map(Element::getCoord)
+                .toList();
+
         if (this.pose) {
-            Puits puits = piece.getPuits();
-
-            /// Récompense pour la position de la PIECE ACTUELLE
-            List<Coordonnees> coordsPiece = piece.getElements().stream()
-                    .map(Element::getCoord)
-                    .toList();
-
             // Analyse de chaque élements de la pièce posé
             for (Coordonnees coordElement : coordsPiece) {
                 // Analyse de ses voisins
@@ -187,13 +214,13 @@ public class IA implements PropertyChangeListener {
                     int y = coordVoisin.getOrdonnee();
                     if (x < 0 || puits.getLargueur() <= x || y < 0 || puits.getProfondeur() <= y) { // Si le voisin est
                                                                                                     // un mur
-                        recompense += 3;
+                        recompense += 4;
                     } else {
                         if (!coordsPiece.contains(coordVoisin)) {
                             // Analyse le voisin qui n'est donc pas un autre élement de la pièce
 
                             if (etat.getPieceActuelle(x, y) == 1) { // Si element
-                                recompense += 4;
+                                recompense += 3;
                             } else { // Si vide
                                 if (etat.getPieceActuelle(x, y - 1) == 1 || // Si élement obstruant au-dessus
                                         etat.getPieceActuelle(x, y - 2) == 1) { // Si élement obstruant au-dessus
@@ -211,13 +238,36 @@ public class IA implements PropertyChangeListener {
             /// Malus de défaite
             recompense -= this.defaite ? 10000 : 0;
 
-            // MAJ moyenne feedback
-            this.feedback.addRecompense(recompense);
         }
+
+        // Récompenses pour alignement avec l'ordonnée la plus petite
+        int xElementPlusBasPiece = coordsPiece.stream().min(Comparator.comparingInt(Coordonnees::getOrdonnee)).get().getAbscisse();
+
+        int xElementPlusBasTas = 0;
+        for (int y = etat.getProfondeur()-8-3-1; y > 0; y--) {
+            for (int x = 0; x < etat.getLargeur(); x++) {
+                if (etat.getTas(x, y) == 1) {
+                    xElementPlusBasPiece = x;
+                    break;
+                }
+            }
+        }
+
+        recompense+= etat.getLargeur() - Math.abs(xElementPlusBasTas - xElementPlusBasPiece);
+
+        // MAJ moyenne feedback
+        this.feedback.addRecompense(recompense);
 
         return recompense;
     }
 
+    /**
+     * Recupère l'action que le modèle prédit pour un Etat donné
+     * 
+     * @param etat L'état auquel on veut prédire l'action à effectuer
+     * @param piece La pièce sur laquelle l'action sera effectuée
+     * @return L'Action en question
+     */
     private Action getAction(Etat etat, Piece piece) {
         // EXPLORATION
         if (this.random.nextDouble() >= 1 - this.hp.getEpsilon()) {
@@ -229,6 +279,17 @@ public class IA implements PropertyChangeListener {
         return Action.getAction((Nd4j.argMax(this.getQValues(etat), 0).getInt(0)), piece);
     }
 
+    /**
+     * Met à jour les Q valeurs cible du modèle. Entraine le réseau de neuronne par
+     * batch (lots de données) en enregistrant et créant donc un dataset de données
+     * du jeux avec les Etat et les cibles à atteindre.
+     * 
+     * @param etat         L'état actuel
+     * @param action       L'action réalisé à l'état
+     * @param prochainEtat Le prochain état aprés avoir réalisé l'action
+     * @param recompense   La récompense attribué pour avoir effectué l'action à
+     *                     l'état
+     */
     private void updateQValues(Etat etat, Action action, Etat prochainEtat, int recompense) {
         // Récupération de l'indice de l'action dans le référentiel de l'ia
         final int indiceAction = Action.getIndexOfAction(action);
@@ -252,6 +313,11 @@ public class IA implements PropertyChangeListener {
         }
     }
 
+    /**
+     * Permet d'entrainer le modèle (plus feedback)
+     * 
+     * @param nbEpisodes Le nombre de partie à effectuer pour entrainer le modèle
+     */
     public void train(int nbEpisodes) {
         LOGGER.log(Level.INFO, "Entrainement du modèle d''IA sur {0} épisodes !", String.valueOf(nbEpisodes));
 

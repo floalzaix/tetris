@@ -20,7 +20,7 @@ public class Feedback implements PropertyChangeListener {
     //
     private final MultiLayerNetwork model;
 
-    private Hyperparametres hp;
+    private final Hyperparametres hp;
 
     private int nbEpisode;
     private int episode;
@@ -28,16 +28,17 @@ public class Feedback implements PropertyChangeListener {
     /// Stats par épisode
 
     // Score
-    private int scoreMax;
     private double scoreMoyen;
+    private int scoreMax;
 
-    // Log loss (par batch)
-    private double lossMin;
+    // Log loss
     private double lossMoyen;
 
     // Récompense
     private long recompenseTotaleJeu; // Modifier dans getRecompense()
+    private double recompenseMin;
     private double recompenseMoyenne;
+    private double recompenseMax;
 
     //
     //  Constructeurs
@@ -60,30 +61,32 @@ public class Feedback implements PropertyChangeListener {
 
             // Score
             int score = jeu.getPuits().getScore();
-            this.scoreMax = Math.max(this.scoreMax, score);
             this.scoreMoyen = (this.scoreMoyen * (this.episode - 1) + score) / (this.episode);
+            this.scoreMax = Math.max(this.scoreMax, score);
 
             // Loss
             double loss = this.model.score();
-            this.lossMin = Math.min(this.lossMin, loss);
             this.lossMoyen = (this.lossMoyen * (this.episode - 1) + loss) / (this.episode);
 
             // Récompense
+            this.recompenseMin = Math.min(this.recompenseMin, this.recompenseTotaleJeu);
             this.recompenseMoyenne = (this.recompenseMoyenne * (this.episode - 1) + this.recompenseTotaleJeu) / (this.episode);
+            this.recompenseMax = Math.max(this.recompenseMax, this.recompenseTotaleJeu);
             this.recompenseTotaleJeu = 0;
 
             // Affichage
             if (this.episode % 5 == 0) {
                 LOGGER.log(Level.INFO,
-                "---------------\nEpisode {0} / {1}\nSCORE MAX {2} MOYEN {3}\nLOSS MIN {4} MOYEN {5}\nR {6}\nALPHA {7} GAMMA {8} EPSILON {9}\n---------------\n",
+                "\n---------------\nEpisode {0} / {1}\nSCORE moy {2} max {3}\nLOSS moy {4}\nR/jeu min {5} moy {6} max {7} \nALPHA {8} GAMMA {9} EPSILON {10}\n---------------\n",
                     new Object[] {
                         String.valueOf(this.episode),
                         String.valueOf(this.nbEpisode),
-                        String.valueOf(this.scoreMax),
                         String.valueOf(this.scoreMoyen),
-                        String.valueOf(this.lossMin),
+                        String.valueOf(this.scoreMax),
                         String.valueOf(this.lossMoyen),
+                        String.valueOf(this.recompenseMin),
                         String.valueOf(this.recompenseMoyenne),
+                        String.valueOf(this.recompenseMax),
                         String.valueOf(this.hp.getAlpha()),
                         String.valueOf(this.hp.getGamma()),
                         String.valueOf(this.hp.getEpsilon())
