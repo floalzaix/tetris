@@ -11,15 +11,15 @@ public class Hyperparametres {
 
     // Init
     private static final double ALPHA_INIT = 0.4;
-    private static final double GAMMA_INIT = 0.3;
-    private static final double EPSILON_INIT = 1;
+    private static final double GAMMA_INIT = 0.2;
+    private static final double EPSILON_INIT = 0.8;
 
     // Growth
-    private static final double GAMMA_GROWTH = 1.02;
+    private static final double GAMMA_GROWTH = 1.01;
 
     // Decays
-    private static final double ALPHA_DECAY = 0.999;
-    private static final double EPSILON_DECAY = 0.999;
+    private static final double ALPHA_DECAY = 0.99999;
+    private static final double EPSILON_DECAY = 0.9999;
 
     // Bornes
     private static final double ALPHA_MIN = 0.01;

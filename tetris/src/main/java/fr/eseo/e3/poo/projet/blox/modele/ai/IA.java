@@ -143,8 +143,8 @@ public class IA implements PropertyChangeListener {
         // Met des un dans le tableau de l'etat aux endroits où il y a des élements pour
         // le TAS
         tas.getElements().stream()
-                .map(Element::getCoord)
-                .forEach(c -> etat.setTas(c.getAbscisse(), c.getOrdonnee()));
+            .map(Element::getCoord)
+            .forEach(c -> etat.setTas(c.getAbscisse(), c.getOrdonnee()));
 
         // Pour la PIECE SUIVANTE
         puits.getPieceSuivante().getElements().stream()
@@ -372,6 +372,7 @@ public class IA implements PropertyChangeListener {
                 /// MAJ du jeu (gravité si posé <= flag genéré par l'action)
                 if (this.pose) {
                     puits.gravite();
+                    piece = puits.getPieceActuelle();
                     this.pose = false;
                 }
 
