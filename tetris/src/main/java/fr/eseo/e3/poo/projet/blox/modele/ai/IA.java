@@ -3,6 +3,7 @@ package fr.eseo.e3.poo.projet.blox.modele.ai;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
@@ -14,6 +15,7 @@ import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.deeplearning4j.nn.conf.layers.DenseLayer;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
+import org.deeplearning4j.util.ModelSerializer;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
@@ -38,6 +40,8 @@ public class IA implements PropertyChangeListener {
     private static final Logger LOGGER = Logger.getLogger(IA.class.getName());
 
     private static final int BATCH_SIZE = 128;
+
+    public static final String PATH_TO_IA = "tetris\\src\\main\\java\\fr\\eseo\\e3\\poo\\projet\\blox\\modele\\ai\\ia_tetris.zip";
 
     //
     // Variables d'instance
@@ -78,7 +82,7 @@ public class IA implements PropertyChangeListener {
     //
     // Constructeurs
     //
-    public IA(int largeurPuits, int profondeurPuits, int modeUsine) {
+    public IA(int largeurPuits, int profondeurPuits, int modeUsine, boolean load) throws IOException {
         this.hp = new Hyperparametres();
 
         this.largeurPuits = largeurPuits;
@@ -117,8 +121,14 @@ public class IA implements PropertyChangeListener {
                         .build())
                 .build();
 
-        this.model = new MultiLayerNetwork(conf);
-        this.model.init();
+         
+
+        if (load) {
+            this.model = ModelSerializer.restoreMultiLayerNetwork(PATH_TO_IA);
+        } else {
+            this.model = new MultiLayerNetwork(conf);
+            this.model.init();
+        }
 
         this.feedback = new Feedback(this.model, this.hp);
         this.addPropertyChangeListener(this.feedback);

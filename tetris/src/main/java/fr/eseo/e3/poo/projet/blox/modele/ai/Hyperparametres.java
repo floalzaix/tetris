@@ -19,7 +19,7 @@ public class Hyperparametres {
 
     // Decays
     private static final double ALPHA_DECAY = 0.99999;
-    private static final double EPSILON_DECAY = 0.9999;
+    private static final double EPSILON_DECAY = 0.99;
 
     // Bornes
     private static final double ALPHA_MIN = 0.01;

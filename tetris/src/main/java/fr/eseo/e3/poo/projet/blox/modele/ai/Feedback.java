@@ -2,10 +2,12 @@ package fr.eseo.e3.poo.projet.blox.modele.ai;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
+import org.deeplearning4j.util.ModelSerializer;
 
 import fr.eseo.e3.poo.projet.blox.modele.Jeu;
 
@@ -92,6 +94,14 @@ public class Feedback implements PropertyChangeListener {
                         String.valueOf(this.hp.getEpsilon())
                     }
                 );
+            }
+
+            // Enregistre le modèle
+            try {
+                ModelSerializer.writeModel(model, IA.PATH_TO_IA, true);
+            } catch (IOException e) {
+                // A changer ...
+                e.printStackTrace();
             }
         }
     }
