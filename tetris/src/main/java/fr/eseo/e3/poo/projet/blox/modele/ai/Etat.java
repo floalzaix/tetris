@@ -14,7 +14,7 @@ public class Etat {
     //
     // Constantes de classe
     //
-    private static final int PIECE_SUIVANTE_OFFSET_ABSCISSE = -2;
+    private static final int PIECE_SUIVANTE_OFFSET_ABSCISSE = -1;
     private static final int PIECE_SUIVANTE_OFFSET_ORDONNEE = -4 + 2;
     private static final int PIECE_ACTUELLE_OFFSET_ORDONNEE = 2 * 4 + 3;
 
@@ -30,6 +30,9 @@ public class Etat {
     private final int etatLargeur;
     private final int etatProfondeur;
 
+    // Analyse
+    private int yMax;
+
     //
     // Constructeurs
     //
@@ -41,6 +44,8 @@ public class Etat {
         this.etatProfondeur = this.profondeur + Etat.TAS_OFFSET_ORDONNEE;
 
         this.carteJeu = new float[this.largeur * (this.profondeur + Etat.TAS_OFFSET_ORDONNEE)];
+
+        this.yMax = this.etatProfondeur - 1;
     }
 
     //
@@ -81,6 +86,9 @@ public class Etat {
      * @return 1 s'il y a un élement présent, 0 sinon.
      */
     public int getPieceActuelle(int x, int y) {
+        if (y < this.yMax) {
+            this.yMax = y;
+        }
         return (int) this.carteJeu[x + this.largeur * (y + Etat.PIECE_ACTUELLE_OFFSET_ORDONNEE)];
     }
 
@@ -148,6 +156,24 @@ public class Etat {
     }
 
     //
+    //  Overrrides
+    //
+    @Override
+    public String toString() {
+        StringBuilder b = new StringBuilder();
+        b.append("Etat :\n");
+        for (int y = 0; y < this.etatProfondeur; y++) {
+            for (int x = 0; x < this.largeur; x++) {
+                int value = (int) this.carteJeu[x + this.etatLargeur * y];
+                b.append("  ");
+                b.append((value == 1) ? "x" : ".");
+            }
+            b.append('\n');
+        }
+        return b.toString();
+    }
+
+    //
     //  Functions
     //
 
@@ -163,5 +189,9 @@ public class Etat {
 
     public int getProfondeur() {
         return this.profondeur;
+    }
+
+    public int getYMax() {
+        return this.yMax;
     }
 }

@@ -19,7 +19,7 @@ public class FallingBloxIATrainer {
             System.out.println(Nd4j.getExecutioner().getClass().getName());
             
             // IA
-            IA ia = new IA(10, 20, UsineDePiece.ALEATOIRE_COMPLET, true);
+            IA ia = new IA(10, 20, UsineDePiece.ALEATOIRE_COMPLET, false);
             
             if (VUE) {
                 JFrame frame = new JFrame("IA Training ...");
@@ -33,11 +33,10 @@ public class FallingBloxIATrainer {
                 frame.add(vueIA);
                 frame.pack();
                 frame.setResizable(false);
-                frame.setLocationRelativeTo(null);
             }
             
             // Taining
-            ia.train(10000);
+            ia.train(1000000);
         } catch (IOException ex) {
             // A changer
             ex.printStackTrace();

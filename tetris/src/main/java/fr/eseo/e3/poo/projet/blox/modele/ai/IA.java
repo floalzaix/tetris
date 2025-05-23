@@ -4,7 +4,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
@@ -105,17 +104,17 @@ public class IA implements PropertyChangeListener {
                 .updater(this.hp.getAdam())
                 .list()
                 .layer(new DenseLayer.Builder()
+                        .dropOut(0.5)
                         .nIn(Etat.getNumberOfInput(largeurPuits, profondeurPuits))
-                        .nOut(64)
+                        .nOut(128)
                         .activation(Activation.RELU)
                         .build())
                 .layer(new DenseLayer.Builder()
-                        .nIn(64)
-                        .nOut(32)
+                        .dropOut(0.5)
+                        .nOut(64)
                         .activation(Activation.RELU)
                         .build())
                 .layer(new OutputLayer.Builder(LossFunctions.LossFunction.MSE)
-                        .nIn(32)
                         .nOut(Action.getNbActions())
                         .activation(Activation.IDENTITY)
                         .build())
@@ -176,7 +175,7 @@ public class IA implements PropertyChangeListener {
      * @return La Q valeur max pour l'Etat
      */
     private double getQMax(Etat etat) {
-        return this.getQValues(etat).max(0).getDouble(0);
+        return this.getQValues(etat).max(1).getDouble(0);
     }
 
     /**
@@ -204,14 +203,18 @@ public class IA implements PropertyChangeListener {
     private int getRecompense(Etat etat, Piece piece) {
         int recompense = 0;
 
-        Puits puits = piece.getPuits();
+        if (this.pose || !this.pose) {
+            Puits puits = piece.getPuits();
 
-        /// Récompense pour la position de la PIECE ACTUELLE
-        List<Coordonnees> coordsPiece = piece.getElements().stream()
-                .map(Element::getCoord)
-                .toList();
+            /// Récompense pour la position de la PIECE ACTUELLE
+            List<Coordonnees> coordsPiece = piece.getElements().stream()
+                    .map(Element::getCoord)
+                    .toList();
 
-        if (this.pose) {
+            if (coordsPiece.getFirst().getOrdonnee() < etat.getYMax()) {
+                recompense -= 0;
+            }
+
             // Analyse de chaque élements de la pièce posé
             for (Coordonnees coordElement : coordsPiece) {
                 // Analyse de ses voisins
@@ -224,17 +227,17 @@ public class IA implements PropertyChangeListener {
                     int y = coordVoisin.getOrdonnee();
                     if (x < 0 || puits.getLargueur() <= x || y < 0 || puits.getProfondeur() <= y) { // Si le voisin est
                                                                                                     // un mur
-                        recompense += 4;
+                        recompense += 1;
                     } else {
                         if (!coordsPiece.contains(coordVoisin)) {
                             // Analyse le voisin qui n'est donc pas un autre élement de la pièce
 
                             if (etat.getPieceActuelle(x, y) == 1) { // Si element
-                                recompense += 3;
+                                recompense += 0;
                             } else { // Si vide
                                 if (etat.getPieceActuelle(x, y - 1) == 1 || // Si élement obstruant au-dessus
                                         etat.getPieceActuelle(x, y - 2) == 1) { // Si élement obstruant au-dessus
-                                    recompense -= 2;
+                                    recompense -= 0;
                                 }
                             }
                         }
@@ -243,27 +246,12 @@ public class IA implements PropertyChangeListener {
             }
 
             /// Récompense pour les lignes complétées
-            recompense += 10 * etat.getLignesCompletee();
+            recompense += 0 * etat.getLignesCompletee();
 
             /// Malus de défaite
-            recompense -= this.defaite ? 10000 : 0;
+            recompense -= this.defaite ? 0 : 0;
 
         }
-
-        // Récompenses pour alignement avec l'ordonnée la plus petite
-        int xElementPlusBasPiece = coordsPiece.stream().min(Comparator.comparingInt(Coordonnees::getOrdonnee)).get().getAbscisse();
-
-        int xElementPlusBasTas = 0;
-        for (int y = etat.getProfondeur()-8-3-1; y > 0; y--) {
-            for (int x = 0; x < etat.getLargeur(); x++) {
-                if (etat.getTas(x, y) == 1) {
-                    xElementPlusBasPiece = x;
-                    break;
-                }
-            }
-        }
-
-        recompense+= etat.getLargeur() - Math.abs(xElementPlusBasTas - xElementPlusBasPiece);
 
         // MAJ moyenne feedback
         this.feedback.addRecompense(recompense);
@@ -286,7 +274,7 @@ public class IA implements PropertyChangeListener {
         }
 
         // EXPLOITATION
-        return Action.getAction((Nd4j.argMax(this.getQValues(etat), 0).getInt(0)), piece);
+        return Action.getAction((Nd4j.argMax(this.getQValues(etat), 1).getInt(0)), piece);
     }
 
     /**
@@ -382,6 +370,7 @@ public class IA implements PropertyChangeListener {
                 /// MAJ du jeu (gravité si posé <= flag genéré par l'action)
                 if (this.pose) {
                     puits.gravite();
+                    recompense = this.getRecompense(etat, piece);
                     piece = puits.getPieceActuelle();
                     this.pose = false;
                 }
