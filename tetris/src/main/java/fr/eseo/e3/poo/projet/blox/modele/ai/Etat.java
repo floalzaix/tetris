@@ -30,9 +30,6 @@ public class Etat {
     private final int etatLargeur;
     private final int etatProfondeur;
 
-    // Analyse
-    private int yMax;
-
     //
     // Constructeurs
     //
@@ -44,8 +41,6 @@ public class Etat {
         this.etatProfondeur = this.profondeur + Etat.TAS_OFFSET_ORDONNEE;
 
         this.carteJeu = new float[this.largeur * (this.profondeur + Etat.TAS_OFFSET_ORDONNEE)];
-
-        this.yMax = this.etatProfondeur - 1;
     }
 
     //
@@ -86,9 +81,6 @@ public class Etat {
      * @return 1 s'il y a un élement présent, 0 sinon.
      */
     public int getPieceActuelle(int x, int y) {
-        if (y < this.yMax) {
-            this.yMax = y;
-        }
         return (int) this.carteJeu[x + this.largeur * (y + Etat.PIECE_ACTUELLE_OFFSET_ORDONNEE)];
     }
 
@@ -138,23 +130,6 @@ public class Etat {
         this.carteJeu[x + this.largeur * y] = 0;
     }
 
-    /**
-     * Gets the number of completed lines in the current state
-     * 
-     * @return The number of completed lines
-     */
-    public int getLignesCompletee() {
-        int lignesCompletee = 0;
-        for (int x = 0; x < this.etatLargeur; x++) {
-            boolean completee = true;
-            for (int y = 0; y < this.etatProfondeur; y++) {
-                completee &= this.carteJeu[x * this.etatLargeur + y] == 1;
-            }
-            lignesCompletee += completee ? 1 : 0;
-        }
-        return lignesCompletee;
-    }
-
     //
     //  Overrrides
     //
@@ -189,9 +164,5 @@ public class Etat {
 
     public int getProfondeur() {
         return this.profondeur;
-    }
-
-    public int getYMax() {
-        return this.yMax;
     }
 }

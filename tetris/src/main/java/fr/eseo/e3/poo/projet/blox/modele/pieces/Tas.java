@@ -14,6 +14,7 @@ import fr.eseo.e3.poo.projet.blox.modele.Coordonnees;
 import fr.eseo.e3.poo.projet.blox.modele.Couleur;
 import fr.eseo.e3.poo.projet.blox.modele.Element;
 import fr.eseo.e3.poo.projet.blox.modele.Puits;
+import fr.eseo.e3.poo.projet.blox.modele.ai.AnalyseurTas;
 
 public class Tas {
     //
@@ -27,6 +28,9 @@ public class Tas {
     private Puits puits;
     
     private PropertyChangeSupport pcs;
+
+    // Analyseur
+    private AnalyseurTas analyseur;
 
     // Constructeurs
     public Tas(Puits puits, int nbElements, int nbLignes, Random rand) throws IllegalArgumentException {
@@ -57,6 +61,12 @@ public class Tas {
 
     public Tas(Puits puits, int nbElements, int nbLignes) throws IllegalArgumentException {
         this(puits, nbElements, nbLignes, null);
+    }
+
+    public Tas(Puits puits, AnalyseurTas analyseur) throws IllegalArgumentException {
+        this(puits, 0, 0, null);
+
+        this.analyseur = analyseur;
     }
 
     /**
@@ -103,6 +113,11 @@ public class Tas {
      */
     public void ajouterElements(Piece piece) {
         this.elements.addAll(piece.getElements());
+
+        if (this.analyseur != null) {
+            this.analyseur.updateAnalyseurPiece(piece);
+        }
+
         puits.addScore(ligneComplete());
     }
 
@@ -133,6 +148,11 @@ public class Tas {
             // Tester s'il faut retirer la couche et incrémenté le nombre de couche retirées
             if (size == this.puits.getLargueur()) {
                 s += 1;
+
+                if (this.analyseur != null) {
+                    this.analyseur.updateAnalyseurLigne(e.getKey());
+                }
+
                 elements.removeAll(e.getValue());
             } else if (size > this.puits.getLargueur()) {
                 throw new IllegalArgumentException(
@@ -197,5 +217,9 @@ public class Tas {
 
     public Puits getPuits() {
         return puits;
+    }
+
+    public void setAnalyseur(AnalyseurTas analyseur) {
+        this.analyseur = analyseur;
     }
 }

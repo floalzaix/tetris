@@ -4,7 +4,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
-import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,7 +19,6 @@ import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 
-import fr.eseo.e3.poo.projet.blox.modele.Coordonnees;
 import fr.eseo.e3.poo.projet.blox.modele.Element;
 import fr.eseo.e3.poo.projet.blox.modele.Jeu;
 import fr.eseo.e3.poo.projet.blox.modele.Puits;
@@ -120,8 +118,6 @@ public class IA implements PropertyChangeListener {
                         .build())
                 .build();
 
-         
-
         if (load) {
             this.model = ModelSerializer.restoreMultiLayerNetwork(PATH_TO_IA);
         } else {
@@ -152,8 +148,8 @@ public class IA implements PropertyChangeListener {
         // Met des un dans le tableau de l'etat aux endroits où il y a des élements pour
         // le TAS
         tas.getElements().stream()
-            .map(Element::getCoord)
-            .forEach(c -> etat.setTas(c.getAbscisse(), c.getOrdonnee()));
+                .map(Element::getCoord)
+                .forEach(c -> etat.setTas(c.getAbscisse(), c.getOrdonnee()));
 
         // Pour la PIECE SUIVANTE
         puits.getPieceSuivante().getElements().stream()
@@ -194,75 +190,9 @@ public class IA implements PropertyChangeListener {
     }
 
     /**
-     * Recupère la récompense du système pour un Etat et une pièce donnée
-     * 
-     * @param etat  L'etat à partir duquel ont veut calculer la récompense
-     * @param piece La pièce qui a été bougée
-     * @return La récompense (cf méthode pour les montant de récompense attribués)
-     */
-    private int getRecompense(Etat etat, Piece piece) {
-        int recompense = 0;
-
-        if (this.pose || !this.pose) {
-            Puits puits = piece.getPuits();
-
-            /// Récompense pour la position de la PIECE ACTUELLE
-            List<Coordonnees> coordsPiece = piece.getElements().stream()
-                    .map(Element::getCoord)
-                    .toList();
-
-            if (coordsPiece.getFirst().getOrdonnee() < etat.getYMax()) {
-                recompense -= 0;
-            }
-
-            // Analyse de chaque élements de la pièce posé
-            for (Coordonnees coordElement : coordsPiece) {
-                // Analyse de ses voisins
-                for (int[] delta : new int[][] { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 } }) {
-                    Coordonnees coordVoisin = new Coordonnees(
-                            coordElement.getAbscisse() + delta[0],
-                            coordElement.getOrdonnee() + delta[1]);
-
-                    int x = coordVoisin.getAbscisse();
-                    int y = coordVoisin.getOrdonnee();
-                    if (x < 0 || puits.getLargueur() <= x || y < 0 || puits.getProfondeur() <= y) { // Si le voisin est
-                                                                                                    // un mur
-                        recompense += 1;
-                    } else {
-                        if (!coordsPiece.contains(coordVoisin)) {
-                            // Analyse le voisin qui n'est donc pas un autre élement de la pièce
-
-                            if (etat.getPieceActuelle(x, y) == 1) { // Si element
-                                recompense += 0;
-                            } else { // Si vide
-                                if (etat.getPieceActuelle(x, y - 1) == 1 || // Si élement obstruant au-dessus
-                                        etat.getPieceActuelle(x, y - 2) == 1) { // Si élement obstruant au-dessus
-                                    recompense -= 0;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            /// Récompense pour les lignes complétées
-            recompense += 0 * etat.getLignesCompletee();
-
-            /// Malus de défaite
-            recompense -= this.defaite ? 0 : 0;
-
-        }
-
-        // MAJ moyenne feedback
-        this.feedback.addRecompense(recompense);
-
-        return recompense;
-    }
-
-    /**
      * Recupère l'action que le modèle prédit pour un Etat donné
      * 
-     * @param etat L'état auquel on veut prédire l'action à effectuer
+     * @param etat  L'état auquel on veut prédire l'action à effectuer
      * @param piece La pièce sur laquelle l'action sera effectuée
      * @return L'Action en question
      */
@@ -288,7 +218,7 @@ public class IA implements PropertyChangeListener {
      * @param recompense   La récompense attribué pour avoir effectué l'action à
      *                     l'état
      */
-    private void updateQValues(Etat etat, Action action, Etat prochainEtat, int recompense) {
+    private void updateQValues(Etat etat, Action action, Etat prochainEtat, double recompense) {
         // Récupération de l'indice de l'action dans le référentiel de l'ia
         final int indiceAction = Action.getIndexOfAction(action);
 
@@ -334,6 +264,14 @@ public class IA implements PropertyChangeListener {
             // Récupération de la pièce actuelle du puits et qui va donc être bougé par l'ia
             Piece piece = puits.getPieceActuelle();
 
+            // Création de l'analyseur de tas pour récupérer les données pour les
+            // récompenses
+            AnalyseurTas analyseur = new AnalyseurTas(tas);
+            tas.setAnalyseur(analyseur);
+
+            // Création du système de récompense de la partie
+            Recompense recompense = new Recompense(analyseur);
+
             // S'enregistre pour recevoir les evt du jeu LIGNE_COMPLETE et
             // LIMITE_HAUTEUR_ATTEINTE
             puits.addPropertyChangeListener(this);
@@ -361,25 +299,27 @@ public class IA implements PropertyChangeListener {
                     this.pose = true;
                 }
 
-                // Aprés l'action si l'action à engendrée la défaite le listener lève un flag
-                // defaite qu'il faut rabaisser apr
-
-                /// Récupération de la récompense
-                int recompense = this.getRecompense(etat, piece);
-
                 /// MAJ du jeu (gravité si posé <= flag genéré par l'action)
                 if (this.pose) {
                     puits.gravite();
-                    recompense = this.getRecompense(etat, piece);
                     piece = puits.getPieceActuelle();
+                }
+
+                /// Récupération de la récompense
+                recompense.update(action, puits, this.pose, collision, this.defaite);
+
+                // On abaisse le flag posé
+                if (this.pose) {
                     this.pose = false;
                 }
+
+                this.feedback.addRecompense(recompense.get());
 
                 /// On recupère le nouvel état
                 Etat nouvelEtat = this.getEtat(puits, tas);
 
                 // Récupérience des données pour le feedback
-                this.updateQValues(etat, action, nouvelEtat, recompense);
+                this.updateQValues(etat, action, nouvelEtat, recompense.get());
             }
 
             // Stats
