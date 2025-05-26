@@ -11,7 +11,7 @@ import fr.eseo.e3.poo.projet.blox.vue.VueIA;
 
 public class FallingBloxIATrainer {
     public static void main(String[] args) {
-        final boolean VUE = false;
+        final boolean VUE = true;
         
         System.out.println(Nd4j.getExecutioner().getClass().getName());
         
@@ -34,6 +34,6 @@ public class FallingBloxIATrainer {
         }
         
         // Taining
-        ia.train(1000000);
+        ia.train(10000);
     }
 }
