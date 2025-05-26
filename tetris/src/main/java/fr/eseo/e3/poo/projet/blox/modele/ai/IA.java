@@ -19,7 +19,6 @@ import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 
-import fr.eseo.e3.poo.projet.blox.modele.Element;
 import fr.eseo.e3.poo.projet.blox.modele.Jeu;
 import fr.eseo.e3.poo.projet.blox.modele.Puits;
 import fr.eseo.e3.poo.projet.blox.modele.ai.actions.Action;
@@ -127,9 +126,7 @@ public class IA implements PropertyChangeListener {
         if (load) {
             try {
                 this.model = ModelSerializer.restoreMultiLayerNetwork(PATH_TO_IA);
-            } catch (IOException e) {
-                // A changer !!!
-                e.printStackTrace();
+            } catch (IOException _) {
                 System.exit(1);
             }
         } else {
@@ -146,35 +143,6 @@ public class IA implements PropertyChangeListener {
     //
 
     /// Q LEARNING (Entrainement)
-
-    /**
-     * Recupère l'état actuel du système (cf Etat)
-     * 
-     * @param puits Le puits du jeu dont on veut récupérer l'Etat
-     * @param tas   Le tas du jeu dont on veut récupérer l'Etat
-     * @return L'etat en question
-     */
-    private Etat getEtat(Puits puits, Tas tas) {
-        Etat etat = new Etat(puits.getLargueur(), puits.getProfondeur());
-
-        // Met des un dans le tableau de l'etat aux endroits où il y a des élements pour
-        // le TAS
-        tas.getElements().stream()
-                .map(Element::getCoord)
-                .forEach(c -> etat.setTas(c.getAbscisse(), c.getOrdonnee()));
-
-        // Pour la PIECE SUIVANTE
-        puits.getPieceSuivante().getElements().stream()
-                .map(Element::getCoord)
-                .forEach(c -> etat.setPieceSuivante(c.getAbscisse(), c.getOrdonnee()));
-
-        // Pour la PIECE ACTUELLE
-        puits.getPieceActuelle().getElements().stream()
-                .map(Element::getCoord)
-                .forEach(c -> etat.setPieceActuelle(c.getAbscisse(), c.getOrdonnee()));
-
-        return etat;
-    }
 
     /**
      * Récupère la valeur maximale des qValeurs du système
@@ -297,7 +265,7 @@ public class IA implements PropertyChangeListener {
                 // Q Algorithme
 
                 /// Récupération de l'état
-                Etat etat = this.getEtat(puits, tas);
+                Etat etat = new Etat(jeu);
 
                 /// Prédiction
                 Action action = this.getAction(etat, piece);
@@ -328,7 +296,7 @@ public class IA implements PropertyChangeListener {
                 this.feedback.addRecompense(recompense.get());
 
                 /// On recupère le nouvel état
-                Etat nouvelEtat = this.getEtat(puits, tas);
+                Etat nouvelEtat = new Etat(jeu);
 
                 // Récupérience des données pour le feedback
                 this.updateQValues(etat, action, nouvelEtat, recompense.get());
