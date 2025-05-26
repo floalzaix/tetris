@@ -11,6 +11,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -62,6 +63,13 @@ public class VueConnexion extends JPanel {
 
         this.add(Box.createRigidArea(new Dimension(0, 15)));
 
+        // Bouton IA
+        JCheckBox iaBox = new JCheckBox("IA");
+        iaBox.setAlignmentX(Component.CENTER_ALIGNMENT);
+        this.add(iaBox);
+
+        this.add(Box.createRigidArea(new Dimension(0, 15)));
+
         // Confirmation
         JButton conf = new JButton("Confirmation");
         conf.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -69,12 +77,12 @@ public class VueConnexion extends JPanel {
         conf.addActionListener(_ -> {
             try {
                 URI u = new URI(uri.getText());
-                Client client = new Client(u);
+                Client client = new Client(u, iaBox.isSelected());
                 client.connect();
                 
                 client.getLatch().await();
 
-                this.routeur.ajouterRoute(new VueJoueurs(routeur, client.getJoueur(), client, false), "JEU");
+                this.routeur.ajouterRoute(new VueJoueurs(routeur, client.getJoueur(), client, false, iaBox.isSelected()), "JEU");
                 this.routeur.router("JEU");
             } catch (URISyntaxException e) {
                 // Pas géré ici

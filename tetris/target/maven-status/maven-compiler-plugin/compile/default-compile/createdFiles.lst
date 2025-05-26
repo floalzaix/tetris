@@ -9,6 +9,7 @@ fr\eseo\e3\poo\projet\blox\modele\ai\actions\Action.class
 fr\eseo\e3\poo\projet\blox\vue\VueTas.class
 fr\eseo\e3\poo\projet\blox\modele\pieces\tetrominos\JTetromino.class
 fr\eseo\e3\poo\projet\blox\modele\ai\actions\MoveRight.class
+fr\eseo\e3\poo\projet\blox\modele\ai\Recompense.class
 fr\eseo\e3\poo\projet\blox\vue\VueConnexion.class
 fr\eseo\e3\poo\projet\blox\modele\ai\actions\RotateLeft.class
 fr\eseo\e3\poo\projet\blox\modele\ai\IA.class
@@ -24,6 +25,8 @@ fr\eseo\e3\poo\projet\blox\modele\Copiable.class
 fr\eseo\e3\poo\projet\blox\modele\BloxException.class
 fr\eseo\e3\poo\projet\blox\modele\pieces\tetrominos\TTetromino.class
 fr\eseo\e3\poo\projet\blox\vue\VuePuits.class
+fr\eseo\e3\poo\projet\blox\modele\ai\actions\Drop.class
+fr\eseo\e3\poo\projet\blox\modele\ai\AnalyseurTas.class
 fr\eseo\e3\poo\projet\blox\modele\Generable.class
 fr\eseo\e3\poo\projet\blox\modele\pieces\tetrominos\STetromino.class
 fr\eseo\e3\poo\projet\blox\modele\ai\actions\RotateRight.class

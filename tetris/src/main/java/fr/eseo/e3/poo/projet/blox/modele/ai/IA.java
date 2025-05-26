@@ -34,9 +34,13 @@ public class IA implements PropertyChangeListener {
     public static final String EVT_CHANGEMENT_JEU = "JEU";
     public static final String EVT_CALC_STATS = "FEEDBACK";
 
+    public static final int DIFFICULTE_FACILE = 4;
+    public static final int DIFFICULTE_MOYENNE = 5;
+    public static final int DIFFICULTE_DIFFICILE = 6;
+
     private static final Logger LOGGER = Logger.getLogger(IA.class.getName());
 
-    private static final int BATCH_SIZE = 128;
+    private static final int BATCH_SIZE = 64;
 
     public static final String PATH_TO_IA = "tetris\\src\\main\\java\\fr\\eseo\\e3\\poo\\projet\\blox\\modele\\ai\\ia_tetris.zip";
 
@@ -56,7 +60,7 @@ public class IA implements PropertyChangeListener {
     private boolean pose;
 
     // Modèle
-    private final MultiLayerNetwork model;
+    private MultiLayerNetwork model;
 
     // Pour le changement de jeu lors de l'entrainement
     private final PropertyChangeSupport pcs;
@@ -79,7 +83,7 @@ public class IA implements PropertyChangeListener {
     //
     // Constructeurs
     //
-    public IA(int largeurPuits, int profondeurPuits, int modeUsine, boolean load) throws IOException {
+    public IA(int largeurPuits, int profondeurPuits, int modeUsine, boolean load) {
         this.hp = new Hyperparametres();
 
         this.largeurPuits = largeurPuits;
@@ -102,15 +106,17 @@ public class IA implements PropertyChangeListener {
                 .updater(this.hp.getAdam())
                 .list()
                 .layer(new DenseLayer.Builder()
-                        .dropOut(0.5)
                         .nIn(Etat.getNumberOfInput(largeurPuits, profondeurPuits))
-                        .nOut(128)
-                        .activation(Activation.RELU)
+                        .nOut(64)
+                        .activation(Activation.LEAKYRELU)
                         .build())
                 .layer(new DenseLayer.Builder()
-                        .dropOut(0.5)
+                        .nOut(128)
+                        .activation(Activation.LEAKYRELU)
+                        .build())
+                .layer(new DenseLayer.Builder()
                         .nOut(64)
-                        .activation(Activation.RELU)
+                        .activation(Activation.LEAKYRELU)
                         .build())
                 .layer(new OutputLayer.Builder(LossFunctions.LossFunction.MSE)
                         .nOut(Action.getNbActions())
@@ -119,7 +125,13 @@ public class IA implements PropertyChangeListener {
                 .build();
 
         if (load) {
-            this.model = ModelSerializer.restoreMultiLayerNetwork(PATH_TO_IA);
+            try {
+                this.model = ModelSerializer.restoreMultiLayerNetwork(PATH_TO_IA);
+            } catch (IOException e) {
+                // A changer !!!
+                e.printStackTrace();
+                System.exit(1);
+            }
         } else {
             this.model = new MultiLayerNetwork(conf);
             this.model.init();
@@ -330,6 +342,58 @@ public class IA implements PropertyChangeListener {
         }
 
         LOGGER.log(Level.INFO, "Entrainement fini !");
+    }
+
+    public void play(Jeu jeu, int difficulte) {
+        // Récupération des propriétés du jeu
+        Puits puits = jeu.getPuits();
+        Tas tas = puits.getTas();
+
+        // Récupération de la pièce actuelle du puits et qui va donc être bougé par l'ia
+        Piece piece = puits.getPieceActuelle();
+
+        // S'enregistre pour recevoir les evt du jeu
+        // LIMITE_HAUTEUR_ATTEINTE
+        puits.addPropertyChangeListener(this);
+
+        this.defaite = false;
+
+        while (!this.defaite) {
+            /// Récupération de l'état
+            Etat etat = this.getEtat(puits, tas);
+
+            /// Prédiction
+            Action action = this.getAction(etat, piece);
+
+            /// Action
+            boolean collision = action.execute();
+
+            // Si on pose la pièce c-a-d si lors d'un mvt vers le bas il a collision alors
+            // on lève le flag pose qu'il faudra baisser quand la gravite sera executée.
+            if (collision && action instanceof MoveDown) {
+                this.pose = true;
+            }
+
+            /// MAJ du jeu (gravité si posé <= flag genéré par l'action)
+            if (this.pose) {
+                puits.gravite();
+                piece = puits.getPieceActuelle();
+                this.pose = false;
+            }
+
+            int delay = switch (difficulte) {
+                case IA.DIFFICULTE_FACILE -> 50;
+                case IA.DIFFICULTE_MOYENNE -> 25;
+                case IA.DIFFICULTE_DIFFICILE -> 10;
+                default -> throw new IllegalArgumentException("Mauvaise valeur de difficulté !");
+            };
+
+            try {
+                Thread.sleep(delay);
+            } catch (InterruptedException _) {
+                /* RAS */
+            }
+        }
     }
 
     /// Changement de jeu listener

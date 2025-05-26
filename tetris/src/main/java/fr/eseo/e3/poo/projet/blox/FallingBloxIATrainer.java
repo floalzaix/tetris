@@ -1,7 +1,5 @@
 package fr.eseo.e3.poo.projet.blox;
 
-import java.io.IOException;
-
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
@@ -13,33 +11,29 @@ import fr.eseo.e3.poo.projet.blox.vue.VueIA;
 
 public class FallingBloxIATrainer {
     public static void main(String[] args) {
-        try {
-            final boolean VUE = true;
+        final boolean VUE = false;
+        
+        System.out.println(Nd4j.getExecutioner().getClass().getName());
+        
+        // IA
+        IA ia = new IA(6, 15, UsineDePiece.CYCLIC, true);
+        
+        
+        if (VUE) {
+            JFrame frame = new JFrame("IA Training ...");
             
-            System.out.println(Nd4j.getExecutioner().getClass().getName());
+            // Vue IA
+            VueIA vueIA = new VueIA(ia, frame);
             
-            // IA
-            IA ia = new IA(10, 20, UsineDePiece.ALEATOIRE_COMPLET, false);
-            
-            if (VUE) {
-                JFrame frame = new JFrame("IA Training ...");
-                
-                // Vue IA
-                VueIA vueIA = new VueIA(ia, frame);
-                
-                // Config de la frame
-                frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-                frame.setVisible(true);
-                frame.add(vueIA);
-                frame.pack();
-                frame.setResizable(false);
-            }
-            
-            // Taining
-            ia.train(1000000);
-        } catch (IOException ex) {
-            // A changer
-            ex.printStackTrace();
+            // Config de la frame
+            frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+            frame.setVisible(true);
+            frame.add(vueIA);
+            frame.pack();
+            frame.setResizable(false);
         }
+        
+        // Taining
+        ia.train(1000000);
     }
 }

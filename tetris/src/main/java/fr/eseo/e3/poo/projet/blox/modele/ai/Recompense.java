@@ -4,6 +4,7 @@ import fr.eseo.e3.poo.projet.blox.modele.Coordonnees;
 import fr.eseo.e3.poo.projet.blox.modele.Element;
 import fr.eseo.e3.poo.projet.blox.modele.Puits;
 import fr.eseo.e3.poo.projet.blox.modele.ai.actions.Action;
+import fr.eseo.e3.poo.projet.blox.modele.ai.actions.Drop;
 import fr.eseo.e3.poo.projet.blox.modele.ai.actions.MoveDown;
 import fr.eseo.e3.poo.projet.blox.modele.pieces.Piece;
 
@@ -62,6 +63,7 @@ public class Recompense {
         this.appliqueBonusOrdonneeElementsPiece();
 
         this.appliqueMalusCollision(); // Pour éviter les mouvements inutiles
+        this.appliqueBonusDescente();
 
         if (pose) {
             // Calc des deltas
@@ -92,6 +94,8 @@ public class Recompense {
             if (AFF) System.out.println("Empilements : " + this.recompenseTot);
             this.appliqueBonusMalusNbElementsParLignes();
             if (AFF) System.out.println("Moy elements par lignes : " + this.recompenseTot);
+            this.appliqueBonusMinCoord();
+            if (AFF) System.out.println("MinCoords : " + this.recompenseTot);
 
             try {
                 if (AFF) Thread.sleep(2000);
@@ -108,21 +112,27 @@ public class Recompense {
         Piece fantome = this.puits.getFantome().getCopyPiece();
         for (Element e : fantome.getElements()) {
             Coordonnees c = e.getCoord();
-            this.recompenseTot += 2 * c.getOrdonnee() / (double) puits.getProfondeur();
+            this.recompenseTot += 6 * c.getOrdonnee() / (double) puits.getProfondeur() + 3;
         }
     }
 
     private void appliqueBonusLignesCompletees() {
-        this.recompenseTot += 5000 * this.deltaNbLignes;
+        this.recompenseTot += 2500 * this.deltaNbLignes;
     }
 
     private void appliqueMalusDefaite() {
-        this.recompenseTot -= (this.defaite) ? 10000 : -0.2;
+        this.recompenseTot -= (this.defaite) ? 1000 : 0;
     }
 
     private void appliqueMalusCollision() {
         if (this.collision && !(this.action instanceof MoveDown)) {
-            this.recompenseTot -= 10;
+            this.recompenseTot -= 30;
+        }
+    }
+    
+    private void appliqueBonusDescente() {
+        if (this.action instanceof MoveDown || this.action instanceof Drop) {
+            this.recompenseTot += 1;
         }
     }
 
@@ -131,14 +141,26 @@ public class Recompense {
     }
 
     private void appliqueMalusTrous() {
-        this.recompenseTot -= 2 * this.deltaNbTrousCrees;
+        this.recompenseTot -= 20 * this.deltaNbTrousCrees;
     }
 
     private void appliqueBonusEmpilements() {
-        this.recompenseTot += 0.2 * this.deltaNbEmpilements;
+        this.recompenseTot += 5 * this.deltaNbEmpilements;
     }
 
     private void appliqueBonusMalusNbElementsParLignes() {
-        this.recompenseTot += 1 * this.deltaMoyElementsParLignes;
+        this.recompenseTot += 2 * this.deltaMoyElementsParLignes;
+    }
+
+    private void appliqueBonusMinCoord() {
+        Piece fantome = this.puits.getFantome().getCopyPiece();
+        int xRef = this.analyseur.getMinCoord().getAbscisse();
+        int yRef = this.analyseur.getMinCoord().getOrdonnee();
+        for (Element e : fantome.getElements()) {
+            int xF = e.getCoord().getAbscisse();
+            int yF = e.getCoord().getOrdonnee();
+
+            this.recompenseTot -= 12 * this.puits.getLargueur() - Math.sqrt(Math.pow((xRef - xF), 2) + Math.pow((yRef - yF), 2));
+        }
     }
 }

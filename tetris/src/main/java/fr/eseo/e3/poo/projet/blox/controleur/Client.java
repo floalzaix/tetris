@@ -12,6 +12,7 @@ import org.java_websocket.handshake.ServerHandshake;
 import fr.eseo.e3.poo.projet.blox.modele.Couleur;
 import fr.eseo.e3.poo.projet.blox.modele.Joueur;
 import fr.eseo.e3.poo.projet.blox.modele.Puits;
+import fr.eseo.e3.poo.projet.blox.modele.ai.IA;
 import fr.eseo.e3.poo.projet.blox.modele.pieces.Tas;
 
 public class Client extends WebSocketClient implements PropertyChangeListener {
@@ -23,7 +24,10 @@ public class Client extends WebSocketClient implements PropertyChangeListener {
     //
     // Variables d'instance
     //
+    private boolean joueurIa;
+
     private Joueur joueur;
+    private IA ia;
     private CountDownLatch latch;
 
     private final PropertyChangeSupport pcs;
@@ -31,8 +35,10 @@ public class Client extends WebSocketClient implements PropertyChangeListener {
     //
     // Constructeurs
     //
-    public Client(URI uri) {
+    public Client(URI uri, boolean joueurIa) {
         super(uri);
+
+        this.joueurIa = joueurIa;
 
         this.latch = new CountDownLatch(1);
 
@@ -63,7 +69,7 @@ public class Client extends WebSocketClient implements PropertyChangeListener {
     public void onMessage(String msg) {
         String[] params = msg.split("\\|");
         String command = params[0];
-        if (joueur == null) {
+        if (this.joueur == null) {
             if ("COULEUR".equals(command)) {
                 this.joueur = new Joueur(Couleur.getCouleur(params[1]));
                 this.latch.countDown();
@@ -85,6 +91,10 @@ public class Client extends WebSocketClient implements PropertyChangeListener {
                             Integer.parseInt(params[4]));
                     this.joueur.getJeu().getPuits().getTas().addPropertyChangeListener(this);
                     this.joueur.getJeu().getPuits().addPropertyChangeListener(this);
+                    if (this.joueurIa) {
+                        this.ia = new IA(Integer.parseInt(params[1]), Integer.parseInt(params[2]), Integer.parseInt(params[4]), true);
+                        this.ia.play(this.joueur.getJeu(), IA.DIFFICULTE_FACILE);
+                    }
                 }
                 case "LIGNES" -> {
                     Couleur couleur = Couleur.getCouleur(params[1]);

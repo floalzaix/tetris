@@ -110,12 +110,12 @@ public class VueLobby extends JPanel {
             try {
                 URI uri = new URI("ws", null, host, (int) port.getValue(), null, null, null);
 
-                Client client = new Client(uri);
+                Client client = new Client(uri, false);
                 client.connect();
 
                 client.getLatch().await();
 
-                this.routeur.ajouterRoute(new VueJoueurs(routeur, client.getJoueur(), client, true), "JOUEURS");
+                this.routeur.ajouterRoute(new VueJoueurs(routeur, client.getJoueur(), client, true, false), "JOUEURS");
                 this.routeur.router("JOUEURS");
             } catch (URISyntaxException e) {
                 // Pas géré ici

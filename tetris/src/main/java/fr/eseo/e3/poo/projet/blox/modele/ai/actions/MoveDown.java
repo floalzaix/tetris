@@ -29,5 +29,4 @@ public class MoveDown extends Action {
             // RAS
         }
     }
-    
 }

@@ -17,7 +17,7 @@ public class Feedback implements PropertyChangeListener {
     //
     private static final Logger LOGGER = Logger.getLogger(Feedback.class.getName());
 
-    private static final int NB_ACTION_MAX = 10000;
+    private static final int NB_ACTION_MAX = 5000;
 
     //
     // Variables d'instance
@@ -102,11 +102,13 @@ public class Feedback implements PropertyChangeListener {
                                 String.valueOf(this.hp.getGamma()),
                                 String.valueOf(this.hp.getEpsilon())
                         });
+                            // Enregistre le modèle
             }
+        }
 
-            // Enregistre le modèle
+        if (this.episode % 10 == 0) {
             try {
-                ModelSerializer.writeModel(model, IA.PATH_TO_IA, true);
+                ModelSerializer.writeModel(this.model, IA.PATH_TO_IA, true);
             } catch (IOException e) {
                 // A changer ...
                 e.printStackTrace();

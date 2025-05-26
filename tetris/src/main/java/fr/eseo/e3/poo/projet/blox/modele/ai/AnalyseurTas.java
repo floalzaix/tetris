@@ -19,6 +19,7 @@ public class AnalyseurTas {
     private int nbTrousCrees;
     private int nbEmpilements;
     private double moyElementsParLignes;
+    private Coordonnees minCoord;
 
     private final int largeur;
     private final int profondeur;
@@ -37,6 +38,7 @@ public class AnalyseurTas {
         this.nbTrousCrees = 0;
         this.nbEmpilements = 0;
         this.moyElementsParLignes = 0;
+        this.minCoord = new Coordonnees(0, 0);
     }
 
     //
@@ -56,6 +58,8 @@ public class AnalyseurTas {
         this.calcNbTrousCrees(piece);
 
         this.calcMoyElementsParLignes();
+
+        this.calcMinCoordonnees();
     }
 
     /**
@@ -72,6 +76,8 @@ public class AnalyseurTas {
 
         this.ordonneeMin++;
         this.nbLignes++;
+
+        this.calcMinCoordonnees();
     }
 
     private void updateMap(Piece piece) {
@@ -121,6 +127,17 @@ public class AnalyseurTas {
         this.moyElementsParLignes/= (nbLignesNonVide != 0) ?  nbLignesNonVide : 1;
     }
 
+    private void calcMinCoordonnees() {
+        for (int y = this.profondeur - 1; y >= 0; y--) {
+            for (int x = 0; x < this.largeur; x++) {
+                if (this.map[x][y] == 0) {
+                    this.minCoord = new Coordonnees(x, y);
+                    break;
+                }
+            }
+        }
+    }
+
     //
     //  Overrides
     //
@@ -148,6 +165,10 @@ public class AnalyseurTas {
         b.append(this.moyElementsParLignes);
         b.append('\n');
 
+        b.append("Coords du point le plus bas : ");
+        b.append(this.minCoord);
+        b.append('\n');
+
         return b.toString();
     }
 
@@ -166,5 +187,8 @@ public class AnalyseurTas {
     }
     public double getMoyElementsParLignes() {
         return moyElementsParLignes;
+    }
+    public Coordonnees getMinCoord() {
+        return minCoord;
     }
 }
