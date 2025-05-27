@@ -12,6 +12,7 @@ import org.java_websocket.handshake.ServerHandshake;
 import fr.eseo.e3.poo.projet.blox.modele.Couleur;
 import fr.eseo.e3.poo.projet.blox.modele.Joueur;
 import fr.eseo.e3.poo.projet.blox.modele.Puits;
+import fr.eseo.e3.poo.projet.blox.modele.ai.Hyperparametres;
 import fr.eseo.e3.poo.projet.blox.modele.ai.IA;
 import fr.eseo.e3.poo.projet.blox.modele.pieces.Tas;
 
@@ -92,8 +93,8 @@ public class Client extends WebSocketClient implements PropertyChangeListener {
                     this.joueur.getJeu().getPuits().getTas().addPropertyChangeListener(this);
                     this.joueur.getJeu().getPuits().addPropertyChangeListener(this);
                     if (this.joueurIa) {
-                        this.ia = new IA(Integer.parseInt(params[1]), Integer.parseInt(params[2]), Integer.parseInt(params[4]), true);
-                        this.ia.play(this.joueur.getJeu(), IA.DIFFICULTE_FACILE);
+                        //this.ia = new IA(new Hyperparametres(), Integer.parseInt(params[1]), Integer.parseInt(params[2]), Integer.parseInt(params[4]));
+                        //this.ia.play(this.joueur.getJeu(), IA.DIFFICULTE_FACILE);
                     }
                 }
                 case "LIGNES" -> {

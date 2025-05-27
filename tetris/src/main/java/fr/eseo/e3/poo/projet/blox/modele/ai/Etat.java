@@ -1,5 +1,7 @@
 package fr.eseo.e3.poo.projet.blox.modele.ai;
 
+import java.util.Arrays;
+
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
@@ -25,7 +27,7 @@ public class Etat {
     private static final int PIECE_SUIVANTE_OFFSET_ABSCISSE = -1;
 
     private static final int PIECE_SUIVANTE_OFFSET_ORDONNEE = -4 + 2;
-    private static final int PIECE_ACTUELLE_OFFSET_ORDONNEE = 2 * 4 + 3;
+    public static final int PIECE_ACTUELLE_OFFSET_ORDONNEE = 2 * 4 + 3;
 
     //
     // Variables d'instance
@@ -73,7 +75,7 @@ public class Etat {
      * élement 0 sinon
      */
     private void mapPieceActuelle() {
-        this.jeu.getPuits().getPieceSuivante().getElements().stream()
+        this.jeu.getPuits().getPieceActuelle().getElements().stream()
                 .map(Element::getCoord)
                 .forEach(c -> this.carte[0][0][c.getOrdonnee() + PIECE_ACTUELLE_OFFSET_ORDONNEE][c.getAbscisse()] = 1);
     }
@@ -113,6 +115,8 @@ public class Etat {
             }
             b.append('\n');
         }
+
+        b.append(Arrays.toString(this.get().shape()));
 
         return b.toString();
     }

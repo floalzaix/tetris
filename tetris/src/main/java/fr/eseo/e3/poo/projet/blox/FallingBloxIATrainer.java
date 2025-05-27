@@ -6,6 +6,7 @@ import javax.swing.WindowConstants;
 import org.nd4j.linalg.factory.Nd4j;
 
 import fr.eseo.e3.poo.projet.blox.modele.UsineDePiece;
+import fr.eseo.e3.poo.projet.blox.modele.ai.Hyperparametres;
 import fr.eseo.e3.poo.projet.blox.modele.ai.IA;
 import fr.eseo.e3.poo.projet.blox.vue.VueIA;
 
@@ -16,7 +17,7 @@ public class FallingBloxIATrainer {
         System.out.println(Nd4j.getExecutioner().getClass().getName());
         
         // IA
-        IA ia = new IA(6, 15, UsineDePiece.CYCLIC, true);
+        IA ia = new IA(new Hyperparametres(), 10, 20, UsineDePiece.ALEATOIRE_PIECE);
         
         
         if (VUE) {
@@ -32,8 +33,6 @@ public class FallingBloxIATrainer {
             frame.pack();
             frame.setResizable(false);
         }
-        
-        // Taining
         ia.train(10000);
     }
 }

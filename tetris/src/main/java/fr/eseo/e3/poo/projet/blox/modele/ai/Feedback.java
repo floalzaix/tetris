@@ -105,15 +105,6 @@ public class Feedback implements PropertyChangeListener {
                             // Enregistre le modèle
             }
         }
-
-        if (this.episode % 10 == 0) {
-            try {
-                ModelSerializer.writeModel(this.model, IA.PATH_TO_IA, true);
-            } catch (IOException e) {
-                // A changer ...
-                e.printStackTrace();
-            }
-        }
     }
 
     /**

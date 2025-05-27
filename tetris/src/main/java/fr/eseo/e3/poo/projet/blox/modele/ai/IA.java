@@ -10,13 +10,17 @@ import java.util.logging.Logger;
 
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
+import org.deeplearning4j.nn.conf.inputs.InputType;
+import org.deeplearning4j.nn.conf.layers.ConvolutionLayer;
 import org.deeplearning4j.nn.conf.layers.DenseLayer;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
+import org.deeplearning4j.nn.conf.layers.SubsamplingLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.util.ModelSerializer;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
+import org.nd4j.linalg.indexing.NDArrayIndex;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 
 import fr.eseo.e3.poo.projet.blox.modele.Jeu;
@@ -41,13 +45,13 @@ public class IA implements PropertyChangeListener {
 
     private static final int BATCH_SIZE = 64;
 
-    public static final String PATH_TO_IA = "tetris\\src\\main\\java\\fr\\eseo\\e3\\poo\\projet\\blox\\modele\\ai\\ia_tetris.zip";
+    private static final Random RANDOM = new Random();
 
     //
     // Variables d'instance
     //
-
     private final Hyperparametres hp;
+    private String pathToFolder;
 
     // Puits
     private final int largeurPuits;
@@ -58,16 +62,14 @@ public class IA implements PropertyChangeListener {
     private boolean defaite;
     private boolean pose;
 
-    // Modèle
-    private MultiLayerNetwork model;
+    // Réseaux de neurones
+    private MultiLayerNetwork onlineNetwork;
 
     // Pour le changement de jeu lors de l'entrainement
     private final PropertyChangeSupport pcs;
 
-    // Pour l'aléatoires
-    private final Random random = new Random();
-
     /// Mémoire du modèle
+    
     // L'état actuel de l'entrainement
     private Etat etatActuel;
     private INDArray qValuesActuelles;
@@ -82,65 +84,76 @@ public class IA implements PropertyChangeListener {
     //
     // Constructeurs
     //
-    public IA(int largeurPuits, int profondeurPuits, int modeUsine, boolean load) {
-        this.hp = new Hyperparametres();
-
+    public IA(Hyperparametres hp, int largeurPuits, int profondeurPuits, int modeUsine, String pathToFolder) {
+        this.hp = hp;
         this.largeurPuits = largeurPuits;
         this.profondeurPuits = profondeurPuits;
         this.modeUsine = modeUsine;
+        this.pathToFolder = pathToFolder;
 
         this.defaite = false;
         this.pose = false;
-
         this.pcs = new PropertyChangeSupport(this);
 
         // Initialisation des actions
         Action.init();
 
-        this.etats = Nd4j.create(IA.BATCH_SIZE, Etat.getNumberOfInput(largeurPuits, profondeurPuits));
+        // Préparation des tableaux pour les batchs
+        this.etats = Nd4j.create(IA.BATCH_SIZE, 1, this.profondeurPuits + Etat.PIECE_ACTUELLE_OFFSET_ORDONNEE, this.largeurPuits);
         this.targets = Nd4j.create(IA.BATCH_SIZE, Action.getNbActions());
 
         // Initialisation du modèle
-        MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
-                .updater(this.hp.getAdam())
-                .list()
-                .layer(new DenseLayer.Builder()
-                        .nIn(Etat.getNumberOfInput(largeurPuits, profondeurPuits))
-                        .nOut(64)
-                        .activation(Activation.LEAKYRELU)
-                        .build())
-                .layer(new DenseLayer.Builder()
-                        .nOut(128)
-                        .activation(Activation.LEAKYRELU)
-                        .build())
-                .layer(new DenseLayer.Builder()
-                        .nOut(64)
-                        .activation(Activation.LEAKYRELU)
-                        .build())
-                .layer(new OutputLayer.Builder(LossFunctions.LossFunction.MSE)
-                        .nOut(Action.getNbActions())
-                        .activation(Activation.IDENTITY)
-                        .build())
-                .build();
+        this.initModeles();
 
-        if (load) {
-            try {
-                this.model = ModelSerializer.restoreMultiLayerNetwork(PATH_TO_IA);
-            } catch (IOException _) {
-                System.exit(1);
-            }
-        } else {
-            this.model = new MultiLayerNetwork(conf);
-            this.model.init();
-        }
-
-        this.feedback = new Feedback(this.model, this.hp);
+        this.feedback = new Feedback(this.onlineNetwork, this.hp);
         this.addPropertyChangeListener(this.feedback);
+    }
+    public IA(Hyperparametres hp, int largeurPuits, int profondeurPuits, int modeUsine) {
+        this(hp, largeurPuits, profondeurPuits, modeUsine, null);
     }
 
     //
     // Méthodes
     //
+
+    private void initModeles() {
+        MultiLayerConfiguration confQLearning = new NeuralNetConfiguration.Builder()
+            .seed(123)
+            .updater(this.hp.getAdam())
+            .list()
+            .layer(0, new ConvolutionLayer.Builder()
+                .activation(Activation.LEAKYRELU)
+                .kernelSize(3, 3)
+                .stride(1, 1)
+                .nIn(1)
+                .nOut(32)
+                .build())
+            .layer(1, new SubsamplingLayer.Builder(SubsamplingLayer.PoolingType.MAX)
+                .kernelSize(2, 2)
+                .stride(2, 2)
+                .build())
+            .layer(2, new DenseLayer.Builder()
+                .nOut(64)
+                .activation(Activation.LEAKYRELU)
+                .build())
+            .layer(3, new OutputLayer.Builder(LossFunctions.LossFunction.MSE)
+                .nOut(Action.getNbActions())
+                .activation(Activation.LEAKYRELU)
+                .build())
+            .setInputType(InputType.convolutional(this.profondeurPuits + Etat.PIECE_ACTUELLE_OFFSET_ORDONNEE, this.largeurPuits, 1))
+            .build();
+        
+        if (this.pathToFolder != null) {
+            try {
+                this.onlineNetwork = ModelSerializer.restoreMultiLayerNetwork(this.pathToFolder + "tetris_online_model.zip");
+            } catch (IOException e) {
+                System.exit(1);
+            }
+        } else {
+            this.onlineNetwork = new MultiLayerNetwork(confQLearning);
+            this.onlineNetwork.init();
+        }
+    }
 
     /// Q LEARNING (Entrainement)
 
@@ -165,7 +178,7 @@ public class IA implements PropertyChangeListener {
             return this.qValuesActuelles;
         }
         this.etatActuel = etat;
-        this.qValuesActuelles = this.model.output(etat.get(), false);
+        this.qValuesActuelles = this.onlineNetwork.output(etat.get(), false);
         return this.qValuesActuelles;
     }
 
@@ -178,8 +191,8 @@ public class IA implements PropertyChangeListener {
      */
     private Action getAction(Etat etat, Piece piece) {
         // EXPLORATION
-        if (this.random.nextDouble() >= 1 - this.hp.getEpsilon()) {
-            int indiceRandomAction = this.random.nextInt(Action.getNbActions());
+        if (IA.RANDOM.nextDouble() >= 1 - this.hp.getEpsilon()) {
+            int indiceRandomAction = IA.RANDOM.nextInt(Action.getNbActions());
             return Action.getAction(indiceRandomAction, piece);
         }
 
@@ -211,12 +224,12 @@ public class IA implements PropertyChangeListener {
         qValues.putScalar(0, indiceAction, targetQ);
 
         // Entrainement du modèle en le fesant tendre vers r + max Q (s', a')
-        this.etats.putRow(this.batchIndex, etat.get());
+        this.etats.putSlice(this.batchIndex, etat.get().get(NDArrayIndex.point(0)));
         this.targets.putRow(this.batchIndex, qValues);
         this.batchIndex++;
 
         if (this.batchIndex >= IA.BATCH_SIZE) {
-            this.model.fit(this.etats, this.targets);
+            this.onlineNetwork.fit(this.etats, this.targets);
             this.batchIndex = 0;
         }
     }
@@ -305,8 +318,17 @@ public class IA implements PropertyChangeListener {
             // Stats
             this.pcs.firePropertyChange(IA.EVT_CALC_STATS, null, jeu);
 
-            /// MAJ des hyperparametres
+            // MAJ des hyperparametres
             this.hp.update();
+
+            // Sauvegarde des réseaux
+            if (episode % 10 == 0) {
+                try {
+                    ModelSerializer.writeModel(onlineNetwork, this.pathToFolder + "tetris_online_model.zip", true);
+                } catch (IOException e) {
+                    LOGGER.log(Level.WARNING, "Problème de sauvegarde de modèle : {0}", e.getMessage());
+                }
+            }
         }
 
         LOGGER.log(Level.INFO, "Entrainement fini !");
@@ -315,7 +337,6 @@ public class IA implements PropertyChangeListener {
     public void play(Jeu jeu, int difficulte) {
         // Récupération des propriétés du jeu
         Puits puits = jeu.getPuits();
-        Tas tas = puits.getTas();
 
         // Récupération de la pièce actuelle du puits et qui va donc être bougé par l'ia
         Piece piece = puits.getPieceActuelle();
@@ -328,7 +349,7 @@ public class IA implements PropertyChangeListener {
 
         while (!this.defaite) {
             /// Récupération de l'état
-            Etat etat = this.getEtat(puits, tas);
+            Etat etat = new Etat(jeu);
 
             /// Prédiction
             Action action = this.getAction(etat, piece);
@@ -359,7 +380,7 @@ public class IA implements PropertyChangeListener {
             try {
                 Thread.sleep(delay);
             } catch (InterruptedException _) {
-                /* RAS */
+                System.exit(1);
             }
         }
     }
