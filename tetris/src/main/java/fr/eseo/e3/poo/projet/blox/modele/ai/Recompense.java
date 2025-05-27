@@ -112,7 +112,7 @@ public class Recompense {
         Piece fantome = this.puits.getFantome().getCopyPiece();
         for (Element e : fantome.getElements()) {
             Coordonnees c = e.getCoord();
-            this.recompenseTot += 6 * c.getOrdonnee() / (double) puits.getProfondeur() + 3;
+            this.recompenseTot += 7 * c.getOrdonnee() / (double) puits.getProfondeur() + 3;
         }
     }
 
@@ -121,7 +121,7 @@ public class Recompense {
     }
 
     private void appliqueMalusDefaite() {
-        this.recompenseTot -= (this.defaite) ? 1000 : 0;
+        this.recompenseTot -= (this.defaite) ? 3000 : 0;
     }
 
     private void appliqueMalusCollision() {
@@ -132,24 +132,24 @@ public class Recompense {
     
     private void appliqueBonusDescente() {
         if (this.action instanceof MoveDown || this.action instanceof Drop) {
-            this.recompenseTot += 1;
+            this.recompenseTot += 2;
         }
     }
 
     private void appliqueMalusHauteurTas() {
-        this.recompenseTot += 100 * this.deltaOrdonneeMin;
+        this.recompenseTot += 40 * this.deltaOrdonneeMin;
     }
 
     private void appliqueMalusTrous() {
-        this.recompenseTot -= 20 * this.deltaNbTrousCrees;
+        this.recompenseTot -= 30 * this.deltaNbTrousCrees;
     }
 
     private void appliqueBonusEmpilements() {
-        this.recompenseTot += 5 * this.deltaNbEmpilements;
+        this.recompenseTot += 2 * this.deltaNbEmpilements;
     }
 
     private void appliqueBonusMalusNbElementsParLignes() {
-        this.recompenseTot += 2 * this.deltaMoyElementsParLignes;
+        this.recompenseTot += 1 * this.deltaMoyElementsParLignes;
     }
 
     private void appliqueBonusMinCoord() {
@@ -160,7 +160,7 @@ public class Recompense {
             int xF = e.getCoord().getAbscisse();
             int yF = e.getCoord().getOrdonnee();
 
-            this.recompenseTot -= 12 * this.puits.getLargueur() - Math.sqrt(Math.pow((xRef - xF), 2) + Math.pow((yRef - yF), 2));
+            this.recompenseTot -= 5 * this.puits.getLargueur() - Math.sqrt(Math.pow((xRef - xF), 2) + Math.pow((yRef - yF), 2));
         }
     }
 }

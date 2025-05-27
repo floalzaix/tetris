@@ -14,6 +14,7 @@ import org.deeplearning4j.nn.conf.inputs.InputType;
 import org.deeplearning4j.nn.conf.layers.ConvolutionLayer;
 import org.deeplearning4j.nn.conf.layers.DenseLayer;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
+import org.deeplearning4j.nn.conf.layers.PoolingType;
 import org.deeplearning4j.nn.conf.layers.SubsamplingLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.util.ModelSerializer;
@@ -52,6 +53,7 @@ public class IA implements PropertyChangeListener {
     //
     private final Hyperparametres hp;
     private String pathToFolder;
+    private boolean load;
 
     // Puits
     private final int largeurPuits;
@@ -84,12 +86,13 @@ public class IA implements PropertyChangeListener {
     //
     // Constructeurs
     //
-    public IA(Hyperparametres hp, int largeurPuits, int profondeurPuits, int modeUsine, String pathToFolder) {
+    public IA(Hyperparametres hp, int largeurPuits, int profondeurPuits, int modeUsine, String pathToFolder, boolean load) {
         this.hp = hp;
         this.largeurPuits = largeurPuits;
         this.profondeurPuits = profondeurPuits;
         this.modeUsine = modeUsine;
         this.pathToFolder = pathToFolder;
+        this.load = load;
 
         this.defaite = false;
         this.pose = false;
@@ -109,7 +112,7 @@ public class IA implements PropertyChangeListener {
         this.addPropertyChangeListener(this.feedback);
     }
     public IA(Hyperparametres hp, int largeurPuits, int profondeurPuits, int modeUsine) {
-        this(hp, largeurPuits, profondeurPuits, modeUsine, null);
+        this(hp, largeurPuits, profondeurPuits, modeUsine, null, false);
     }
 
     //
@@ -118,7 +121,7 @@ public class IA implements PropertyChangeListener {
 
     private void initModeles() {
         MultiLayerConfiguration confQLearning = new NeuralNetConfiguration.Builder()
-            .seed(123)
+            .seed(1234)
             .updater(this.hp.getAdam())
             .list()
             .layer(0, new ConvolutionLayer.Builder()
@@ -126,28 +129,38 @@ public class IA implements PropertyChangeListener {
                 .kernelSize(3, 3)
                 .stride(1, 1)
                 .nIn(1)
-                .nOut(32)
+                .nOut(128)
                 .build())
-            .layer(1, new SubsamplingLayer.Builder(SubsamplingLayer.PoolingType.MAX)
+            .layer(1, new SubsamplingLayer.Builder(PoolingType.MAX)
                 .kernelSize(2, 2)
                 .stride(2, 2)
                 .build())
-            .layer(2, new DenseLayer.Builder()
+            .layer(2, new ConvolutionLayer.Builder()
+                .activation(Activation.LEAKYRELU)
+                .kernelSize(3, 3)
+                .stride(1, 1)
+                .nOut(32)
+                .build())
+            .layer(3, new SubsamplingLayer.Builder(PoolingType.MAX)
+                .kernelSize(2, 2)
+                .stride(2, 2)
+                .build())
+            .layer(4, new DenseLayer.Builder()
                 .nOut(64)
                 .activation(Activation.LEAKYRELU)
                 .build())
-            .layer(3, new OutputLayer.Builder(LossFunctions.LossFunction.MSE)
+            .layer(5, new OutputLayer.Builder(LossFunctions.LossFunction.MSE)
                 .nOut(Action.getNbActions())
                 .activation(Activation.LEAKYRELU)
                 .build())
             .setInputType(InputType.convolutional(this.profondeurPuits + Etat.PIECE_ACTUELLE_OFFSET_ORDONNEE, this.largeurPuits, 1))
             .build();
         
-        if (this.pathToFolder != null) {
+        if (this.pathToFolder != null && this.load) {
             try {
                 this.onlineNetwork = ModelSerializer.restoreMultiLayerNetwork(this.pathToFolder + "tetris_online_model.zip");
             } catch (IOException e) {
-                System.exit(1);
+                LOGGER.log(Level.SEVERE, "Error while loading the model : {0}", e.getMessage());
             }
         } else {
             this.onlineNetwork = new MultiLayerNetwork(confQLearning);
@@ -324,7 +337,9 @@ public class IA implements PropertyChangeListener {
             // Sauvegarde des réseaux
             if (episode % 10 == 0) {
                 try {
-                    ModelSerializer.writeModel(onlineNetwork, this.pathToFolder + "tetris_online_model.zip", true);
+                    if (this.pathToFolder != null) {
+                        ModelSerializer.writeModel(onlineNetwork, this.pathToFolder + "tetris_online_model.zip", true);
+                    }
                 } catch (IOException e) {
                     LOGGER.log(Level.WARNING, "Problème de sauvegarde de modèle : {0}", e.getMessage());
                 }
