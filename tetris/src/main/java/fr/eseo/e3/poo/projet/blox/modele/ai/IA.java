@@ -66,6 +66,7 @@ public class IA implements PropertyChangeListener {
 
     // Réseaux de neurones
     private MultiLayerNetwork onlineNetwork;
+    private MultiLayerNetwork targetNetwork;
 
     // Pour le changement de jeu lors de l'entrainement
     private final PropertyChangeSupport pcs;
@@ -153,18 +154,22 @@ public class IA implements PropertyChangeListener {
                 .nOut(Action.getNbActions())
                 .activation(Activation.LEAKYRELU)
                 .build())
-            .setInputType(InputType.convolutional(this.profondeurPuits + Etat.PIECE_ACTUELLE_OFFSET_ORDONNEE, this.largeurPuits, 1))
+            .setInputType(InputType.convolutional(this.profondeurPuits + (long) Etat.PIECE_ACTUELLE_OFFSET_ORDONNEE, this.largeurPuits, 1))
             .build();
         
         if (this.pathToFolder != null && this.load) {
             try {
                 this.onlineNetwork = ModelSerializer.restoreMultiLayerNetwork(this.pathToFolder + "tetris_online_model.zip");
+                this.onlineNetwork = ModelSerializer.restoreMultiLayerNetwork(this.pathToFolder + "tetris_target_model.zip");
             } catch (IOException e) {
                 LOGGER.log(Level.SEVERE, "Error while loading the model : {0}", e.getMessage());
             }
         } else {
             this.onlineNetwork = new MultiLayerNetwork(confQLearning);
             this.onlineNetwork.init();
+
+            this.targetNetwork = new MultiLayerNetwork(confQLearning);
+            this.targetNetwork.init();
         }
     }
 
@@ -338,7 +343,8 @@ public class IA implements PropertyChangeListener {
             if (episode % 10 == 0) {
                 try {
                     if (this.pathToFolder != null) {
-                        ModelSerializer.writeModel(onlineNetwork, this.pathToFolder + "tetris_online_model.zip", true);
+                        ModelSerializer.writeModel(this.onlineNetwork, this.pathToFolder + "tetris_online_model.zip", true);
+                        ModelSerializer.writeModel(this.targetNetwork, this.pathToFolder + "tetris_target_model.zip", true);
                     }
                 } catch (IOException e) {
                     LOGGER.log(Level.WARNING, "Problème de sauvegarde de modèle : {0}", e.getMessage());

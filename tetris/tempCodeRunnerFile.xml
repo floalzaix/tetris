@@ -1,2 +1,2 @@
 
-            <groupId>org.junit.jupiter</groupId>
+            <artifactId>reflections</artifactId>

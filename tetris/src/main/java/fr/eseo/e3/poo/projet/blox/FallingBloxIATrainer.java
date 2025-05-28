@@ -18,7 +18,7 @@ public class FallingBloxIATrainer {
 
         // IA
         IA ia = new IA(new Hyperparametres(), 10, 20, UsineDePiece.ALEATOIRE_PIECE,
-                "tetris\\src\\main\\java\\fr\\eseo\\e3\\poo\\projet\\blox\\modele\\ai\\ia1", false);
+                "tetris\\src\\main\\java\\fr\\eseo\\e3\\poo\\projet\\blox\\modele\\ai\\ia1\\", true);
 
         if (VUE) {
             JFrame frame = new JFrame("IA Training ...");
