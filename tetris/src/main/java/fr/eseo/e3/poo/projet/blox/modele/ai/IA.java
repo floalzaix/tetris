@@ -179,6 +179,7 @@ public class IA implements PropertyChangeListener {
 
             this.targetNetwork = new MultiLayerNetwork(confQLearning);
             this.targetNetwork.init();
+            this.targetNetwork.setParams(this.onlineNetwork.params());
         }
     }
 
