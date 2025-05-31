@@ -17,8 +17,8 @@ public class FallingBloxIATrainer {
         System.out.println(Nd4j.getExecutioner().getClass().getName());
 
         // IA
-        IA ia = new IA(new Hyperparametres(), 10, 20, UsineDePiece.ALEATOIRE_PIECE,
-                "tetris\\src\\main\\java\\fr\\eseo\\e3\\poo\\projet\\blox\\modele\\ai\\ia1\\", true);
+        IA ia = new IA(new Hyperparametres(), 5, 15, UsineDePiece.CYCLIC,
+                "tetris\\src\\main\\java\\fr\\eseo\\e3\\poo\\projet\\blox\\modele\\ai\\ia1\\", false);
 
         if (VUE) {
             JFrame frame = new JFrame("IA Training ...");
@@ -33,6 +33,6 @@ public class FallingBloxIATrainer {
             frame.pack();
             frame.setResizable(false);
         }
-        ia.train(10000);
+        ia.train(100000);
     }
 }

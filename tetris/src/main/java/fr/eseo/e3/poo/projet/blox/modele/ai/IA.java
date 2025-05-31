@@ -46,6 +46,8 @@ public class IA implements PropertyChangeListener {
 
     private static final int BATCH_SIZE = 64;
 
+    private static final int MAX_ITERATIONS_MAJ_TARGET = 1500;
+
     private static final Random RANDOM = new Random();
 
     //
@@ -77,9 +79,12 @@ public class IA implements PropertyChangeListener {
     private Etat etatActuel;
     private INDArray qValuesActuelles;
 
-    private int batchIndex = 0;
+    private int batchIndex;
     private final INDArray etats;
     private final INDArray targets;
+
+    // Mémoire pour le cloning du target model
+    private int compteurMAJTarget;
 
     /// Stats
     private final Feedback feedback;
@@ -103,8 +108,11 @@ public class IA implements PropertyChangeListener {
         Action.init();
 
         // Préparation des tableaux pour les batchs
+        this.batchIndex = 0;
         this.etats = Nd4j.create(IA.BATCH_SIZE, 1, this.profondeurPuits + Etat.PIECE_ACTUELLE_OFFSET_ORDONNEE, this.largeurPuits);
         this.targets = Nd4j.create(IA.BATCH_SIZE, Action.getNbActions());
+
+        this.compteurMAJTarget = 0;
 
         // Initialisation du modèle
         this.initModeles();
@@ -127,7 +135,7 @@ public class IA implements PropertyChangeListener {
             .list()
             .layer(0, new ConvolutionLayer.Builder()
                 .activation(Activation.LEAKYRELU)
-                .kernelSize(3, 3)
+                .kernelSize(2, 2)
                 .stride(1, 1)
                 .nIn(1)
                 .nOut(128)
@@ -138,16 +146,17 @@ public class IA implements PropertyChangeListener {
                 .build())
             .layer(2, new ConvolutionLayer.Builder()
                 .activation(Activation.LEAKYRELU)
-                .kernelSize(3, 3)
+                .kernelSize(2, 2)
                 .stride(1, 1)
-                .nOut(32)
+                .padding(1, 1)
+                .nOut(64)
                 .build())
             .layer(3, new SubsamplingLayer.Builder(PoolingType.MAX)
                 .kernelSize(2, 2)
                 .stride(2, 2)
                 .build())
             .layer(4, new DenseLayer.Builder()
-                .nOut(64)
+                .nOut(32)
                 .activation(Activation.LEAKYRELU)
                 .build())
             .layer(5, new OutputLayer.Builder(LossFunctions.LossFunction.MSE)
@@ -160,7 +169,7 @@ public class IA implements PropertyChangeListener {
         if (this.pathToFolder != null && this.load) {
             try {
                 this.onlineNetwork = ModelSerializer.restoreMultiLayerNetwork(this.pathToFolder + "tetris_online_model.zip");
-                this.onlineNetwork = ModelSerializer.restoreMultiLayerNetwork(this.pathToFolder + "tetris_target_model.zip");
+                this.targetNetwork = ModelSerializer.restoreMultiLayerNetwork(this.pathToFolder + "tetris_target_model.zip");
             } catch (IOException e) {
                 LOGGER.log(Level.SEVERE, "Error while loading the model : {0}", e.getMessage());
             }
@@ -182,21 +191,22 @@ public class IA implements PropertyChangeListener {
      * @return La Q valeur max pour l'Etat
      */
     private double getQMax(Etat etat) {
-        return this.getQValues(etat).max(1).getDouble(0);
+        return this.getQValues(etat, this.targetNetwork).max(1).getDouble(0);
     }
 
     /**
      * Recupère les Q valeurs du système
      * 
      * @param etat L'Etat à partir duquel on veut récupérer les Q valeurs
+     * @param model Le model à partir duquel on récupère les Q values
      * @return Les Q valeurs
      */
-    private INDArray getQValues(Etat etat) {
+    private INDArray getQValues(Etat etat, MultiLayerNetwork model) {
         if (etat == this.etatActuel) {
             return this.qValuesActuelles;
         }
         this.etatActuel = etat;
-        this.qValuesActuelles = this.onlineNetwork.output(etat.get(), false);
+        this.qValuesActuelles = model.output(etat.get(), false);
         return this.qValuesActuelles;
     }
 
@@ -215,7 +225,7 @@ public class IA implements PropertyChangeListener {
         }
 
         // EXPLOITATION
-        return Action.getAction((Nd4j.argMax(this.getQValues(etat), 1).getInt(0)), piece);
+        return Action.getAction((Nd4j.argMax(this.getQValues(etat, this.onlineNetwork), 1).getInt(0)), piece);
     }
 
     /**
@@ -237,7 +247,7 @@ public class IA implements PropertyChangeListener {
         final double prochainEtatQMax = this.getQMax(prochainEtat);
 
         // Récupération des Q values de l'état actuel pour construire la target
-        INDArray qValues = this.getQValues(etat).dup();
+        INDArray qValues = this.getQValues(etat, this.targetNetwork).dup();
         double targetQ = recompense + this.hp.getGamma() * prochainEtatQMax;
         qValues.putScalar(0, indiceAction, targetQ);
 
@@ -246,9 +256,16 @@ public class IA implements PropertyChangeListener {
         this.targets.putRow(this.batchIndex, qValues);
         this.batchIndex++;
 
+        // Entrainement du batch
         if (this.batchIndex >= IA.BATCH_SIZE) {
             this.onlineNetwork.fit(this.etats, this.targets);
             this.batchIndex = 0;
+        }
+
+        // Cloning du online sur le target
+        if (this.compteurMAJTarget >= IA.MAX_ITERATIONS_MAJ_TARGET) {
+            this.targetNetwork.setParams(this.onlineNetwork.params());
+            this.compteurMAJTarget = 0;
         }
     }
 
