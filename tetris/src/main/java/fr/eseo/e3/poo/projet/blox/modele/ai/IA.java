@@ -8,7 +8,7 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
+import org.deeplearning4j.nn.conf.ComputationGraphConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.deeplearning4j.nn.conf.inputs.InputType;
 import org.deeplearning4j.nn.conf.layers.ConvolutionLayer;
@@ -16,7 +16,7 @@ import org.deeplearning4j.nn.conf.layers.DenseLayer;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.conf.layers.PoolingType;
 import org.deeplearning4j.nn.conf.layers.SubsamplingLayer;
-import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
+import org.deeplearning4j.nn.graph.ComputationGraph;
 import org.deeplearning4j.util.ModelSerializer;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
@@ -67,8 +67,8 @@ public class IA implements PropertyChangeListener {
     private boolean pose;
 
     // Réseaux de neurones
-    private MultiLayerNetwork onlineNetwork;
-    private MultiLayerNetwork targetNetwork;
+    private ComputationGraph onlineNetwork;
+    private ComputationGraph targetNetwork;
 
     // Pour le changement de jeu lors de l'entrainement
     private final PropertyChangeSupport pcs;
@@ -129,55 +129,82 @@ public class IA implements PropertyChangeListener {
     //
 
     private void initModeles() {
-        MultiLayerConfiguration confQLearning = new NeuralNetConfiguration.Builder()
+        ComputationGraphConfiguration confQLearning = new NeuralNetConfiguration.Builder()
             .seed(1234)
             .updater(this.hp.getAdam())
-            .list()
-            .layer(0, new ConvolutionLayer.Builder()
+            .graphBuilder()
+            .addInputs("inputs")
+            .setInputTypes(InputType.convolutional(this.profondeurPuits + (long) Etat.PIECE_ACTUELLE_OFFSET_ORDONNEE, this.largeurPuits, 1))
+            .addLayer("conv1", new ConvolutionLayer.Builder()
                 .activation(Activation.LEAKYRELU)
                 .kernelSize(2, 2)
                 .stride(1, 1)
                 .nIn(1)
                 .nOut(128)
-                .build())
-            .layer(1, new SubsamplingLayer.Builder(PoolingType.MAX)
+                .build(), "inputs")
+            .addLayer("pool1", new SubsamplingLayer.Builder(PoolingType.MAX)
                 .kernelSize(2, 2)
                 .stride(2, 2)
-                .build())
-            .layer(2, new ConvolutionLayer.Builder()
+                .build(), "conv1")
+            .addLayer("conv2", new ConvolutionLayer.Builder()
                 .activation(Activation.LEAKYRELU)
                 .kernelSize(2, 2)
                 .stride(1, 1)
                 .padding(1, 1)
                 .nOut(64)
-                .build())
-            .layer(3, new SubsamplingLayer.Builder(PoolingType.MAX)
+                .build(), "pool1")
+            .addLayer("pool2", new SubsamplingLayer.Builder(PoolingType.MAX)
                 .kernelSize(2, 2)
                 .stride(2, 2)
-                .build())
-            .layer(4, new DenseLayer.Builder()
+                .build(), "conv2")
+            .addLayer("dense1", new DenseLayer.Builder()
                 .nOut(32)
                 .activation(Activation.LEAKYRELU)
-                .build())
-            .layer(5, new OutputLayer.Builder(LossFunctions.LossFunction.MSE)
-                .nOut(Action.getNbActions())
+                .build(), "pool2")
+
+            // Branche 1 : Valeur
+            .addLayer("valeurDense", new DenseLayer.Builder()
+                .nOut(16)
                 .activation(Activation.LEAKYRELU)
-                .build())
-            .setInputType(InputType.convolutional(this.profondeurPuits + (long) Etat.PIECE_ACTUELLE_OFFSET_ORDONNEE, this.largeurPuits, 1))
+                .build(), "dense1")
+            .addLayer("valeur", new DenseLayer.Builder()
+                .nOut(1)
+                .activation(Activation.LEAKYRELU)
+                .build(), "valeurDense")
+            .addLayer("valeurOut", new OutputLayer.Builder(LossFunctions.LossFunction.MSE)
+                .nOut(1)
+                .activation(Activation.IDENTITY)
+                .build(), "valeur")
+
+            // Branche 2 : Avantages
+            .addLayer("avantagesDense", new DenseLayer.Builder()
+                .nOut(16)
+                .activation(Activation.LEAKYRELU)
+                .build(), "dense1")
+            .addLayer("avantages", new DenseLayer.Builder()
+                .nOut(Action.getNbActions())
+                .activation(Activation.IDENTITY)
+                .build(), "avantagesDense")
+            .addLayer("avantagesOut", new OutputLayer.Builder(LossFunctions.LossFunction.MSE)
+                .nOut(Action.getNbActions())
+                .activation(Activation.IDENTITY)
+                .build(), "avantages")
+            
+            .setOutputs("valeurOut", "avantagesOut")
             .build();
         
         if (this.pathToFolder != null && this.load) {
             try {
-                this.onlineNetwork = ModelSerializer.restoreMultiLayerNetwork(this.pathToFolder + "tetris_online_model.zip");
-                this.targetNetwork = ModelSerializer.restoreMultiLayerNetwork(this.pathToFolder + "tetris_target_model.zip");
+                this.onlineNetwork = ModelSerializer.restoreComputationGraph(this.pathToFolder + "tetris_online_model.zip");
+                this.targetNetwork = ModelSerializer.restoreComputationGraph(this.pathToFolder + "tetris_target_model.zip");
             } catch (IOException e) {
                 LOGGER.log(Level.SEVERE, "Error while loading the model : {0}", e.getMessage());
             }
         } else {
-            this.onlineNetwork = new MultiLayerNetwork(confQLearning);
+            this.onlineNetwork = new ComputationGraph(confQLearning);
             this.onlineNetwork.init();
 
-            this.targetNetwork = new MultiLayerNetwork(confQLearning);
+            this.targetNetwork = new ComputationGraph(confQLearning);
             this.targetNetwork.init();
             this.targetNetwork.setParams(this.onlineNetwork.params());
         }
@@ -202,12 +229,22 @@ public class IA implements PropertyChangeListener {
      * @param model Le model à partir duquel on récupère les Q values
      * @return Les Q valeurs
      */
-    private INDArray getQValues(Etat etat, MultiLayerNetwork model) {
+    private INDArray getQValues(Etat etat, ComputationGraph model) {
         if (etat == this.etatActuel) {
             return this.qValuesActuelles;
         }
         this.etatActuel = etat;
-        this.qValuesActuelles = model.output(etat.get(), false);
+
+        // On applique la fomule du dueling DQN
+        INDArray[] out = model.output(false, etat.get());
+
+        INDArray valeur = out[0];
+        INDArray avantages = out[1];
+        INDArray moyennes = avantages.mean(1).dup();
+
+        INDArray qValues = avantages.subColumnVector(moyennes).addColumnVector(valeur);
+
+        this.qValuesActuelles = qValues;
         return this.qValuesActuelles;
     }
 
@@ -259,7 +296,8 @@ public class IA implements PropertyChangeListener {
 
         // Entrainement du batch
         if (this.batchIndex >= IA.BATCH_SIZE) {
-            this.onlineNetwork.fit(this.etats, this.targets);
+            INDArray means = this.targets.mean(1);
+            this.onlineNetwork.fit(new INDArray[] {this.etats}, new INDArray[] {means.reshape(means.size(0), 1), this.targets});
             this.batchIndex = 0;
         }
 

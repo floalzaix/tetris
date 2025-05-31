@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.deeplearning4j.nn.graph.ComputationGraph;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.util.ModelSerializer;
 
@@ -22,7 +23,7 @@ public class Feedback implements PropertyChangeListener {
     //
     // Variables d'instance
     //
-    private final MultiLayerNetwork model;
+    private final ComputationGraph model;
 
     private final Hyperparametres hp;
 
@@ -53,7 +54,7 @@ public class Feedback implements PropertyChangeListener {
     //
     // Constructeurs
     //
-    public Feedback(MultiLayerNetwork model, Hyperparametres hp) {
+    public Feedback(ComputationGraph model, Hyperparametres hp) {
         this.model = model;
         this.hp = hp;
     }

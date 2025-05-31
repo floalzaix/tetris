@@ -120,7 +120,7 @@ public class Recompense {
     }
 
     private void appliqueBonusLignesCompletees() {
-        this.recompenseTot += 45 * this.deltaNbLignes;
+        this.recompenseTot += 65 * this.deltaNbLignes;
     }
 
     private void appliqueMalusDefaite() {
@@ -140,7 +140,7 @@ public class Recompense {
     }
 
     private void appliqueMalusHauteurTas() {
-        this.recompenseTot += 2 * this.deltaOrdonneeMin;
+        this.recompenseTot += 3 * this.deltaOrdonneeMin;
     }
 
     private void appliqueMalusTrous() {
