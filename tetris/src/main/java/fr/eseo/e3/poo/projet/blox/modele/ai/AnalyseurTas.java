@@ -128,11 +128,23 @@ public class AnalyseurTas {
     }
 
     private void calcMinCoordonnees() {
+        boolean trouve = false;
         for (int y = this.profondeur - 1; y >= 0; y--) {
             for (int x = 0; x < this.largeur; x++) {
                 if (this.map[x][y] == 0) {
-                    this.minCoord = new Coordonnees(x, y);
-                    break;
+                    boolean trou = false;
+                    int i = y - 1;
+                    while (!trou && i > 0) {
+                        if (this.map[x][i] == 1) {
+                            trou = true;
+                        }
+                        i--;
+                    }
+                    if (!trou && !trouve) {
+                        this.minCoord = new Coordonnees(x, y);
+                        trouve = true;
+                        break;
+                    }
                 }
             }
         }

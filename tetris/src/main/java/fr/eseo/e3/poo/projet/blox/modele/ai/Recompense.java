@@ -39,11 +39,18 @@ public class Recompense {
     private int deltaNbEmpilements;
     private double deltaMoyElementsParLignes;
 
+    // Max min
+    private double rMax;
+    private double rMin;
+
     //
     //  Constructeurs
     //
     public Recompense(AnalyseurTas analyseur) {
         this.analyseur = analyseur;
+
+        this.rMax = 0;
+        this.rMin = 0;
 
         this.oldOrdonneeMin = analyseur.getOrdonneeMin();
     }
@@ -69,6 +76,8 @@ public class Recompense {
         if (AFF) System.out.println("Colli : " + this.recompenseTot);
         this.appliqueBonusDescente();
         if (AFF) System.out.println("Descente : " + this.recompenseTot);
+        this.appliqueBonusMinCoord();
+        if (AFF) System.out.println("MinCoords : " + this.recompenseTot);
 
         if (pose) {
             // Calc des deltas
@@ -97,73 +106,74 @@ public class Recompense {
             if (AFF) System.out.println("Empilements : " + this.recompenseTot);
             this.appliqueBonusMalusNbElementsParLignes();
             if (AFF) System.out.println("Moy elements par lignes : " + this.recompenseTot);
-            this.appliqueBonusMinCoord();
-            if (AFF) System.out.println("MinCoords : " + this.recompenseTot);
+        }
 
-            try {
-                if (AFF) Thread.sleep(2000);
-            } catch (InterruptedException ex) {
-            }
+        try {
+            if (AFF) Thread.sleep(2000);
+        } catch (InterruptedException ex) {
         }
     }
 
     public double get() {
-        return this.recompenseTot;
+        this.rMax = Math.max(this.rMax, this.recompenseTot);
+        this.rMin = Math.min(this.rMin, this.recompenseTot);
+        return (this.recompenseTot - this.rMin) / (this.rMax - this.rMin);
     }
 
     private void appliqueBonusOrdonneeElementsPiece() {
         Piece fantome = this.puits.getFantome().getCopyPiece();
         for (Element e : fantome.getElements()) {
             Coordonnees c = e.getCoord();
-            this.recompenseTot += 2 * c.getOrdonnee() / (double) puits.getProfondeur() + 3;
+            this.recompenseTot += 1 * c.getOrdonnee(); // 1
         }
     }
 
     private void appliqueBonusLignesCompletees() {
-        this.recompenseTot += 65 * this.deltaNbLignes;
+        this.recompenseTot += 40 * this.deltaNbLignes; //10
     }
 
     private void appliqueMalusDefaite() {
-        this.recompenseTot -= (this.defaite) ? 1000 : 0;
+        this.recompenseTot -= (this.defaite) ? 100 : 0; // 100
     }
 
     private void appliqueMalusCollision() {
         if (this.collision && !(this.action instanceof MoveDown)) {
-            this.recompenseTot -= 100;
+            this.recompenseTot -= 2; // 2
         }
     }
     
     private void appliqueBonusDescente() {
-        if (this.action instanceof MoveDown || this.action instanceof Drop) {
-            this.recompenseTot += 1;
+        if (this.action instanceof Drop) {
+            this.recompenseTot += 1; // 1
         }
     }
 
     private void appliqueMalusHauteurTas() {
-        this.recompenseTot += 3 * this.deltaOrdonneeMin;
+        this.recompenseTot += 4 * this.deltaOrdonneeMin; // 4
     }
 
     private void appliqueMalusTrous() {
-        this.recompenseTot -= 70 * this.deltaNbTrousCrees;
+        this.recompenseTot -= 10 * this.deltaNbTrousCrees; // 10
     }
 
     private void appliqueBonusEmpilements() {
-        this.recompenseTot += 3 * this.deltaNbEmpilements;
+        this.recompenseTot += 3 * this.deltaNbEmpilements; // 3
     }
 
     private void appliqueBonusMalusNbElementsParLignes() {
-        this.recompenseTot += 20 * this.deltaMoyElementsParLignes;
+        this.recompenseTot += 4 * this.deltaMoyElementsParLignes; // 4
     }
 
     private void appliqueBonusMinCoord() {
-        Piece fantome = this.puits.getFantome().getCopyPiece();
+        Piece piece = this.puits.getPieceActuelle();
         int xRef = this.analyseur.getMinCoord().getAbscisse();
         int yRef = this.analyseur.getMinCoord().getOrdonnee();
-        for (Element e : fantome.getElements()) {
+        this.recompenseTot += Math.abs(this.puits.getLargueur() / 2 - piece.getElements().getFirst().getCoord().getAbscisse());
+        for (Element e : piece.getElements()) {
             int xF = e.getCoord().getAbscisse();
             int yF = e.getCoord().getOrdonnee();
 
-            this.recompenseTot -= 1 * this.puits.getLargueur() - Math.sqrt(Math.pow((xRef - xF), 2) + Math.pow((yRef - yF), 2));
+            this.recompenseTot -= 7 * Math.sqrt(Math.pow((xRef - xF), 2) + Math.pow((yRef - yF), 2)); // 7
         }
     }
 }

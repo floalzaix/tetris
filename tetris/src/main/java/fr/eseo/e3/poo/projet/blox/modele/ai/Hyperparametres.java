@@ -10,21 +10,21 @@ public class Hyperparametres {
     //
 
     // Init
-    private static final double ALPHA_INIT = 0.001;
+    private static final double ALPHA_INIT = 0.01;
     private static final double GAMMA_INIT = 0.95;
-    private static final double EPSILON_INIT = 0.55;
+    private static final double EPSILON_INIT = 0.9;
 
     // Growth
     private static final double GAMMA_GROWTH = 1.007;
 
     // Decays
     private static final double ALPHA_DECAY = 0.95;
-    private static final double EPSILON_DECAY = 0.96;
+    private static final double EPSILON_DECAY = 0.95;
 
     // Bornes
-    private static final double ALPHA_MIN = 0.001;
+    private static final double ALPHA_MIN = 0.01;
     private static final double GAMMA_MAX = 0.95;
-    private static final double EPSILON_MIN = 0.55;
+    private static final double EPSILON_MIN = 0.1;
 
     // Update des hyperparametres
     private static final UnaryOperator<Double> ALPHA_UPDATE = a -> Math.max(ALPHA_DECAY * a, ALPHA_MIN);

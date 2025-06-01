@@ -44,9 +44,9 @@ public class IA implements PropertyChangeListener {
 
     private static final Logger LOGGER = Logger.getLogger(IA.class.getName());
 
-    private static final int BATCH_SIZE = 64;
+    private static final int BATCH_SIZE = 32;
 
-    private static final int MAX_ITERATIONS_MAJ_TARGET = 1500;
+    private static final int MAX_ITERATIONS_MAJ_TARGET = 320;
 
     private static final Random RANDOM = new Random();
 
@@ -151,7 +151,7 @@ public class IA implements PropertyChangeListener {
                 .kernelSize(2, 2)
                 .stride(1, 1)
                 .padding(1, 1)
-                .nOut(64)
+                .nOut(128)
                 .build(), "pool1")
             .addLayer("pool2", new SubsamplingLayer.Builder(PoolingType.MAX)
                 .kernelSize(2, 2)
