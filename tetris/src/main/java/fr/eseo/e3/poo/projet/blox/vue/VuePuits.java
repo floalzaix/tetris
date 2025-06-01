@@ -15,6 +15,7 @@ import fr.eseo.e3.poo.projet.blox.controleur.Souris;
 import fr.eseo.e3.poo.projet.blox.modele.Puits;
 import fr.eseo.e3.poo.projet.blox.modele.pieces.Fantome;
 import fr.eseo.e3.poo.projet.blox.modele.pieces.Piece;
+import fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos.Tetromino;
 
 /**
  * Gère l'affichage du puit
@@ -103,8 +104,12 @@ public class VuePuits extends JPanel implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (Puits.MODIFICATION_PIECE_ACTUELLE.equals(evt.getPropertyName())) {
-            this.setVuePiece(new VuePiece((Piece) evt.getNewValue(), this.taille));
+            Tetromino piece = (Tetromino) evt.getNewValue();
+            this.setVuePiece(new VuePiece(piece, this.taille));
             this.vueFantome = new VueFantome(this.puits.getFantome(), this.taille);
+            piece.addPropertyChangeListener(this);
+            this.repaint();
+        } else if (Tetromino.EVT_PIECE_CHANGER.equals(evt.getPropertyName())) {
             this.repaint();
         }
     }

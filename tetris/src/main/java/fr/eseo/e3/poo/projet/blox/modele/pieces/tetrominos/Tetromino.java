@@ -1,5 +1,7 @@
 package fr.eseo.e3.poo.projet.blox.modele.pieces.tetrominos;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +24,8 @@ public abstract class Tetromino implements Generable, Piece {
     //
     public static final List<Tetromino> TETROMINOS = new ArrayList<>();
 
+    public static final String EVT_PIECE_CHANGER = "CHANGE";
+
     //
     // Variables d'instance
     //
@@ -29,6 +33,8 @@ public abstract class Tetromino implements Generable, Piece {
     protected Couleur couleur;
 
     private Puits puits;
+
+    private PropertyChangeSupport pcs;
 
     //
     // Constructeurs
@@ -44,6 +50,8 @@ public abstract class Tetromino implements Generable, Piece {
         // GABARIT
         int[][] gabarit = this.defGabarit();
         this.setElements(coord, couleur, gabarit);
+
+        this.pcs = new PropertyChangeSupport(this);
     }
 
     //
@@ -196,6 +204,8 @@ public abstract class Tetromino implements Generable, Piece {
                 fantome.projection();
             }
         }
+
+        this.pcs.firePropertyChange(Tetromino.EVT_PIECE_CHANGER, null, this);
     }
 
     @Override
@@ -217,6 +227,8 @@ public abstract class Tetromino implements Generable, Piece {
         if (fantome != null) {
             fantome.projection();
         }
+
+        this.pcs.firePropertyChange(Tetromino.EVT_PIECE_CHANGER, null, this);
     }
 
     @Override
@@ -293,6 +305,13 @@ public abstract class Tetromino implements Generable, Piece {
      * @return La copie sans avoir copié les variables d'instances
      */
     protected abstract Tetromino copySelf();
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        this.pcs.addPropertyChangeListener(listener);
+    }
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        this.pcs.removePropertyChangeListener(listener);
+    }
 
     // Overrides
     @Override
