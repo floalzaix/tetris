@@ -10,7 +10,7 @@ public class Hyperparametres {
     //
 
     // Init
-    private static final double ALPHA_INIT = 0.05;
+    private static final double ALPHA_INIT = 0.001;
     private static final double GAMMA_INIT = 0.95;
     private static final double EPSILON_INIT = 0.55;
 
@@ -22,7 +22,7 @@ public class Hyperparametres {
     private static final double EPSILON_DECAY = 0.96;
 
     // Bornes
-    private static final double ALPHA_MIN = 0.05;
+    private static final double ALPHA_MIN = 0.001;
     private static final double GAMMA_MAX = 0.95;
     private static final double EPSILON_MIN = 0.55;
 

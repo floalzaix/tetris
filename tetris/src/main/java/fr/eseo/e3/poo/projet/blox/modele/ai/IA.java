@@ -140,7 +140,7 @@ public class IA implements PropertyChangeListener {
                 .kernelSize(2, 2)
                 .stride(1, 1)
                 .nIn(1)
-                .nOut(128)
+                .nOut(256)
                 .build(), "inputs")
             .addLayer("pool1", new SubsamplingLayer.Builder(PoolingType.MAX)
                 .kernelSize(2, 2)
@@ -157,10 +157,21 @@ public class IA implements PropertyChangeListener {
                 .kernelSize(2, 2)
                 .stride(2, 2)
                 .build(), "conv2")
+            .addLayer("conv3", new ConvolutionLayer.Builder()
+                .activation(Activation.LEAKYRELU)
+                .kernelSize(2, 2)
+                .stride(1, 1)
+                .padding(1, 1)
+                .nOut(64)
+                .build(), "pool2")
+            .addLayer("pool3", new SubsamplingLayer.Builder(PoolingType.MAX)
+                .kernelSize(2, 2)
+                .stride(2, 2)
+                .build(), "conv3")
             .addLayer("dense1", new DenseLayer.Builder()
                 .nOut(32)
                 .activation(Activation.LEAKYRELU)
-                .build(), "pool2")
+                .build(), "pool3")
 
             // Branche 1 : Valeur
             .addLayer("valeurDense", new DenseLayer.Builder()
@@ -178,11 +189,11 @@ public class IA implements PropertyChangeListener {
 
             // Branche 2 : Avantages
             .addLayer("avantagesDense", new DenseLayer.Builder()
-                .nOut(16)
+                .nOut(32)
                 .activation(Activation.LEAKYRELU)
                 .build(), "dense1")
             .addLayer("avantages", new DenseLayer.Builder()
-                .nOut(Action.getNbActions())
+                .nOut(16)
                 .activation(Activation.IDENTITY)
                 .build(), "avantagesDense")
             .addLayer("avantagesOut", new OutputLayer.Builder(LossFunctions.LossFunction.MSE)
@@ -257,7 +268,7 @@ public class IA implements PropertyChangeListener {
      */
     private Action getAction(Etat etat, Piece piece) {
         // EXPLORATION
-        if (IA.RANDOM.nextDouble() >= 1 - this.hp.getEpsilon()) {
+        if (IA.RANDOM.nextDouble() < this.hp.getEpsilon()) {
             int indiceRandomAction = IA.RANDOM.nextInt(Action.getNbActions());
             return Action.getAction(indiceRandomAction, piece);
         }
